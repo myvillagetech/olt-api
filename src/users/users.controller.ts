@@ -1,11 +1,13 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
-import { CreateUserDto } from 'src/dto/create-user-dto';
-import { UserService } from 'src/service/user/user.service';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UsersService } from './users.service';
 
 @Controller('/user')
-export class UserController {
+export class UsersController {
 
-    constructor(private readonly userService: UserService) { }
+    constructor(private readonly userService: UsersService) { }
+
     @Post()
     async createUser(@Res() response, @Body() userModel: CreateUserDto) {
         try {
@@ -24,7 +26,7 @@ export class UserController {
     }
 
     @Put('/:id')
-    async updateUser(@Res() response, @Param('id') userId: string,
+    async updateUser(@Res() response, @Param('id') userId: number,
         @Body() userModel: CreateUserDto) {
         try {
             const existingUser = await this.userService.updateUser(userId, userModel);
@@ -37,6 +39,7 @@ export class UserController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get()
     async getUsers(@Res() response) {
         try {
@@ -50,7 +53,7 @@ export class UserController {
     }
 
     @Get('/:id')
-    async getUser(@Res() response, @Param('id') userId: string) {
+    async getUser(@Res() response, @Param('id') userId: number) {
         try {
             const existingUser = await
                 this.userService.getUser(userId);
@@ -63,7 +66,7 @@ export class UserController {
     }
 
     @Delete('/:id')
-    async deleteUser(@Res() response, @Param('id') userId: string) {
+    async deleteUser(@Res() response, @Param('id') userId: number) {
         try {
             const deletedUser = await this.userService.deleteUser(userId);
             return response.status(HttpStatus.OK).json({

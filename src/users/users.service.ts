@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from "mongoose";
-import { CreateUserDto } from 'src/dto/create-user-dto';
-import { IUser } from 'src/interface/user.interface';
+import { CreateUserDto } from './dto/create-user.dto';
+import { IUser } from './entities/user.interface';
 
 @Injectable()
-export class UserService {
+export class UsersService {
     constructor(@InjectModel('User') private userModel: Model<IUser>) { }
 
     async createUser(createUserDto: CreateUserDto): Promise<IUser> {
@@ -13,7 +13,7 @@ export class UserService {
         return newUser.save();
     }
 
-    async updateUser(userId: string, createUserDto: CreateUserDto): Promise<IUser> {
+    async updateUser(userId: number, createUserDto: CreateUserDto): Promise<IUser> {
         const existingUser = await this.userModel.findByIdAndUpdate(userId, createUserDto, { new: true });
         if (!existingUser) {
             throw new NotFoundException(`user #${userId} not found`);
@@ -29,7 +29,7 @@ export class UserService {
         return userData;
     }
 
-    async getUser(userId: string): Promise<IUser> {
+    async getUser(userId: number): Promise<IUser> {
         const existingUser = await this.userModel.findById(userId).exec();
         if (!existingUser) {
             throw new NotFoundException(`user #${userId} not found`);
@@ -37,7 +37,15 @@ export class UserService {
         return existingUser;
     }
 
-    async deleteUser(userId: string): Promise<IUser> {
+    async getUserByEmail(email: string): Promise<IUser> {
+        const existingUser = await this.userModel.findOne({"email": email}).exec();
+        if (!existingUser) {
+            throw new NotFoundException(`user #${email} not found`);
+        }
+        return existingUser;
+    }
+
+    async deleteUser(userId: number): Promise<IUser> {
         const deletedUser = await this.userModel.findByIdAndDelete(userId);
         if (!deletedUser) {
             throw new NotFoundException(`user #${userId} not found`);
