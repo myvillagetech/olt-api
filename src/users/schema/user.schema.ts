@@ -16,13 +16,13 @@ export class User {
     email: string
 
     @Prop()
-    contact: string
+    phone: string
 
     @Prop()
     password: string
 
     @Prop()
-    DoB: string
+    dob: Date
 
     @Prop()
     active: string

@@ -3,9 +3,9 @@ export class User {
     readonly firstName: string;
     readonly lastName: string;
     readonly email: string;
-    readonly contact: string;
+    readonly phone: string;
     readonly password: string;
-    readonly DoB: string;
+    readonly dob: Date;
     readonly active: string;
     readonly roles: Array<string>;
     readonly address: string;

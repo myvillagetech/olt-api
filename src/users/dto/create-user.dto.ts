@@ -22,23 +22,20 @@ export class CreateUserDto {
     readonly email: string;
 
     @IsString()
-    @MaxLength(30)
+    @MaxLength(10)
     @IsNotEmpty()
-    readonly contact: string;
+    readonly phone: string;
 
     @IsString()
     @MaxLength(30)
     @IsNotEmpty()
     readonly password: string;
-
-    @IsString()
-    @MaxLength(30)
+   
     @IsNotEmpty()
-    readonly DoB: string
+    readonly dob: Date
 
     @IsString()
     @MaxLength(1)
-    @IsNotEmpty()
     readonly active: string;
 
     readonly roles: Array<string>;
