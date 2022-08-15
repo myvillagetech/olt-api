@@ -1,9 +1,12 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 
+@UseGuards(JwtAuthGuard)
 @Controller('/user')
+@ApiBearerAuth('access-token')
 export class UsersController {
 
     constructor(private readonly userService: UsersService) { }
@@ -39,16 +42,17 @@ export class UsersController {
         }
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get()
     async getUsers(@Res() response) {
         try {
             const userData = await this.userService.getAllUsers();
             return response.status(HttpStatus.OK).json({
-                message: 'All users data found successfully', userData,
+                message: 'All users data found successfully', data: userData,
             });
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({
+                errorMessage: err.message, errorCode: err.statusCode,
+            });
         }
     }
 
