@@ -1,16 +1,26 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+
   const app = await NestFactory.create(AppModule);
-  const config = new DocumentBuilder()
-    .setTitle('Home example')
-    .setDescription('The Home API description')
+
+  app.useGlobalPipes(new ValidationPipe());
+
+  const options = new DocumentBuilder()
+    .setTitle('OLT')
+    .setDescription('Online Tutorial API')
     .setVersion('1.0')
-    .addTag('Home')
+    .addTag('auth')
+    .addTag('users')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'jwt' },
+      'access-token',
+    )
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
 
   await app.listen(5000);
