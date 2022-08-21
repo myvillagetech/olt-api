@@ -1,16 +1,6 @@
-import {
-    IsNotEmpty,
-    IsNumber,
-    isNumber,
-    IsString,
-    MaxLength,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, isNumber, IsString, MaxLength } from "class-validator";
 
-export class CreateUserDto {
-    @IsNumber()
-    @IsNotEmpty()
-    readonly userId: number;
-
+export class SignUpDTO {
     @IsString()
     @MaxLength(30)
     @IsNotEmpty()
@@ -36,12 +26,7 @@ export class CreateUserDto {
     @IsNotEmpty()
     readonly password: string;
 
-    @IsNotEmpty()
-    readonly dob: Date;
-
-    @IsString()
-    @MaxLength(1)
-    readonly active: string;
+    readonly dob: Date
 
     readonly roles: Array<string>;
 

@@ -2,6 +2,7 @@ import { Injectable, Options } from '@nestjs/common';
 import { sign, verify } from 'jsonwebtoken';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
+import { SignUpDTO } from './dto/singup.dto';
 import RefreshToken from './entities/refresh-token.entity';
 
 @Injectable()
@@ -57,6 +58,13 @@ export class AuthService {
       return undefined;
     }
     return this.newRreshAndAccessToken(user, values);
+  }
+
+
+  async signup(signUpDTO: SignUpDTO) {
+    await this.userService.createUser(signUpDTO);
+
+    return true;
   }
 
   private async newRreshAndAccessToken(

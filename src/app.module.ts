@@ -9,12 +9,16 @@ import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://localhost:27017/oltDB'),
-  MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+  imports: [
+    MongooseModule.forRoot(
+      'mongodb+srv://villagetech:L3r30nnGJqrmFcHQ@cluster0.7mzkrzz.mongodb.net/?retryWrites=true&w=majority',
+    ),
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     UsersModule,
     AuthModule,
-  ConfigModule.forRoot()],
+    ConfigModule.forRoot(),
+  ],
   controllers: [AppController, UsersController],
   providers: [UsersService],
 })
-export class AppModule { }
+export class AppModule {}
