@@ -11,7 +11,7 @@ export class CourseController {
     constructor(
         private courseService: CourseService
     ) { }
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Post('')
     async createCourse(@Res() response, @Body() coursePayload: CreateCourseDto) {
         try {
@@ -31,6 +31,7 @@ export class CourseController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Put('/:id')
     async updateCourse(
         @Res() response,
@@ -48,6 +49,7 @@ export class CourseController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get()
     async getAllCourses(@Res() response) {
         try {
@@ -63,7 +65,8 @@ export class CourseController {
             });
         }
     }
-
+    
+    @UseGuards(JwtAuthGuard)
     @Delete('/:id')
     async deleteCourse(@Res() response, @Param('id') courseId: string) {
       try {
