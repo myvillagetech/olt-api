@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
 import { response } from "express";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guards";
 import { CreateCourseDto } from "./course.dto";
@@ -13,7 +13,7 @@ export class CourseController {
     ) { }
     // @UseGuards(JwtAuthGuard)
     @Post('')
-    async createCourse(@Body() coursePayload: CreateCourseDto) {
+    async createCourse(@Res() response, @Body() coursePayload: CreateCourseDto) {
         try {
             const course = await this.courseService.createCourse(coursePayload)
             return response.status(HttpStatus.CREATED).json({
@@ -21,6 +21,8 @@ export class CourseController {
                 course
             });
         } catch (error) {
+            console.log(error);
+
             return response.status(HttpStatus.BAD_REQUEST).json({
                 statusCode: 400,
                 message: 'Error: Course not created!',
@@ -31,6 +33,7 @@ export class CourseController {
 
     @Put('/:id')
     async updateCourse(
+        @Res() response,
         @Param('id') courseId: string,
         @Body() coursePayload: CreateCourseDto
     ) {
@@ -46,7 +49,7 @@ export class CourseController {
     }
 
     @Get()
-    async getAllCourses() {
+    async getAllCourses(@Res() response) {
         try {
             const courseData = await this.courseService.getAllCourses();
             return response.status(HttpStatus.OK).json({
@@ -62,7 +65,7 @@ export class CourseController {
     }
 
     @Delete('/:id')
-    async deleteCourse( @Param('id') courseId: string) {
+    async deleteCourse(@Res() response, @Param('id') courseId: string) {
       try {
         const course = await this.courseService.deleteCourse(courseId);
         return response.status(HttpStatus.OK).json({
