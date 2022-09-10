@@ -1,7 +1,7 @@
 import { Injectable, Options } from '@nestjs/common';
 import { sign, verify } from 'jsonwebtoken';
-import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
+//import { User } from 'src/users/entities/user.entity';
 import { SignUpDTO } from './dto/singup.dto';
 import RefreshToken from './entities/refresh-token.entity';
 
@@ -68,7 +68,7 @@ export class AuthService {
   }
 
   private async newRreshAndAccessToken(
-    user: User,
+    user: any,
     values: { userAgent: string; ipAddress: string }
   ): Promise<{ accessToken: string; refreshToken: string }> {
 
