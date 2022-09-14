@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserSchema } from './users/schema/user.schema';
 import { CourseModule } from './courses/course.module';
 import { TutorProfileModule } from './tutorProfile/tutorProfile.module';
+import { ScheduleModule } from './schedule/schedule.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TutorProfileModule } from './tutorProfile/tutorProfile.module';
     CourseModule,
     TutorProfileModule,
     ConfigModule.forRoot(),
+    ScheduleModule,
   ],
   controllers: [AppController],
 })

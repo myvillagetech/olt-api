@@ -10,6 +10,11 @@ export interface ISlots {
     toTime: string;
 }
 
+export interface ISubjects {
+    courseName : string,
+    _id : string
+}
+
 export class ICancellationPolicy {
   
     unit: string;
@@ -22,6 +27,11 @@ export class ICancellationPolicy {
 })
 
 export class TutorProfileSchemaCreator {
+    @Prop({
+        required : true,
+        unique : true
+    })
+    userId : string;
     @Prop({
         required: true,
     })
@@ -51,7 +61,7 @@ export class TutorProfileSchemaCreator {
     @Prop({
         required : false
     })
-    subject: string;
+    subject: ISubjects[];
 
     @Prop({
         required : false

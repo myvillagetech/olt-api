@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
+import { response } from "express";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guards";
 import { TutorProfileDto } from "./tutorProfile.dto";
 import { TutorProfileService } from "./tutorProfile.service";
@@ -63,6 +64,43 @@ export class TutorProfileController{
                 errorMessage: err.message,
                 errorCode: err.statusCode,
             });
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('userId/:id')
+    async getTutorProfileByUserId(@Res() response, @Param('id')userId : string){
+        try {
+            const profile = await this.tutorProfileService.getProfileByUserId(userId);
+            return response.status(HttpStatus.OK).json({
+                message: 'Profile found successfully',
+                data: profile,
+            });
+        }
+        catch (err) {
+            return response.status(err.status).json({
+                errorMessage: err.message,
+                errorCode: err.statusCode,
+            });
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('course/:id')
+    async getAllProfilesByCourseName(@Res() response, @Param('id')courseName : string){
+        try {
+            const profile = await this.tutorProfileService.getAllProfilesByCourseName(courseName);
+            return response.status(HttpStatus.OK).json({
+                message: 'Profile found successfully',
+                data: profile,
+            });
+        }
+        catch (err) {
+            // return response.status(err.status).json({
+            //     errorMessage: err.message,
+            //     errorCode: err.statusCode,
+            // });
+            return err
         }
     }
 }

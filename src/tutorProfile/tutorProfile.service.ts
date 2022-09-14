@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { MODEL_ENUMS } from "src/shared/enums/models.enums";
 import { TutorProfileDto } from "./tutorProfile.dto";
-import { ITutorProfileDocument } from "./tutorProfile.schema";
+import { ISubjects, ITutorProfileDocument } from "./tutorProfile.schema";
 
 
 @Injectable()
@@ -37,6 +37,25 @@ export class TutorProfileService {
             throw new HttpException(`Course #${profileId} not found`, HttpStatus.NOT_MODIFIED);
         }
         return profile;
+    }
+
+    async getProfileByUserId(userId : string) : Promise<ITutorProfileDocument> {
+        const profileDetails = await this.profileModel.findOne({userId : userId}).exec();
+        if(!profileDetails){
+            throw new NotFoundException('Profile Data not Found!');
+        }
+        return profileDetails;
+    }
+
+    async getAllProfilesByCourseName(CourseName : string) : Promise<ITutorProfileDocument[]> {
+        const courses = await this.profileModel.find({
+            "subject.courseName" : CourseName
+        })
+       // const courses = await this.profileModel.find()
+        if(!courses){
+            throw new NotFoundException('Profile Data not Found!');
+        }
+        return courses
     }
 
 
