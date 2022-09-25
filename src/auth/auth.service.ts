@@ -1,6 +1,7 @@
 import { Injectable, Options } from '@nestjs/common';
 import { sign, verify } from 'jsonwebtoken';
 import { UsersService } from 'src/users/users.service';
+import { GoogleLoginDto } from './dto/googleLogin.dto';
 //import { User } from 'src/users/entities/user.entity';
 import { SignUpDTO } from './dto/singup.dto';
 import RefreshToken from './entities/refresh-token.entity';
@@ -58,6 +59,14 @@ export class AuthService {
       return undefined;
     }
     return this.newRreshAndAccessToken(user, values);
+  }
+
+  async googleSignIn(body: GoogleLoginDto, values: { userAgent: string; ipAddress: string }) {
+
+    const user = await this.userService.upsertUser(body);
+
+    return this.newRreshAndAccessToken(user, values);
+
   }
 
 

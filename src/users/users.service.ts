@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { GoogleLoginDto } from 'src/auth/dto/googleLogin.dto';
 import { SignUpDTO } from 'src/auth/dto/singup.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserDocument } from './schema/user.schema'
@@ -12,6 +13,12 @@ export class UsersService {
   async createUser(createUserDto: CreateUserDto | SignUpDTO): Promise<UserDocument> {
     const newUser = await new this.userModel(createUserDto);
     return newUser.save();
+  }
+
+  async upsertUser(user: GoogleLoginDto): Promise<UserDocument> {
+    const newUser =  await this.userModel.findOneAndUpdate({email:user.email}, user, {new: true,upsert: true})
+
+    return newUser;
   }
 
   async updateUser(

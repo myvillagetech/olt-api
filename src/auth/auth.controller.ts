@@ -12,6 +12,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { GoogleLoginDto } from './dto/googleLogin.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { SignUpDTO } from './dto/singup.dto';
@@ -23,6 +24,14 @@ export class AuthController {
   @Post('login')
   async login(@Req() request, @Ip() ip: string, @Body() body: LoginDto) {
     return this.authService.login(body.email, body.password, {
+      ipAddress: ip,
+      userAgent: request.headers['user-agent'],
+    });
+  }
+
+  @Post('googleSignIn')
+  async googleSignIn(@Req() request, @Ip() ip: string, @Body() body: GoogleLoginDto) {
+    return this.authService.googleSignIn(body, {
       ipAddress: ip,
       userAgent: request.headers['user-agent'],
     });
