@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
 import { CreateCategoryeDto } from './category.dto';
 import { CategoryService } from './category.service';
 
@@ -39,6 +39,36 @@ export class CategoryController {
                 errorMessage: err.message,
                 errorCode: err.statusCode,
             });
+        }
+    }
+
+    @Put('/:id')
+    async updateCategory(
+        @Res() response,
+        @Param('id') courseId: string,
+        @Body() categoryPayload: CreateCategoryeDto
+    ) {
+        try {
+            const course = await this.categoryService.updateCategory(categoryPayload, courseId);
+            return response.status(HttpStatus.OK).json({
+                message: 'Category has been successfully updated',
+                course,
+            });
+        } catch (err) {
+            return response.status(err.status).json(err.response);
+        }
+    }
+
+    @Delete('/:id')
+    async deleteCourse(@Res() response, @Param('id') courseId: string) {
+        try {
+            const course = await this.categoryService.deleteCategory(courseId);
+            return response.status(HttpStatus.OK).json({
+                message: 'Course deleted successfully',
+                course,
+            });
+        } catch (err) {
+            return response.status(err.status).json(err.response);
         }
     }
 }

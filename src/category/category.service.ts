@@ -27,4 +27,21 @@ export class CategoryService {
         }
         return details;
     }
+
+    async deleteCategory(categoryId : string) : Promise < ICategoryDocument | NotFoundException | UnprocessableEntityException > {
+        const course = await this.categoryModel.findByIdAndDelete(categoryId).exec();
+        if(!course){
+            throw new NotFoundException(`Category #${categoryId} not found`)
+        }
+        return course;
+    }
+
+    async updateCategory(coursePayload : CreateCategoryeDto, courseId : string) : Promise<CreateCategoryeDto | UnprocessableEntityException>{
+        const course = await this.categoryModel.findByIdAndUpdate(courseId,coursePayload).exec()
+        if (!course) {
+            throw new HttpException(`Category #${courseId} not found`, HttpStatus.NOT_MODIFIED);
+        }
+        return course;
+    }
+
 }
