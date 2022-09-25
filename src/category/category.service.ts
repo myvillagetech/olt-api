@@ -21,9 +21,9 @@ export class CategoryService {
     }
 
     async getAllCategoires(query: any): Promise<CreateCategoryeDto[]> {
-        console.log(query);
         var sort = {};
         sort[query.sortBy] = 1;
+        
         const findOption = query.query ?
             this.categoryModel.find({
                 $or: [
