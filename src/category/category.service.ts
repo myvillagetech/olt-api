@@ -7,11 +7,11 @@ import { ICategoryDocument } from './category.schema';
 
 @Injectable()
 export class CategoryService {
-    constructor(@InjectModel(MODEL_ENUMS.CATEGORIES) private  categoryModel : Model<ICategoryDocument>,) {
+    constructor(@InjectModel(MODEL_ENUMS.CATEGORIES) private categoryModel: Model<ICategoryDocument>,) {
     }
 
-    async createCategory(payload: CreateCategoryeDto) : Promise<CreateCategoryeDto | UnprocessableEntityException> {
-        try{
+    async createCategory(payload: CreateCategoryeDto): Promise<CreateCategoryeDto | UnprocessableEntityException> {
+        try {
             const category = new this.categoryModel(payload);
             return category.save();
         }
@@ -20,24 +20,36 @@ export class CategoryService {
         }
     }
 
-    async getAllCategoires(): Promise<CreateCategoryeDto[]> {
-        const details = await this.categoryModel.find();
+    async getAllCategoires(query: any): Promise<CreateCategoryeDto[]> {
+        console.log(query);
+        var sort = {};
+        sort[query.sortBy] = 1;
+        const findOption = query.query ?
+            this.categoryModel.find({
+                $or: [
+                    { 'categoryName': { '$regex': query.searchTerm, '$options': 'i' } },
+                    { 'categoryDiscription': { '$regex': query.searchTerm, '$options': 'i' } }
+                ]
+            })
+            : this.categoryModel.find();
+        const details = await findOption.sort(sort);
+
         if (!details || details.length == 0) {
             throw new NotFoundException('categories data not found!');
         }
         return details;
     }
 
-    async deleteCategory(categoryId : string) : Promise < ICategoryDocument | NotFoundException | UnprocessableEntityException > {
+    async deleteCategory(categoryId: string): Promise<ICategoryDocument | NotFoundException | UnprocessableEntityException> {
         const course = await this.categoryModel.findByIdAndDelete(categoryId).exec();
-        if(!course){
+        if (!course) {
             throw new NotFoundException(`Category #${categoryId} not found`)
         }
         return course;
     }
 
-    async updateCategory(coursePayload : CreateCategoryeDto, courseId : string) : Promise<CreateCategoryeDto | UnprocessableEntityException>{
-        const course = await this.categoryModel.findByIdAndUpdate(courseId,coursePayload).exec()
+    async updateCategory(coursePayload: CreateCategoryeDto, courseId: string): Promise<CreateCategoryeDto | UnprocessableEntityException> {
+        const course = await this.categoryModel.findByIdAndUpdate(courseId, coursePayload).exec()
         if (!course) {
             throw new HttpException(`Category #${courseId} not found`, HttpStatus.NOT_MODIFIED);
         }

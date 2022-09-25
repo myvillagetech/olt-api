@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res } from '@nestjs/common';
+import { ApiQuery } from '@nestjs/swagger';
 import { CreateCategoryeDto } from './category.dto';
 import { CategoryService } from './category.service';
 
@@ -26,10 +27,21 @@ export class CategoryController {
         }
     }
 
+    @ApiQuery({
+		name: "searchTerm",
+		required: false,
+		type: String
+	})
+    @ApiQuery({
+		name: "sortBy",
+		required: true,
+		type: String,
+        enum: ["categoryName", "categoryDiscription"]
+	})
     @Get()
-    async getAllCategoires(@Res() response) {
+    async getAllCategoires(@Res() response, @Query() query) {
         try {
-            const courseData = await this.categoryService.getAllCategoires();
+            const courseData = await this.categoryService.getAllCategoires(query);
             return response.status(HttpStatus.OK).json({
                 message: 'All Category data found successfully',
                 data: courseData,
