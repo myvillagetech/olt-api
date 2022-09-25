@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserSchema } from './users/schema/user.schema';
 import { CourseModule } from './courses/course.module';
+import { CategoryController } from './category/category.controller';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -16,7 +18,8 @@ import { CourseModule } from './courses/course.module';
     AuthModule,
     CourseModule,
     ConfigModule.forRoot(),
+    CategoryModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, CategoryController],
 })
 export class AppModule {}
