@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserSchema } from './users/schema/user.schema';
 import { CourseModule } from './courses/course.module';
+import { TutorProfileModule } from './tutorProfile/tutorProfile.module';
+import { ScheduleModule } from './schedule/schedule.module';
 
 @Module({
   imports: [
@@ -15,7 +17,9 @@ import { CourseModule } from './courses/course.module';
     UsersModule,
     AuthModule,
     CourseModule,
+    TutorProfileModule,
     ConfigModule.forRoot(),
+    ScheduleModule,
   ],
   controllers: [AppController],
 })
