@@ -1,4 +1,5 @@
 import { Injectable, Options } from '@nestjs/common';
+import { OAuth2Client } from 'google-auth-library';
 import { sign, verify } from 'jsonwebtoken';
 import { UsersService } from 'src/users/users.service';
 import { GoogleLoginDto } from './dto/googleLogin.dto';
@@ -63,11 +64,35 @@ export class AuthService {
 
   async googleSignIn(body: GoogleLoginDto, values: { userAgent: string; ipAddress: string }) {
 
+    const userTokenValid = await this.verifyGoogleToken(body.idToken)
+
     const user = await this.userService.upsertUser(body);
 
     return this.newRreshAndAccessToken(user, values);
 
   }
+
+  async verifyGoogleToken(token: string) {
+    const client = new OAuth2Client("925808140824-3ldr2n6tv5hp30nvd7rp3vi2g1c96dqr.apps.googleusercontent.com");
+
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: "925808140824-3ldr2n6tv5hp30nvd7rp3vi2g1c96dqr.apps.googleusercontent.com",
+      // Specify the CLIENT_ID of the app that accesses the backend
+      // Or, if multiple clients access the backend:
+      //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+    });
+
+    //   const ticket = await client.verifyIdToken({
+    //     idToken: token,
+    //     audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+    //     // Or, if multiple clients access the backend:
+    //     //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+    // });
+    const payload = ticket.getPayload();
+    const userid = payload['sub'];
+  }
+
 
 
   async signup(signUpDTO: SignUpDTO) {

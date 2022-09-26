@@ -19,7 +19,7 @@ import { SignUpDTO } from './dto/singup.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('login')
   async login(@Req() request, @Ip() ip: string, @Body() body: LoginDto) {
@@ -31,6 +31,22 @@ export class AuthController {
 
   @Post('googleSignIn')
   async googleSignIn(@Req() request, @Ip() ip: string, @Body() body: GoogleLoginDto) {
+    // try {
+    //   // const result =  this.authService.googleSignIn(body, {
+    //   //   ipAddress: ip,
+    //   //   userAgent: request.headers['user-agent'],
+    //   // });
+
+    //   // return result;
+    //   return this.authService.googleSignIn(body, {
+    //     ipAddress: ip,
+    //     userAgent: request.headers['user-agent'],
+    //   });
+    // } catch (error) {
+    //   return response.status(HttpStatus.BAD_REQUEST).json({
+    //     message: 'something went worng',
+    //   });
+    // }
     return this.authService.googleSignIn(body, {
       ipAddress: ip,
       userAgent: request.headers['user-agent'],
@@ -39,16 +55,16 @@ export class AuthController {
 
   @Post('signup')
   async signup(@Res() response, @Req() request, @Ip() ip: string, @Body() body: SignUpDTO) {
-    try{
+    try {
       this.authService.signup(body);
       return response.status(HttpStatus.CREATED).json({
         message: 'User  signedup successfully',
-    });
+      });
     }
-    catch(e) {
+    catch (e) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         message: 'something went worng',
-    });
+      });
     }
   }
 
