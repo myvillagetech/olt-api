@@ -10,6 +10,8 @@ import { CategoryController } from './category/category.controller';
 import { CategoryModule } from './category/category.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { TutorProfileModule } from './tutorProfile/tutorProfile.module';
+import { ScheduleModule } from './schedule/schedule.module';
 
 @Module({
   imports: [
@@ -22,8 +24,10 @@ import { join } from 'path';
     UsersModule,
     AuthModule,
     CourseModule,
+    TutorProfileModule,
     ConfigModule.forRoot(),
     CategoryModule,
+    ScheduleModule,
   ],
   controllers: [AppController, CategoryController],
 })
