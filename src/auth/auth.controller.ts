@@ -10,6 +10,7 @@ import {
   Ip,
   Res,
   HttpStatus,
+  HttpException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleLoginDto } from './dto/googleLogin.dto';
@@ -31,26 +32,16 @@ export class AuthController {
 
   @Post('googleSignIn')
   async googleSignIn(@Req() request, @Ip() ip: string, @Body() body: GoogleLoginDto) {
-    // try {
-    //   // const result =  this.authService.googleSignIn(body, {
-    //   //   ipAddress: ip,
-    //   //   userAgent: request.headers['user-agent'],
-    //   // });
+    try {
+      const result  = await this.authService.googleSignIn(body, {
+        ipAddress: ip,
+        userAgent: request.headers['user-agent'],
+      });
 
-    //   // return result;
-    //   return this.authService.googleSignIn(body, {
-    //     ipAddress: ip,
-    //     userAgent: request.headers['user-agent'],
-    //   });
-    // } catch (error) {
-    //   return response.status(HttpStatus.BAD_REQUEST).json({
-    //     message: 'something went worng',
-    //   });
-    // }
-    return this.authService.googleSignIn(body, {
-      ipAddress: ip,
-      userAgent: request.headers['user-agent'],
-    });
+      return result;
+    } catch (error) {
+      throw new HttpException('Token Validation failed', HttpStatus.UNAUTHORIZED);
+    }
   }
 
   @Post('signup')
