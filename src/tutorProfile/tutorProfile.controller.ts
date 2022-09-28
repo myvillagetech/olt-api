@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { response } from "express";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guards";
 import { TutorProfileDto } from "./tutorProfile.dto";
-import { ISlots } from "./tutorProfile.schema";
+import { IAvilableSlots } from "./tutorProfile.schema";
 import { TutorProfileService } from "./tutorProfile.service";
 
 @ApiBearerAuth('access-token')
@@ -34,7 +34,7 @@ export class TutorProfileController{
     }
 
     @Put('/slots/:id')
-    async updateTutoProfileSlots(@Res() response, @Body() slots: ISlots[], @Param('id') profileId: string,) {
+    async updateTutoProfileSlots(@Res() response, @Body() slots: IAvilableSlots[], @Param('id') profileId: string,) {
         try {
             const profile = await this.tutorProfileService.updateTutorSlots(slots, profileId)
             return response.status(HttpStatus.CREATED).json({

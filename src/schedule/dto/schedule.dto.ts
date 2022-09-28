@@ -13,8 +13,11 @@ export class ScheduleDto {
     subjects : ISubjects[]
    
     @IsDefined()
-    start : ISlots[];
-   
+    date : Date;
+
     @IsDefined()
-    end : ISlots[];
+    startTime : string;
+
+    @IsDefined()
+    endTime : string;
 }

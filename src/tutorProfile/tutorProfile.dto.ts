@@ -1,5 +1,5 @@
 import { IsDefined, IsEmail } from "class-validator";
-import { ICancellationPolicy, ISlots,ISubjects } from "./tutorProfile.schema";
+import { IAvilableSlots, ICancellationPolicy, ISubjects } from "./tutorProfile.schema";
 
 
 export class TutorProfileDto {
@@ -12,7 +12,7 @@ export class TutorProfileDto {
     title: string;  
     discription: string;   
     subject: ISubjects[];
-    slots : ISlots[]
+    slots : IAvilableSlots[]
     hourlyRate : number;
     cancellationPolicy : ICancellationPolicy
 

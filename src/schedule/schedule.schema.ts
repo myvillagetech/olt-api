@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
-import { Document } from "mongoose";
+import { Date, Document } from "mongoose";
 import * as uniqueValidators from 'mongoose-unique-validator'
 import { ISlots, ISubjects } from "src/tutorProfile/tutorProfile.schema";
+
 
 @Schema({
     timestamps : true
@@ -23,11 +24,15 @@ export class ScheduleSchemaCreator {
     @Prop({
         required : true
     })
-    start : ISlots[];
+    date : Date;
     @Prop({
         required : true
     })
-    end : ISlots[];
+    startTime : string;
+    @Prop({
+        required : true
+    })
+    endTime : string;
     @Prop({
         required : false,
         default : 'SCHEDULED'

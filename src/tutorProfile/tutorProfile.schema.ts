@@ -4,10 +4,14 @@ import * as uniqueValidators from 'mongoose-unique-validator'
 
 
 
-export interface ISlots {  
-    day: string;
-    fromTime: string;
-    toTime: string;
+export interface ISlots {
+    from : number | null,
+    to : number | null
+}
+
+export interface IAvilableSlots {
+    day : string,
+    slots : ISlots[]
 }
 
 export interface ISubjects {
@@ -66,7 +70,7 @@ export class TutorProfileSchemaCreator {
     @Prop({
         required : false
     })
-    slots : ISlots[];
+    slots : IAvilableSlots[];
    
     @Prop({
         required : false

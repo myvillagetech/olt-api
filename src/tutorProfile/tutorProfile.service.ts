@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { MODEL_ENUMS } from "src/shared/enums/models.enums";
 import { TutorProfileDto } from "./tutorProfile.dto";
-import { ISlots, ISubjects, ITutorProfileDocument } from "./tutorProfile.schema";
+import { IAvilableSlots, ISubjects, ITutorProfileDocument } from "./tutorProfile.schema";
 
 
 @Injectable()
@@ -39,7 +39,7 @@ export class TutorProfileService {
         return profile;
     }
 
-    async updateTutorSlots(slots : ISlots[], profileId : string) : Promise<TutorProfileDto | UnprocessableEntityException>{
+    async updateTutorSlots(slots : IAvilableSlots[], profileId : string) : Promise<TutorProfileDto | UnprocessableEntityException>{
         const profile = await this.profileModel.findByIdAndUpdate(profileId,{slots: slots}, {new: true}).exec()
         if (!profile) {
             throw new HttpException(`Course #${profileId} not found`, HttpStatus.NOT_MODIFIED);
