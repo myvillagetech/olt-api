@@ -1,17 +1,19 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { response } from "express";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guards";
 import { TutorProfileDto } from "./tutorProfile.dto";
 import { ISlots } from "./tutorProfile.schema";
 import { TutorProfileService } from "./tutorProfile.service";
 
-
+@ApiBearerAuth('access-token')
+@UseGuards(JwtAuthGuard)
+@ApiTags('TutorProfile')
 @Controller('tutorProfile')
 export class TutorProfileController{
     constructor(
         private tutorProfileService: TutorProfileService
     ) { }
-    @UseGuards(JwtAuthGuard)
     @Post('')
     async createTutorProfile(@Res() response, @Body() tutorProfilePayload: TutorProfileDto ) {
         console.log(tutorProfilePayload);
@@ -31,7 +33,6 @@ export class TutorProfileController{
         }
     }
 
-    // @UseGuards(JwtAuthGuard)
     @Put('/slots/:id')
     async updateTutoProfileSlots(@Res() response, @Body() slots: ISlots[], @Param('id') profileId: string,) {
         try {
@@ -50,7 +51,6 @@ export class TutorProfileController{
         }
     }
 
-    @UseGuards(JwtAuthGuard)
     @Put('/:id')
     async updateTutorProfile(
         @Res() response,
@@ -68,7 +68,6 @@ export class TutorProfileController{
         }
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('/:id')
     async getTutorProfileById(@Res() response, @Param('id') profileId : string) {
         try {
@@ -85,7 +84,6 @@ export class TutorProfileController{
         }
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('userId/:id')
     async getTutorProfileByUserId(@Res() response, @Param('id')userId : string){
         try {
@@ -103,7 +101,6 @@ export class TutorProfileController{
         }
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('course/:id')
     async getAllProfilesByCourseName(@Res() response, @Param('id')courseName : string){
         try {
