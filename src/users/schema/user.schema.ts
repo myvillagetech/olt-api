@@ -33,6 +33,9 @@ export class User {
 
     @Prop()
     address: string
+
+    @Prop()
+    ssoProvider: string
 }
 
 export type UserDocument = User & Document;

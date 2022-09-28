@@ -46,4 +46,7 @@ export class CreateUserDto {
     readonly roles: Array<string>;
 
     address: object;
+
+    @IsString()
+    ssoProvider: string
 }

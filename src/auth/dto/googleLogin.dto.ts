@@ -17,5 +17,8 @@ export class GoogleLoginDto {
     idToken:string;
 
     @IsNotEmpty()
+    provider:string;
+
+    @IsNotEmpty()
     photoUrl:string;
 }
