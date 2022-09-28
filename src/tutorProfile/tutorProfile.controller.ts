@@ -2,9 +2,8 @@ import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGu
 import { response } from "express";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guards";
 import { TutorProfileDto } from "./tutorProfile.dto";
+import { ISlots } from "./tutorProfile.schema";
 import { TutorProfileService } from "./tutorProfile.service";
-
-
 
 
 @Controller('tutorProfile')
@@ -18,6 +17,25 @@ export class TutorProfileController{
         console.log(tutorProfilePayload);
         try {
             const profile = await this.tutorProfileService.createTutorProfile(tutorProfilePayload)
+            return response.status(HttpStatus.CREATED).json({
+                statusCode: 201,
+                message: 'Profile Added sucessfully',
+                profile
+            });
+        } catch (error) {
+            return response.status(HttpStatus.BAD_REQUEST).json({
+                statusCode: 400,
+                message: 'Error: Course not created!',
+                error: 'Bad Request',
+            });
+        }
+    }
+
+    // @UseGuards(JwtAuthGuard)
+    @Put('/slots/:id')
+    async updateTutoProfileSlots(@Res() response, @Body() slots: ISlots[], @Param('id') profileId: string,) {
+        try {
+            const profile = await this.tutorProfileService.updateTutorSlots(slots, profileId)
             return response.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 message: 'Profile Added sucessfully',

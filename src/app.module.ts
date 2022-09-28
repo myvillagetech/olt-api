@@ -16,7 +16,8 @@ import { ScheduleModule } from './schedule/schedule.module';
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb+srv://villagetech:L3r30nnGJqrmFcHQ@cluster0.7mzkrzz.mongodb.net/?retryWrites=true&w=majority',
+      'mongodb://villagetech:SXvW1CFKqY2muXKE@ac-vegem53-shard-00-00.7mzkrzz.mongodb.net:27017,ac-vegem53-shard-00-01.7mzkrzz.mongodb.net:27017,ac-vegem53-shard-00-02.7mzkrzz.mongodb.net:27017/?ssl=true&replicaSet=atlas-r0113y-shard-0&authSource=admin&retryWrites=true&w=majority',
+      // 'mongodb+srv://villagetech:SXvW1CFKqY2muXKE@cluster0.7mzkrzz.mongodb.net/?retryWrites=true&w=majority',
     ),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'static'),

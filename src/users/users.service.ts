@@ -16,7 +16,7 @@ export class UsersService {
   }
 
   async upsertUser(user: GoogleLoginDto): Promise<UserDocument> {
-    const newUser =  await this.userModel.findOneAndUpdate({email:user.email}, user, {new: true,upsert: true})
+    const newUser =  await this.userModel.findOneAndUpdate({email:user.email}, {...user, ssoProvider: user.provider}, {new: true,upsert: true})
 
     return newUser;
   }
