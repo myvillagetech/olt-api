@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { response } from "express";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guards";
 import { CreateCourseDto } from "./course.dto";
@@ -7,11 +8,13 @@ import { CourseService } from "./course.service";
 
 
 @Controller('course')
+@ApiBearerAuth('access-token')
+@UseGuards(JwtAuthGuard)
+@ApiTags('Course')
 export class CourseController {
     constructor(
         private courseService: CourseService
     ) { }
-    @UseGuards(JwtAuthGuard)
     @Post('')
     async createCourse(@Res() response, @Body() coursePayload: CreateCourseDto) {
         try {
@@ -31,7 +34,6 @@ export class CourseController {
         }
     }
 
-    @UseGuards(JwtAuthGuard)
     @Put('/:id')
     async updateCourse(
         @Res() response,
@@ -49,7 +51,6 @@ export class CourseController {
         }
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get()
     async getAllCourses(@Res() response) {
         try {
@@ -66,7 +67,6 @@ export class CourseController {
         }
     }
     
-    @UseGuards(JwtAuthGuard)
     @Delete('/:id')
     async deleteCourse(@Res() response, @Param('id') courseId: string) {
       try {

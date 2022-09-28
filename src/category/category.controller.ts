@@ -1,9 +1,13 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res } from '@nestjs/common';
-import { ApiQuery } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
 import { CreateCategoryeDto } from './category.dto';
 import { CategoryService } from './category.service';
 
 @Controller('category')
+@ApiBearerAuth('access-token')
+@UseGuards(JwtAuthGuard)
+@ApiTags('Category')
 export class CategoryController {
     constructor(private categoryService: CategoryService) {
     }
