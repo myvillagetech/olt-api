@@ -24,7 +24,7 @@ export class ScheduleSchemaCreator {
     @Prop({
         required : true
     })
-    date : Date;
+    date : string;
     @Prop({
         required : true
     })
