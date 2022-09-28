@@ -2,8 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards, Http
 import { ScheduleService } from './schedule.service';
 import { ScheduleDto } from './dto/schedule.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('schedule')
+@ApiTags('schedule')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 

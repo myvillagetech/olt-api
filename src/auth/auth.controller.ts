@@ -12,6 +12,7 @@ import {
   HttpStatus,
   HttpException,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { GoogleLoginDto } from './dto/googleLogin.dto';
 import { LoginDto } from './dto/login.dto';
@@ -19,6 +20,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { SignUpDTO } from './dto/singup.dto';
 
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
