@@ -4,17 +4,18 @@ import { Model } from "mongoose";
 import { MODEL_ENUMS } from "src/shared/enums/models.enums";
 import { TutorProfileDto } from "./tutorProfile.dto";
 import { IAvilableSlots, ISubjects, ITutorProfileDocument } from "./tutorProfile.schema";
+import { TutorSearchCriteria } from "./tutorSearchCriteria.dto";
 
 
 @Injectable()
 export class TutorProfileService {
     constructor(
-        @InjectModel(MODEL_ENUMS.PROFILE) private  profileModel : Model<ITutorProfileDocument>,
-    ) {}
+        @InjectModel(MODEL_ENUMS.PROFILE) private profileModel: Model<ITutorProfileDocument>,
+    ) { }
 
-    async createTutorProfile(profilePayload : TutorProfileDto) : Promise<TutorProfileDto | UnprocessableEntityException>{
-        console.log("service",profilePayload);
-        try{
+    async createTutorProfile(profilePayload: TutorProfileDto): Promise<TutorProfileDto | UnprocessableEntityException> {
+        console.log("service", profilePayload);
+        try {
             const profile = new this.profileModel(profilePayload);
             return profile.save();
         }
@@ -23,7 +24,7 @@ export class TutorProfileService {
         }
     }
 
-    async getTutorProfileById(profileId:string): Promise<ITutorProfileDocument> {
+    async getTutorProfileById(profileId: string): Promise<ITutorProfileDocument> {
         const profileDetails = await this.profileModel.findById(profileId).exec();
         if (!profileDetails) {
             throw new NotFoundException('Profile data not found!');
@@ -31,40 +32,73 @@ export class TutorProfileService {
         return profileDetails;
     }
 
-    async updateTutorProfile(profilePayload : TutorProfileDto, profileId : string) : Promise<TutorProfileDto | UnprocessableEntityException>{
-        const profile = await this.profileModel.findByIdAndUpdate(profileId,profilePayload).exec()
+    async updateTutorProfile(profilePayload: TutorProfileDto, profileId: string): Promise<TutorProfileDto | UnprocessableEntityException> {
+        const profile = await this.profileModel.findByIdAndUpdate(profileId, profilePayload).exec()
         if (!profile) {
             throw new HttpException(`Course #${profileId} not found`, HttpStatus.NOT_MODIFIED);
         }
         return profile;
     }
 
-    async updateTutorSlots(slots : IAvilableSlots[], profileId : string) : Promise<TutorProfileDto | UnprocessableEntityException>{
-        const profile = await this.profileModel.findByIdAndUpdate(profileId,{slots: slots}, {new: true}).exec()
+    async updateTutorSlots(slots: IAvilableSlots[], profileId: string): Promise<TutorProfileDto | UnprocessableEntityException> {
+        const profile = await this.profileModel.findByIdAndUpdate(profileId, { slots: slots }, { new: true }).exec()
         if (!profile) {
             throw new HttpException(`Course #${profileId} not found`, HttpStatus.NOT_MODIFIED);
         }
         return profile;
     }
 
-    async getProfileByUserId(userId : string) : Promise<ITutorProfileDocument> {
-        const profileDetails = await this.profileModel.findOne({userId : userId}).exec();
-        if(!profileDetails){
+    async getProfileByUserId(userId: string): Promise<ITutorProfileDocument> {
+        const profileDetails = await this.profileModel.findOne({ userId: userId }).exec();
+        if (!profileDetails) {
             throw new NotFoundException('Profile Data not Found!');
         }
         return profileDetails;
     }
 
-    async getAllProfilesByCourseName(CourseName : string) : Promise<ITutorProfileDocument[]> {
+    async getAllProfilesByCourseName(CourseName: string): Promise<ITutorProfileDocument[]> {
         const courses = await this.profileModel.find({
-            "subject.courseName" : CourseName
+            "subject.courseName": CourseName
         })
-       // const courses = await this.profileModel.find()
-        if(!courses){
+        // const courses = await this.profileModel.find()
+        if (!courses) {
             throw new NotFoundException('Profile Data not Found!');
         }
         return courses
     }
 
+
+    async searchProfilesByCriteria(criteria: TutorSearchCriteria): Promise<ITutorProfileDocument[]> {
+
+        const search = { $and: [] };
+        console.log('this')
+
+
+        if (criteria.states && criteria.states.length > 0) {
+            search.$and.push({
+                'state': { $in: criteria.states }
+            })
+        }
+
+        let query = this.profileModel.find(search);
+        // let query = this.profileModel.find(search).find({$where: function () {
+        // let query = this.profileModel.find({"state": {$where: function () {
+        //     // console.log(this)
+        //     return true;
+        // }}});
+
+        // if (criteria.days && criteria.days.length > 0) {
+        //     query = query.find({$where: function () {
+        //         // console.log(this)
+        //         return true;
+        //     }})
+        // }
+
+        const profileDetails = await query.exec();
+        if (!profileDetails) {
+            throw new NotFoundException('Profile Data not Found!');
+        }
+        return profileDetails;
+    }
 
 }

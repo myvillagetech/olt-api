@@ -5,9 +5,10 @@ import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guards";
 import { TutorProfileDto } from "./tutorProfile.dto";
 import { IAvilableSlots } from "./tutorProfile.schema";
 import { TutorProfileService } from "./tutorProfile.service";
+import { TutorSearchCriteria } from "./tutorSearchCriteria.dto";
 
 @ApiBearerAuth('access-token')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @ApiTags('TutorProfile')
 @Controller('tutorProfile')
 export class TutorProfileController{
@@ -115,6 +116,20 @@ export class TutorProfileController{
             //     errorMessage: err.message,
             //     errorCode: err.statusCode,
             // });
+            return err
+        }
+    }
+
+    @Post('searchByCriteria')
+    async getAllProfilesBySearchByCriteria(@Res() response, @Body() tutorSearchCriteria: TutorSearchCriteria){
+        try {
+            const profile = await this.tutorProfileService.searchProfilesByCriteria(tutorSearchCriteria);
+            return response.status(HttpStatus.OK).json({
+                message: 'Profile found successfully',
+                data: profile,
+            });
+        }
+        catch (err) {
             return err
         }
     }

@@ -7,13 +7,15 @@ export class TutorProfileDto {
     userId : string;
     firstName: string;
     lastName: string;
+    state: string;
+    city: string;
+    address: string;
     @IsEmail()
     email : string;
     title: string;  
-    discription: string;   
+    description: string;   
     subject: ISubjects[];
     slots : IAvilableSlots[]
     hourlyRate : number;
     cancellationPolicy : ICancellationPolicy
-
 }

@@ -2,15 +2,12 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { Document } from "mongoose";
 import * as uniqueValidators from 'mongoose-unique-validator'
 
-
-
 export interface ISlots {
     from : number | null,
     to : number | null
 }
-
 export interface IAvilableSlots {
-    day : string,
+    day : number,
     slots : ISlots[]
 }
 
@@ -20,7 +17,6 @@ export interface ISubjects {
 }
 
 export class ICancellationPolicy {
-  
     unit: string;
     quantity: string;
     charge: string;
@@ -47,6 +43,21 @@ export class TutorProfileSchemaCreator {
     lastName: string;
 
     @Prop({
+        required: true
+    })
+    state: string;
+
+    @Prop({
+        required: true
+    })
+    city: string;
+
+    @Prop({
+        required: true
+    })
+    address: string;
+
+    @Prop({
         required : true,
         unique : true
     })
@@ -60,7 +71,7 @@ export class TutorProfileSchemaCreator {
     @Prop({
         required: false
     })
-    discription: string;
+    description: string;
 
     @Prop({
         required : false
