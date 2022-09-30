@@ -74,7 +74,7 @@ export class UsersController {
   }
 
   @Get('/:id')
-  async getUser(@Res() response, @Param('id') userId: number) {
+  async getUser(@Res() response, @Param('id') userId: string) {
     try {
       const existingUser = await this.userService.getUser(userId);
       return response.status(HttpStatus.OK).json({

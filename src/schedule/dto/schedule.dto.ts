@@ -1,23 +1,28 @@
 import { IsDefined } from "class-validator";
 import { ISlots, ISubjects } from "src/tutorProfile/tutorProfile.schema";
+import { Status } from "../schedule.status";
 
 export class ScheduleDto {
-   
+
     @IsDefined()
-    studentId : string;
-   
+    studentId: string;
+
     @IsDefined()
     tutorId: string;
 
     @IsDefined()
-    subjects : ISubjects[]
-   
-    @IsDefined()
-    date : string;
+    subjects: ISubjects[]
 
     @IsDefined()
-    startTime : string;
+    status: Status
 
     @IsDefined()
-    endTime : string;
+    date: string;
+
+    @IsDefined()
+    startTime: string;
+
+    @IsDefined()
+    endTime: string;
 }
+

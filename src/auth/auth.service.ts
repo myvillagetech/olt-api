@@ -3,6 +3,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { sign, verify } from 'jsonwebtoken';
 import { UsersService } from 'src/users/users.service';
 import { GoogleLoginDto } from './dto/googleLogin.dto';
+import { ResetPasswordDto } from './dto/resetPassword';
 //import { User } from 'src/users/entities/user.entity';
 import { SignUpDTO } from './dto/singup.dto';
 import RefreshToken from './entities/refresh-token.entity';
@@ -21,7 +22,7 @@ export class AuthService {
     if (!refreshToken) {
       return undefined;
     }
-    const user = await this.userService.getUser(refreshToken.userId);
+    const user = await this.userService.getUser(refreshToken.userId.toString());
     if (!user) {
       return undefined;
     }
@@ -63,23 +64,24 @@ export class AuthService {
   }
 
   async resetPassword(
-    email: string,
-    oldPassword: string,
-    newPassword: string,
-    ): Promise< any | undefined> {
-    const user = await this.userService.getUserByEmail(email);
+    resetPasswordDto: ResetPasswordDto
+  ): Promise<any | undefined> {
+    const user = resetPasswordDto.userId ?
+      await this.userService.getUser(resetPasswordDto.userId) :
+      await this.userService.getUserByEmail(resetPasswordDto.email);
     if (!user) {
       throw new Error("Invalid user details");
     }
-    if (user.password !== oldPassword) {
+    if (user.password !== resetPasswordDto.oldPassword) {
       throw new Error("In correct old password");
     }
 
-    if (user.password === newPassword) {
+    if (user.password === resetPasswordDto.newPassword) {
       throw new Error("old and new passwords can not be same");
     }
-    await this.userService.updatePartialUserByEmail(user.email, {password: newPassword});
-    return {messsage : 'Successfully updated'}
+    await this.userService.updatePartialUserByEmail(user.email,
+      { password: resetPasswordDto.newPassword });
+    return { messsage: 'Successfully updated' }
   }
 
   async googleSignIn(body: GoogleLoginDto, values: { userAgent: string; ipAddress: string }) {
@@ -117,7 +119,7 @@ export class AuthService {
   private async newRreshAndAccessToken(
     user: any,
     values: { userAgent: string; ipAddress: string }
-  ): Promise<{ accessToken: string; refreshToken: string; roles :any; userId:string }> {
+  ): Promise<{ accessToken: string; refreshToken: string; roles: any; userId: string }> {
 
     const refreshObject = new RefreshToken({
       id: this.refreshTokens.length === 0 ? 0 : this.refreshTokens[this.refreshTokens.length - 1].id + 1,
@@ -137,7 +139,7 @@ export class AuthService {
           expiresIn: '1h',
         }
       ),
-      roles : user.roles,
+      roles: user.roles,
       userId: user._id,
 
     };

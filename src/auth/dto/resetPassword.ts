@@ -5,8 +5,12 @@ export class ResetPasswordDto {
     @ApiProperty({
         type: String
     })
-    @IsEmail()
-    email: string;
+    email?: string;
+
+    @ApiProperty({
+        type: String
+    })
+    userId?: string;
 
     @ApiProperty({
         type: String

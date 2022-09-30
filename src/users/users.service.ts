@@ -59,7 +59,7 @@ export class UsersService {
     return userData;
   }
 
-  async getUser(userId: number): Promise<UserDocument> {
+  async getUser(userId: string): Promise<UserDocument> {
     const existingUser = await this.userModel.findById(userId).exec();
     if (!existingUser) {
       throw new NotFoundException(`user #${userId} not found`);

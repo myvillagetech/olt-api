@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { MODEL_ENUMS } from 'src/shared/enums/models.enums';
 import { ScheduleDto } from './dto/schedule.dto';
 import { IScheduleDocument } from './schedule.schema';
+import { Status } from './schedule.status';
 
 @Injectable()
 export class ScheduleService {
@@ -59,7 +60,7 @@ export class ScheduleService {
       throw new HttpException(`Schedule ${scheduleId} not Found`, HttpStatus.NOT_FOUND);
     }
     else{
-      schedule.status = 'CANCELLED'
+      schedule.status = Status.CANCELLED;
       return await this.scheduleModel.findByIdAndUpdate(scheduleId, schedule);
     }
   }

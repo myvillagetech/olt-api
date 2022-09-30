@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { Date, Document } from "mongoose";
 import * as uniqueValidators from 'mongoose-unique-validator'
 import { ISlots, ISubjects } from "src/tutorProfile/tutorProfile.schema";
+import { Status } from "./schedule.status";
 
 
 @Schema({
@@ -37,7 +38,7 @@ export class ScheduleSchemaCreator {
         required : false,
         default : 'SCHEDULED'
     })
-    status : string
+    status : Status
 
 }
 
