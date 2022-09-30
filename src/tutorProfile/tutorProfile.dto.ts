@@ -7,6 +7,7 @@ export class TutorProfileDto {
     userId : string;
     firstName: string;
     lastName: string;
+    phone: string;
     state: string;
     city: string;
     address: string;

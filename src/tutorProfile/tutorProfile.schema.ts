@@ -45,6 +45,11 @@ export class TutorProfileSchemaCreator {
     @Prop({
         required: true
     })
+    phone: string;
+
+    @Prop({
+        required: true
+    })
     state: string;
 
     @Prop({
