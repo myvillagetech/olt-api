@@ -17,6 +17,7 @@ import { AuthService } from './auth.service';
 import { GoogleLoginDto } from './dto/googleLogin.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { ResetPasswordDto } from './dto/resetPassword';
 import { SignUpDTO } from './dto/singup.dto';
 
 @Controller('auth')
@@ -26,16 +27,30 @@ export class AuthController {
 
   @Post('login')
   async login(@Req() request, @Ip() ip: string, @Body() body: LoginDto) {
-    return this.authService.login(body.email, body.password, {
-      ipAddress: ip,
-      userAgent: request.headers['user-agent'],
-    });
+    try {
+      return await this.authService.login(body.email, body.password, {
+        ipAddress: ip,
+        userAgent: request.headers['user-agent'],
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Post('resetPassword')
+  async resetPassword(@Body() body: ResetPasswordDto) {
+    try {
+      return await this.authService.resetPassword(body.email, body.oldPassword, body.newPassword);
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Post('googleSignIn')
   async googleSignIn(@Req() request, @Ip() ip: string, @Body() body: GoogleLoginDto) {
     try {
-      const result  = await this.authService.googleSignIn(body, {
+      const result = await this.authService.googleSignIn(body, {
         ipAddress: ip,
         userAgent: request.headers['user-agent'],
       });

@@ -54,12 +54,32 @@ export class AuthService {
     values: { userAgent: string; ipAddress: string }): Promise<{ accessToken: string; refreshToken: string } | undefined> {
     const user = await this.userService.getUserByEmail(email);
     if (!user) {
-      return undefined;
+      throw new Error("Invalid user details");
     }
     if (user.password !== password) {
-      return undefined;
+      throw new Error("Invalid password");
     }
     return this.newRreshAndAccessToken(user, values);
+  }
+
+  async resetPassword(
+    email: string,
+    oldPassword: string,
+    newPassword: string,
+    ): Promise< any | undefined> {
+    const user = await this.userService.getUserByEmail(email);
+    if (!user) {
+      throw new Error("Invalid user details");
+    }
+    if (user.password !== oldPassword) {
+      throw new Error("In correct old password");
+    }
+
+    if (user.password === newPassword) {
+      throw new Error("old and new passwords can not be same");
+    }
+    await this.userService.updatePartialUserByEmail(user.email, {password: newPassword});
+    return {messsage : 'Successfully updated'}
   }
 
   async googleSignIn(body: GoogleLoginDto, values: { userAgent: string; ipAddress: string }) {

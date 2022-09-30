@@ -36,6 +36,21 @@ export class UsersService {
     return existingUser;
   }
 
+  async updatePartialUserByEmail(
+    email: string,
+    object: any,
+  ): Promise<UserDocument> {
+    const existingUser = await this.userModel.findOneAndUpdate(
+      {email: email},
+      object,
+      { new: true },
+    );
+    if (!existingUser) {
+      throw new NotFoundException(`user not found`);
+    }
+    return existingUser;
+  }
+
   async getAllUsers(): Promise<UserDocument[]> {
     const userData = await this.userModel.find();
     if (!userData || userData.length == 0) {
