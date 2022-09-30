@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { response } from "express";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guards";
@@ -17,7 +17,6 @@ export class TutorProfileController{
     ) { }
     @Post('')
     async createTutorProfile(@Res() response, @Body() tutorProfilePayload: TutorProfileDto ) {
-        console.log(tutorProfilePayload);
         try {
             const profile = await this.tutorProfileService.createTutorProfile(tutorProfilePayload)
             return response.status(HttpStatus.CREATED).json({
@@ -26,11 +25,7 @@ export class TutorProfileController{
                 profile
             });
         } catch (error) {
-            return response.status(HttpStatus.BAD_REQUEST).json({
-                statusCode: 400,
-                message: 'Error: Course not created!',
-                error: 'Bad Request',
-            });
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -95,10 +90,7 @@ export class TutorProfileController{
             });
         }
         catch (err) {
-            return response.status(err.status).json({
-                errorMessage: err.message,
-                errorCode: err.statusCode,
-            });
+            throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -123,10 +115,10 @@ export class TutorProfileController{
     @Post('searchByCriteria')
     async getAllProfilesBySearchByCriteria(@Res() response, @Body() tutorSearchCriteria: TutorSearchCriteria){
         try {
-            const profile = await this.tutorProfileService.searchProfilesByCriteria(tutorSearchCriteria);
+            const profiles = await this.tutorProfileService.searchProfilesByCriteria(tutorSearchCriteria);
             return response.status(HttpStatus.OK).json({
-                message: 'Profile found successfully',
-                data: profile,
+                message: profiles.length > 0 ? 'Profile found successfully' : 'No profiles found',
+                data: profiles,
             });
         }
         catch (err) {

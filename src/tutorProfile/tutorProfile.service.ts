@@ -14,13 +14,12 @@ export class TutorProfileService {
     ) { }
 
     async createTutorProfile(profilePayload: TutorProfileDto): Promise<TutorProfileDto | UnprocessableEntityException> {
-        console.log("service", profilePayload);
         try {
             const profile = new this.profileModel(profilePayload);
             return profile.save();
         }
         catch (error) {
-            throw new HttpException(`Something went wrong ... Please try again`, HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new Error("error.message");
         }
     }
 
@@ -35,7 +34,7 @@ export class TutorProfileService {
     async updateTutorProfile(profilePayload: TutorProfileDto, profileId: string): Promise<TutorProfileDto | UnprocessableEntityException> {
         const profile = await this.profileModel.findByIdAndUpdate(profileId, profilePayload).exec()
         if (!profile) {
-            throw new HttpException(`Course #${profileId} not found`, HttpStatus.NOT_MODIFIED);
+            throw new HttpException(`Profile #${profileId} not found`, HttpStatus.NOT_MODIFIED);
         }
         return profile;
     }
@@ -43,7 +42,7 @@ export class TutorProfileService {
     async updateTutorSlots(slots: IAvilableSlots[], profileId: string): Promise<TutorProfileDto | UnprocessableEntityException> {
         const profile = await this.profileModel.findOneAndUpdate({ userId: profileId }, { slots: slots }, { new: true }).exec()
         if (!profile) {
-            throw new HttpException(`Course #${profileId} not found`, HttpStatus.NOT_MODIFIED);
+            throw new HttpException(`Profile #${profileId} not found`, HttpStatus.NOT_MODIFIED);
         }
         return profile;
     }
