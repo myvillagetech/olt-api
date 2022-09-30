@@ -41,7 +41,7 @@ export class TutorProfileService {
     }
 
     async updateTutorSlots(slots: IAvilableSlots[], profileId: string): Promise<TutorProfileDto | UnprocessableEntityException> {
-        const profile = await this.profileModel.findByIdAndUpdate(profileId, { slots: slots }, { new: true }).exec()
+        const profile = await this.profileModel.findOneAndUpdate({ userId: profileId }, { slots: slots }, { new: true }).exec()
         if (!profile) {
             throw new HttpException(`Course #${profileId} not found`, HttpStatus.NOT_MODIFIED);
         }
@@ -69,14 +69,12 @@ export class TutorProfileService {
 
 
     async searchProfilesByCriteria(criteria: TutorSearchCriteria): Promise<ITutorProfileDocument[]> {
-
         const search = { $and: [] };
 
         criteria.states = criteria.states.filter(s => (s !== '' && s !== null && s !== undefined));
         if (criteria.states && criteria.states.length > 0) {
             search.$and.push({
-                // 'state': { $in: {'$regex': criteria.states, $options:'i'}  }
-                'state': { $in: criteria.states  }
+                'state': { $in: criteria.states.map(s => new RegExp(s, "i") )  }
             })
         }
         if (criteria.rateRange.from || criteria.rateRange.to) {
@@ -101,6 +99,13 @@ export class TutorProfileService {
                     { "$elemMatch": { 'courseName': { '$regex': criteria.cource, '$options': 'i' } } }
             });
         }
+
+        // if (criteria.days) {
+        //     search.$and.push({
+        //         'subject':
+        //             { "$elemMatch": { 'courseName': { '$regex': criteria.cource, '$options': 'i' } } }
+        //     });
+        // }
 
         let query = this.profileModel.find(search.$and.length > 0 ? search : {});
 
