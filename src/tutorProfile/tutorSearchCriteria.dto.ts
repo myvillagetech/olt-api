@@ -28,4 +28,15 @@ export class TutorSearchCriteria {
         type: Array<number>
     })
     days: number[];
+    
+    @ApiProperty({
+        type: Number
+    })
+    pageNumber: number;
+
+    @ApiProperty({
+        type: Number
+    })
+    pageSize: number;
+
 }

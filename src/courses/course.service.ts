@@ -21,8 +21,17 @@ export class CourseService {
         }
     }
 
-    async getAllCourses(): Promise<CreateCourseDto[]> {
-        const courseDetails = await this.courseModel.find();
+    async getAllCourses(query): Promise<CreateCourseDto[]> {
+        const search = {}
+        if(query.searchTerm) {
+            search['courseName'] =  { '$regex': query.searchTerm, '$options': 'i' };
+        }
+
+        const findOption =this.courseModel.find(search);
+        if(query.pageSize && query.pageNumber) {
+            findOption.limit(query.pageSize).skip(+query.pageNumber * +query.pageSize)
+        }
+        const courseDetails = await this.courseModel.find(search);
         if (!courseDetails || courseDetails.length == 0) {
             throw new NotFoundException('courses data not found!');
         }

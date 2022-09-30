@@ -23,7 +23,7 @@ export class CategoryService {
     async getAllCategoires(query: any): Promise<CreateCategoryeDto[]> {
         var sort = {};
         sort[query.sortBy] = 1;
-        
+
         const findOption = query.query ?
             this.categoryModel.find({
                 $or: [
@@ -32,6 +32,9 @@ export class CategoryService {
                 ]
             })
             : this.categoryModel.find();
+        if(query.pageSize && query.pageNumber) {
+            findOption.limit(query.pageSize).skip(+query.pageNumber * +query.pageSize)
+        }
         const details = await findOption.sort(sort);
 
         if (!details || details.length == 0) {

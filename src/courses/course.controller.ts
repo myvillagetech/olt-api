@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { response } from "express";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guards";
 import { CreateCourseDto } from "./course.dto";
@@ -52,9 +52,24 @@ export class CourseController {
     }
 
     @Get()
-    async getAllCourses(@Res() response) {
+    @ApiQuery({
+		name: "searchTerm",
+		required: false,
+		type: String
+	})
+    @ApiQuery({
+		name: "pageSize",
+		required: false,
+		type: Number
+	})
+    @ApiQuery({
+		name: "pageNumber",
+		required: false,
+		type: Number
+	})
+    async getAllCourses(@Res() response, @Query() query) {
         try {
-            const courseData = await this.courseService.getAllCourses();
+            const courseData = await this.courseService.getAllCourses(query);
             return response.status(HttpStatus.OK).json({
                 message: 'All Courses data found successfully',
                 data: courseData,

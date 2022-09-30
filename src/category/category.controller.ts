@@ -42,6 +42,16 @@ export class CategoryController {
 		type: String,
         enum: ["categoryName", "categoryDiscription"]
 	})
+    @ApiQuery({
+		name: "pageSize",
+		required: false,
+		type: Number
+	})
+    @ApiQuery({
+		name: "pageNumber",
+		required: false,
+		type: Number
+	})
     @Get()
     async getAllCategoires(@Res() response, @Query() query) {
         try {

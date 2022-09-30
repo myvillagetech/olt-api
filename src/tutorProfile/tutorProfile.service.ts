@@ -71,16 +71,42 @@ export class TutorProfileService {
     async searchProfilesByCriteria(criteria: TutorSearchCriteria): Promise<ITutorProfileDocument[]> {
 
         const search = { $and: [] };
-        console.log('this')
 
-
+        criteria.states = criteria.states.filter(s => (s !== '' && s !== null && s !== undefined));
         if (criteria.states && criteria.states.length > 0) {
             search.$and.push({
-                'state': { $in: criteria.states }
+                // 'state': { $in: {'$regex': criteria.states, $options:'i'}  }
+                'state': { $in: criteria.states  }
+            })
+        }
+        if (criteria.rateRange.from || criteria.rateRange.to) {
+            const ratefilter: any = {};
+
+            if (criteria.rateRange.from) {
+                ratefilter.$gte = criteria.rateRange.from;
+            }
+
+            if (criteria.rateRange.to) {
+                ratefilter.$lte = criteria.rateRange.to;
+            }
+
+            search.$and.push({
+                'hourlyRate': ratefilter
             })
         }
 
-        let query = this.profileModel.find(search);
+        if (criteria.cource) {
+            search.$and.push({
+                'subject':
+                    { "$elemMatch": { 'courseName': { '$regex': criteria.cource, '$options': 'i' } } }
+            });
+        }
+
+        let query = this.profileModel.find(search.$and.length > 0 ? search : {});
+
+        if ((criteria.pageSize || criteria.pageSize === 0) && (criteria.pageNumber || criteria.pageNumber === 0)) {
+            query.limit(criteria.pageSize).skip(criteria.pageNumber * criteria.pageSize)
+        }
         // let query = this.profileModel.find(search).find({$where: function () {
         // let query = this.profileModel.find({"state": {$where: function () {
         //     // console.log(this)
