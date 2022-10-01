@@ -1,7 +1,7 @@
 
 import { ApiProperty } from "@nestjs/swagger"
 
-export class CriteriaWithPagination {
+export class CriteriaWithPaginationAndSorting {
     @ApiProperty({
         type: Number
     })
@@ -11,4 +11,14 @@ export class CriteriaWithPagination {
         type: Number
     })
     pageSize: number;
+
+    @ApiProperty({
+        type: String
+    })
+    sortField: string;
+
+    @ApiProperty({
+        type: Number
+    })
+    sortOrder: number;
 }

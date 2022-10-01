@@ -107,6 +107,12 @@ export class ScheduleService {
       query.limit(criteria.pageSize).skip(criteria.pageNumber * criteria.pageSize)
     }
 
+    if (criteria.sortField) {
+      const sortObject = {};
+      sortObject[criteria.sortField] = criteria.sortOrder;
+      query.sort(sortObject);
+    }
+
     const result = await query.exec();
 
     return result;

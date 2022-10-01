@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDefined } from "class-validator";
-import { CriteriaWithPagination } from "src/shared/DTOs/CriteriaWithPagination";
+import { CriteriaWithPaginationAndSorting } from "src/shared/DTOs/criteriaWithPaginationAndSorting";
 import { DateRange } from "src/shared/DTOs/dateRange";
 import { ISlots, ISubjects } from "src/tutorProfile/tutorProfile.schema";
 import { Status } from "../schedule.status";
 
-export class ScheduleSearchCriteria extends CriteriaWithPagination{
+export class ScheduleSearchCriteria extends CriteriaWithPaginationAndSorting {
 
     @IsDefined()
     @ApiProperty({
