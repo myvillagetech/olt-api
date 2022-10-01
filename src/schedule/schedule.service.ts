@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MODEL_ENUMS } from 'src/shared/enums/models.enums';
 import { ScheduleDto } from './dto/schedule.dto';
+import { ScheduleSearchCriteria } from './dto/scheduleSearchCriteria';
 import { IScheduleDocument } from './schedule.schema';
 import { Status } from './schedule.status';
 
@@ -39,64 +40,77 @@ export class ScheduleService {
   }
 
   async updateSchedule(schedulePayload: ScheduleDto, scheduleId: string): Promise<ScheduleDto | UnprocessableEntityException> {
-    const schedule = await this.scheduleModel.findByIdAndUpdate(scheduleId, schedulePayload,  { new: true }).exec()
+    const schedule = await this.scheduleModel.findByIdAndUpdate(scheduleId, schedulePayload, { new: true }).exec()
     if (!schedule) {
       throw new HttpException(`Schedule #${scheduleId} not found`, HttpStatus.NOT_MODIFIED);
     }
     return schedule;
   }
 
-  async getScheduleByScheduleId(scheduleId : string): Promise<IScheduleDocument> {
+  async getScheduleByScheduleId(scheduleId: string): Promise<IScheduleDocument> {
     const schedule = await this.scheduleModel.findById(scheduleId).exec()
-    if(!schedule){
+    if (!schedule) {
       throw new HttpException(`Schedule ${scheduleId} not found`, HttpStatus.NOT_FOUND);
     }
     return schedule
   }
 
-  async cancelScheduleByScheduleId(scheduleId : string): Promise<IScheduleDocument> {
+  async cancelScheduleByScheduleId(scheduleId: string): Promise<IScheduleDocument> {
     const schedule = await this.scheduleModel.findById(scheduleId).exec()
-    if(!schedule){
+    if (!schedule) {
       throw new HttpException(`Schedule ${scheduleId} not Found`, HttpStatus.NOT_FOUND);
     }
-    else{
+    else {
       schedule.status = Status.CANCELLED;
       return await this.scheduleModel.findByIdAndUpdate(scheduleId, schedule);
     }
   }
 
-  async getScheduleByTutorId(tutorId : string) : Promise<Array<IScheduleDocument>> {
-    const schedule = await this.scheduleModel.find({tutorId : tutorId }).exec();
-    if(!schedule){
+  async getScheduleByTutorId(tutorId: string): Promise<Array<IScheduleDocument>> {
+    const schedule = await this.scheduleModel.find({ tutorId: tutorId }).exec();
+    if (!schedule) {
       throw new HttpException(`Schedule ${tutorId} not Found`, HttpStatus.NOT_FOUND);
     }
     return schedule
   }
 
-  async getScheduleByStart(start : string) : Promise<Array<IScheduleDocument>> {
-    const schedule = await this.scheduleModel.find({start :start }).exec();
-    if(!schedule){
+  async getScheduleByStart(start: string): Promise<Array<IScheduleDocument>> {
+    const schedule = await this.scheduleModel.find({ start: start }).exec();
+    if (!schedule) {
       throw new HttpException(`Schedule ${start} not Found`, HttpStatus.NOT_FOUND);
     }
     return schedule
   }
 
-  async getScheduleByEnd(end : string) : Promise<Array<IScheduleDocument>> {
-    const schedule = await this.scheduleModel.find({end : end }).exec();
-    if(!schedule){
+  async getScheduleByEnd(end: string): Promise<Array<IScheduleDocument>> {
+    const schedule = await this.scheduleModel.find({ end: end }).exec();
+    if (!schedule) {
       throw new HttpException(`Schedule ${end} not Found`, HttpStatus.NOT_FOUND);
     }
     return schedule
   }
 
-  async getSchedulesByStudentId(studentId : string) : Promise<Array<IScheduleDocument>> {
-    const schedules = await this.scheduleModel.find({studentId : studentId}).exec();
-    if(!schedules){
+  async getSchedulesByStudentId(studentId: string): Promise<Array<IScheduleDocument>> {
+    const schedules = await this.scheduleModel.find({ studentId: studentId }).exec();
+    if (!schedules) {
       throw new HttpException(`Schedule ${studentId} not Found`, HttpStatus.NOT_FOUND);
     }
     return schedules
   }
 
+  async searchProfilesByCriteria(criteria: ScheduleSearchCriteria): Promise<Array<IScheduleDocument>> {
+    const search = { $and: [] };
+
+    let query = this.scheduleModel.find(search.$and.length > 0 ? search : {});
+
+    if ((criteria.pageSize || criteria.pageSize === 0) && (criteria.pageNumber || criteria.pageNumber === 0)) {
+      query.limit(criteria.pageSize).skip(criteria.pageNumber * criteria.pageSize)
+    }
+
+    const result = await query.exec();
+
+    return result;
+  }
 
 
 }

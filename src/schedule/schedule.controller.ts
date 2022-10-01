@@ -3,6 +3,7 @@ import { ScheduleService } from './schedule.service';
 import { ScheduleDto } from './dto/schedule.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ScheduleSearchCriteria } from './dto/scheduleSearchCriteria';
 
 @Controller('schedule')
 @ApiTags('schedule')
@@ -150,11 +151,19 @@ export class ScheduleController {
     }
   }
 
-
-
-
-  
-
-
+  @Post('searchByCriteria')
+  async getAllSchedulesBySearchByCriteria(@Res() response, @Body() scheduleSearchCriteria: ScheduleSearchCriteria){
+      try {
+          const schedules = await this.scheduleService.searchProfilesByCriteria(scheduleSearchCriteria);
+          return response.status(HttpStatus.OK).json({
+              message: schedules.length > 0 ? 'Schedules found successfully' : 'No schedule found',
+              data: schedules,
+              count: schedules.length
+          });
+      }
+      catch (err) {
+          return err
+      }
+  }
   
 }

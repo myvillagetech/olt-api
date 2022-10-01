@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { CriteriaWithPagination } from "src/shared/DTOs/CriteriaWithPagination";
 
 export class RateRange { 
     @ApiProperty({
@@ -10,8 +11,7 @@ export class RateRange {
     })
     to:  number
 };
-
-export class TutorSearchCriteria {
+export class TutorSearchCriteria extends CriteriaWithPagination{
     @ApiProperty({
         type: Array<string>
     })
@@ -28,15 +28,5 @@ export class TutorSearchCriteria {
         type: Array<number>
     })
     days: number[];
-    
-    @ApiProperty({
-        type: Number
-    })
-    pageNumber: number;
-
-    @ApiProperty({
-        type: Number
-    })
-    pageSize: number;
 
 }
