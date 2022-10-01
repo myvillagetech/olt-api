@@ -2,14 +2,15 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards, Http
 import { ScheduleService } from './schedule.service';
 import { ScheduleDto } from './dto/schedule.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('schedule')
 @ApiTags('schedule')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth('access-token')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post('')
   async createSchedule(@Res() response, @Body() schedulePayload: ScheduleDto) {
     try {
@@ -29,7 +30,6 @@ export class ScheduleController {
   }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('')
   async getAllSchedules(@Res() response){
     try{
@@ -46,7 +46,6 @@ export class ScheduleController {
       }
     }
 
-  @UseGuards(JwtAuthGuard)
   @Delete('/:id')
   async deleteScheduleById(@Res() response, @Param('id') ScheduleId : string){
     try{
@@ -60,7 +59,6 @@ export class ScheduleController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Put('/:id')
   async updateScheduleById(@Res() response, @Param('id') ScheduleId : string, @Body() SchedulePayload : ScheduleDto){
     try{
@@ -74,7 +72,6 @@ export class ScheduleController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/:id')
   async getScheduleByScheduleId(@Res() response, @Param('id') ScheduleId : string){
     try{
@@ -88,7 +85,6 @@ export class ScheduleController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/student/:id')
   async getSchedulesByStudentId(@Res() response, @Param('id') StudentId : string){
     try{
@@ -102,7 +98,6 @@ export class ScheduleController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/tutor/:id')
   async getSchedulesByTutorId(@Res() response, @Param('id') TutorId : string){
     try{
@@ -116,7 +111,6 @@ export class ScheduleController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/start/:id')
   async getSchedulesByStart(@Res() response, @Param('id') start : string){
     try{
@@ -130,7 +124,6 @@ export class ScheduleController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/end/:id')
   async getSchedulesByEnd(@Res() response, @Param('id') end : string){
     try{
@@ -144,7 +137,6 @@ export class ScheduleController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Put('/cancel/:id')
   async cancelScheduleByScheduleId(@Res() response, @Param('id') ScheduleId : string){
     try{

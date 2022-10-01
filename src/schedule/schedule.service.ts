@@ -39,7 +39,7 @@ export class ScheduleService {
   }
 
   async updateSchedule(schedulePayload: ScheduleDto, scheduleId: string): Promise<ScheduleDto | UnprocessableEntityException> {
-    const schedule = await this.scheduleModel.findByIdAndUpdate(scheduleId, schedulePayload).exec()
+    const schedule = await this.scheduleModel.findByIdAndUpdate(scheduleId, schedulePayload,  { new: true }).exec()
     if (!schedule) {
       throw new HttpException(`Schedule #${scheduleId} not found`, HttpStatus.NOT_MODIFIED);
     }
