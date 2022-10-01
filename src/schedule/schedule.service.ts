@@ -101,8 +101,25 @@ export class ScheduleService {
   async searchProfilesByCriteria(criteria: ScheduleSearchCriteria): Promise<Array<IScheduleDocument>> {
     const search = { $and: [] };
 
+    if(criteria.subjects && criteria.subjects.length > 0) {
+      search.$and.push({'subjects' : {$elemMatch : {$in : criteria.subjects.map(s => new RegExp(s, "i")) }}});
+    }
+
+    if(criteria.studentIds && criteria.studentIds.length > 0) {
+      search.$and.push({'studentId' : {$in : criteria.studentIds.map(s => new RegExp(s, "i"))}})
+    }
+
+    if(criteria.status && criteria.status.length > 0) {
+      search.$and.push({'status' : {$in : criteria.status.map(s => new RegExp(s, "i"))}})
+    }
+
+    if(criteria.tutorIds && criteria.tutorIds.length > 0) {
+      search.$and.push({'tutorId' : {$in : criteria.tutorIds.map(s => new RegExp(s, "i"))}})
+    }
+
     let query = this.scheduleModel.find(search.$and.length > 0 ? search : {});
 
+    
     if ((criteria.pageSize || criteria.pageSize === 0) && (criteria.pageNumber || criteria.pageNumber === 0)) {
       query.limit(criteria.pageSize).skip(criteria.pageNumber * criteria.pageSize)
     }
