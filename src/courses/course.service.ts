@@ -47,7 +47,7 @@ export class CourseService {
     }
 
     async updateCourse(coursePayload : CreateCourseDto, courseId : string) : Promise<CreateCourseDto | UnprocessableEntityException>{
-        const course = await this.courseModel.findByIdAndUpdate(courseId,coursePayload).exec()
+        const course = await this.courseModel.findByIdAndUpdate(courseId,coursePayload,  { new: true }).exec()
         if (!course) {
             throw new HttpException(`Course #${courseId} not found`, HttpStatus.NOT_MODIFIED);
         }

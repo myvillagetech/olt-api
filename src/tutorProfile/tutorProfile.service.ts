@@ -32,7 +32,7 @@ export class TutorProfileService {
     }
 
     async updateTutorProfile(profilePayload: TutorProfileDto, profileId: string): Promise<TutorProfileDto | UnprocessableEntityException> {
-        const profile = await this.profileModel.findByIdAndUpdate(profileId, profilePayload).exec()
+        const profile = await this.profileModel.findByIdAndUpdate(profileId, profilePayload, { new: true }).exec()
         if (!profile) {
             throw new HttpException(`Profile #${profileId} not found`, HttpStatus.NOT_MODIFIED);
         }

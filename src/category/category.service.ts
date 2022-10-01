@@ -52,7 +52,7 @@ export class CategoryService {
     }
 
     async updateCategory(coursePayload: CreateCategoryeDto, courseId: string): Promise<CreateCategoryeDto | UnprocessableEntityException> {
-        const course = await this.categoryModel.findByIdAndUpdate(courseId, coursePayload).exec()
+        const course = await this.categoryModel.findByIdAndUpdate(courseId, coursePayload,  { new: true }).exec()
         if (!course) {
             throw new HttpException(`Category #${courseId} not found`, HttpStatus.NOT_MODIFIED);
         }
