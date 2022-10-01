@@ -66,7 +66,6 @@ export class TutorProfileService {
         return courses
     }
 
-
     async searchProfilesByCriteria(criteria: TutorSearchCriteria): Promise<ITutorProfileDocument[]> {
         const search = { $and: [] };
 
@@ -99,30 +98,11 @@ export class TutorProfileService {
             });
         }
 
-        // if (criteria.days) {
-        //     search.$and.push({
-        //         'subject':
-        //             { "$elemMatch": { 'courseName': { '$regex': criteria.cource, '$options': 'i' } } }
-        //     });
-        // }
-
         let query = this.profileModel.find(search.$and.length > 0 ? search : {});
 
         if ((criteria.pageSize || criteria.pageSize === 0) && (criteria.pageNumber || criteria.pageNumber === 0)) {
             query.limit(criteria.pageSize).skip(criteria.pageNumber * criteria.pageSize)
         }
-        // let query = this.profileModel.find(search).find({$where: function () {
-        // let query = this.profileModel.find({"state": {$where: function () {
-        //     // console.log(this)
-        //     return true;
-        // }}});
-
-        // if (criteria.days && criteria.days.length > 0) {
-        //     query = query.find({$where: function () {
-        //         // console.log(this)
-        //         return true;
-        //     }})
-        // }
 
         const profileDetails = await query.exec();
         if (!profileDetails) {
