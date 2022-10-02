@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards, HttpStatus, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards, HttpStatus, Put, HttpException } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { ScheduleDto } from './dto/schedule.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
@@ -7,8 +7,8 @@ import { ScheduleSearchCriteria } from './dto/scheduleSearchCriteria';
 
 @Controller('schedule')
 @ApiTags('schedule')
-@UseGuards(JwtAuthGuard)
-@ApiBearerAuth('access-token')
+// @UseGuards(JwtAuthGuard)
+// @ApiBearerAuth('access-token')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
@@ -21,13 +21,7 @@ export class ScheduleController {
           schedule
       });
   } catch (error) {
-      console.log(error);
-
-      return response.status(HttpStatus.BAD_REQUEST).json({
-          statusCode: 400,
-          message: 'Error: Course not created!',
-          error: 'Bad Request',
-      });
+    throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
   }
   }
 
@@ -73,15 +67,16 @@ export class ScheduleController {
   @Post('searchByCriteria')
   async getAllSchedulesBySearchByCriteria(@Res() response, @Body() scheduleSearchCriteria: ScheduleSearchCriteria){
       try {
-          const schedules = await this.scheduleService.searchProfilesByCriteria(scheduleSearchCriteria);
-          return response.status(HttpStatus.OK).json({
-              message: schedules.length > 0 ? 'Schedules found successfully' : 'No schedule found',
-              data: schedules,
-              count: schedules.length
-          });
-      }
+        const schedulesData = await this.scheduleService.searchProfilesByCriteria(scheduleSearchCriteria);
+        return response.status(HttpStatus.OK).json({
+            message: schedulesData[0].schedules.length > 0 ? 'Schedules found successfully' : 'No schedule found',
+            data: schedulesData[0].schedules,
+            count: schedulesData[0].schedules?.length,
+            totalCount: schedulesData[0].metrics[0]?.totalCount
+        });
+    }
       catch (err) {
-          return err
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
       }
   }
   

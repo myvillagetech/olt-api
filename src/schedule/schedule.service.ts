@@ -90,40 +90,56 @@ export class ScheduleService {
   //   return schedules
   // }
 
-  async searchProfilesByCriteria(criteria: ScheduleSearchCriteria): Promise<Array<IScheduleDocument>> {
-    const search = { $and: [] };
+  async searchProfilesByCriteria(criteria: ScheduleSearchCriteria):
+    Promise<{schedules: Array<IScheduleDocument>, metrics: any}> {
+    let result;
+    try {
+      const search = { $and: [] };
 
-    if(criteria.subjects && criteria.subjects.length > 0) {
-      search.$and.push({'subjects' : {$elemMatch : {$in : criteria.subjects.map(s => new RegExp(s, "i")) }}});
+      if (criteria.subjects && criteria.subjects.length > 0) {
+        search.$and.push({ 'subjects': { $elemMatch: { $in: criteria.subjects.map(s => new RegExp(s, "i")) } } });
+      }
+
+      if (criteria.studentIds && criteria.studentIds.length > 0) {
+        search.$and.push({ 'studentId': { $in: criteria.studentIds.map(s => new RegExp(s, "i")) } })
+      }
+
+      if (criteria.status && criteria.status.length > 0) {
+        search.$and.push({ 'status': { $in: criteria.status.map(s => new RegExp(s, "i")) } })
+      }
+
+      if (criteria.tutorIds && criteria.tutorIds.length > 0) {
+        search.$and.push({ 'tutorId': { $in: criteria.tutorIds.map(s => new RegExp(s, "i")) } })
+      }
+
+      let paginationProps: any = [{ $match: search.$and.length > 0 ? search : {} }];
+      if ((criteria.pageSize || criteria.pageSize > 0) && (criteria.pageNumber || criteria.pageNumber === 0)) {
+        paginationProps.push({ $skip: criteria.pageNumber * criteria.pageSize });
+        paginationProps.push({ $limit: criteria.pageSize });
+      }
+
+      let sortObject;
+      if (criteria.sortField) {
+        sortObject = {};
+        sortObject[criteria.sortField] = criteria.sortOrder;
+        paginationProps.push({ $sort: sortObject});
+        console.log(sortObject)
+      }
+
+      console.log(paginationProps)
+
+      result = await this.scheduleModel.aggregate([{
+        $facet: {
+          schedules: paginationProps,
+          metrics: [
+            { $match: search.$and.length > 0 ? search : {} },
+            { $count: 'totalCount' }
+          ]
+        }
+      }])
+    } catch (error) {
+      console.log(error);
     }
-
-    if(criteria.studentIds && criteria.studentIds.length > 0) {
-      search.$and.push({'studentId' : {$in : criteria.studentIds.map(s => new RegExp(s, "i"))}})
-    }
-
-    if(criteria.status && criteria.status.length > 0) {
-      search.$and.push({'status' : {$in : criteria.status.map(s => new RegExp(s, "i"))}})
-    }
-
-    if(criteria.tutorIds && criteria.tutorIds.length > 0) {
-      search.$and.push({'tutorId' : {$in : criteria.tutorIds.map(s => new RegExp(s, "i"))}})
-    }
-
-    let query = this.scheduleModel.find(search.$and.length > 0 ? search : {});
-
-    
-    if ((criteria.pageSize || criteria.pageSize === 0) && (criteria.pageNumber || criteria.pageNumber === 0)) {
-      query.limit(criteria.pageSize).skip(criteria.pageNumber * criteria.pageSize)
-    }
-
-    if (criteria.sortField) {
-      const sortObject = {};
-      sortObject[criteria.sortField] = criteria.sortOrder;
-      query.sort(sortObject);
-    }
-
-    const result = await query.exec();
-
     return result;
   }
 
