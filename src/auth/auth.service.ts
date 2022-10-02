@@ -148,16 +148,17 @@ export class AuthService {
       refreshToken: refreshObject.sign(),
       accessToken: sign(
         {
-          userId: user.userId,
+          userId: user.id,
+          ssoProvider: user.ssoProvider,
+          roles: user.roles,
         },
         process.env.ACCESS_SECRET,
         {
-          expiresIn: '1h',
+          expiresIn: '4hr',
         }
       ),
       roles: user.roles,
       userId: user._id,
-
     };
 
   }
