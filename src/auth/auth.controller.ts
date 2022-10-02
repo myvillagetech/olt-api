@@ -42,7 +42,6 @@ export class AuthController {
     try {
       return await this.authService.resetPassword(resetPasswordDto);
     } catch (error) {
-      console.log(error);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
@@ -51,6 +50,20 @@ export class AuthController {
   async googleSignIn(@Req() request, @Ip() ip: string, @Body() body: GoogleLoginDto) {
     try {
       const result = await this.authService.googleSignIn(body, {
+        ipAddress: ip,
+        userAgent: request.headers['user-agent'],
+      });
+
+      return result;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  @Post('googleSignUp')
+  async googleSignUp(@Req() request, @Ip() ip: string, @Body() body: GoogleLoginDto) {
+    try {
+      const result = await this.authService.googleSignUp(body, {
         ipAddress: ip,
         userAgent: request.headers['user-agent'],
       });

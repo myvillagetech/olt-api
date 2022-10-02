@@ -73,6 +73,7 @@ export class TutorProfileController{
                 data: profile,
             });
         } catch (err) {
+            console.log(err);
             return response.status(err.status).json({
                 errorMessage: err.message,
                 errorCode: err.statusCode,
@@ -90,7 +91,7 @@ export class TutorProfileController{
             });
         }
         catch (err) {
-            throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+            throw new HttpException(err.message, err.response.statusCode === 404 ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST);
         }
     }
 

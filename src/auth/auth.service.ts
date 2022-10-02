@@ -90,6 +90,23 @@ export class AuthService {
     } catch (error) {
       throw new Error(error);
     }
+    let user;
+    try {
+      user = await this.userService.getUserByEmail(body.email);
+    } catch (error) {
+      throw new Error("User not found, Please register first")
+    }
+
+    return this.newRreshAndAccessToken(user, values);
+
+  }
+
+  async googleSignUp(body: GoogleLoginDto, values: { userAgent: string; ipAddress: string }) {
+    try {
+      const userTokenValid = await this.verifyGoogleToken(body.idToken)
+    } catch (error) {
+      throw new Error(error);
+    }
     const user = await this.userService.upsertUser(body);
 
     return this.newRreshAndAccessToken(user, values);
@@ -105,7 +122,6 @@ export class AuthService {
     });
 
     const payload = ticket.getPayload();
-    console.log(payload);
   }
 
 

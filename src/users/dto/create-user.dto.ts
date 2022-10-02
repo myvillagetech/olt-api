@@ -36,7 +36,7 @@ export class CreateUserDto {
     @IsNotEmpty()
     readonly password: string;
 
-    @IsNotEmpty()
+    // @IsNotEmpty()
     readonly dob: Date;
 
     @IsString()
@@ -49,4 +49,7 @@ export class CreateUserDto {
 
     @IsString()
     ssoProvider: string
+
+    @IsString()
+    photoUrl: string
 }

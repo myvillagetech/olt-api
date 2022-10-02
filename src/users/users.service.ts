@@ -70,7 +70,7 @@ export class UsersService {
   async getUserByEmail(email: string): Promise<UserDocument> {
     const existingUser = await this.userModel.findOne({ email: email }).exec();
     if (!existingUser) {
-      throw new NotFoundException(`user #${email} not found`);
+      throw new NotFoundException(`user ${email} not found`);
     }
     return existingUser;
   }
