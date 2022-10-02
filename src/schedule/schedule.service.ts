@@ -59,7 +59,7 @@ export class ScheduleService {
   }
 
   async searchProfilesByCriteria(criteria: ScheduleSearchCriteria):
-    Promise<{schedules: Array<IScheduleDocument>, metrics: any}> {
+    Promise<{ schedules: Array<IScheduleDocument>, metrics: any }> {
     let result;
     try {
       const search = { $and: [] };
@@ -90,7 +90,7 @@ export class ScheduleService {
       if (criteria.sortField) {
         sortObject = {};
         sortObject[criteria.sortField] = criteria.sortOrder;
-        paginationProps.push({ $sort: sortObject});
+        paginationProps.push({ $sort: sortObject });
       }
 
       result = await this.scheduleModel.aggregate([{
@@ -101,10 +101,21 @@ export class ScheduleService {
             { $count: 'totalCount' }
           ]
         }
-      }])
+      }
+      // ,
+      // {
+      //   $lookup: {
+      //     from: "users", // collection name in db
+      //     localField: "tutorId",
+      //     foreignField: "id",
+      //     as: "tutorName"
+      //   }
+      // }
+    ])
     } catch (error) {
       console.log(error);
     }
+    // console.log(result[0].tutorName);
     return result;
   }
 }
