@@ -66,49 +66,63 @@ export class TutorProfileService {
         return courses
     }
 
-    async searchProfilesByCriteria(criteria: TutorSearchCriteria): Promise<ITutorProfileDocument[]> {
+    async searchProfilesByCriteria(criteria: TutorSearchCriteria): Promise<
+    {profiles: ITutorProfileDocument[], metrics: any}> {
         const search = { $and: [] };
 
-        criteria.states = criteria.states.filter(s => (s !== '' && s !== null && s !== undefined));
-        if (criteria.states && criteria.states.length > 0) {
-            search.$and.push({
-                'state': { $in: criteria.states.map(s => new RegExp(s, "i") )  }
-            })
-        }
-        if (criteria.rateRange.from || criteria.rateRange.to) {
-            const ratefilter: any = {};
+        let profileDetails;
+        try {
+            criteria.states = criteria.states.filter(s => (s !== '' && s !== null && s !== undefined));
 
-            if (criteria.rateRange.from) {
-                ratefilter.$gte = criteria.rateRange.from;
+            if (criteria.states && criteria.states.length > 0) {
+                search.$and.push({
+                    'state': { $in: criteria.states.map(s => new RegExp(s, "i")) }
+                })
+            }
+            if (criteria.rateRange.from || criteria.rateRange.to) {
+                const ratefilter: any = {};
+
+                if (criteria.rateRange.from) {
+                    ratefilter.$gte = criteria.rateRange.from;
+                }
+
+                if (criteria.rateRange.to) {
+                    ratefilter.$lte = criteria.rateRange.to;
+                }
+
+                search.$and.push({
+                    'hourlyRate': ratefilter
+                })
             }
 
-            if (criteria.rateRange.to) {
-                ratefilter.$lte = criteria.rateRange.to;
+            if (criteria.cource) {
+                search.$and.push({
+                    'subject':
+                        { "$elemMatch": { 'courseName': { '$regex': criteria.cource, '$options': 'i' } } }
+                });
             }
 
-            search.$and.push({
-                'hourlyRate': ratefilter
-            })
-        }
 
-        if (criteria.cource) {
-            search.$and.push({
-                'subject':
-                    { "$elemMatch": { 'courseName': { '$regex': criteria.cource, '$options': 'i' } } }
-            });
-        }
+            let paginationProps: any = [{ $match: search.$and.length > 0 ? search : {} }];
+            if ((criteria.pageSize || criteria.pageSize > 0) && (criteria.pageNumber || criteria.pageNumber === 0)) {
+                paginationProps.push({ $skip: criteria.pageNumber * criteria.pageSize });
+                paginationProps.push({ $limit: criteria.pageSize });
+            }
 
-        let query = this.profileModel.find(search.$and.length > 0 ? search : {});
+            profileDetails = await this.profileModel.aggregate([{
+                $facet: {
+                    profiles: paginationProps,
+                    metrics: [
+                        { $match: search.$and.length > 0 ? search : {} },
+                        { $count: 'totalCount' }
+                    ]
+                }
+            }])
 
-        if ((criteria.pageSize || criteria.pageSize === 0) && (criteria.pageNumber || criteria.pageNumber === 0)) {
-            query.limit(criteria.pageSize).skip(criteria.pageNumber * criteria.pageSize)
+            return profileDetails;
+        } catch (error) {
+            console.log(error);
         }
-
-        const profileDetails = await query.exec();
-        if (!profileDetails) {
-            throw new NotFoundException('Profile Data not Found!');
-        }
-        return profileDetails;
     }
 
 }

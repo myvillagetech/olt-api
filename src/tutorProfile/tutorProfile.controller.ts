@@ -7,16 +7,16 @@ import { IAvilableSlots } from "./tutorProfile.schema";
 import { TutorProfileService } from "./tutorProfile.service";
 import { TutorSearchCriteria } from "./tutorSearchCriteria.dto";
 
-@ApiBearerAuth('access-token')
+// @ApiBearerAuth('access-token')
 // @UseGuards(JwtAuthGuard)
 @ApiTags('TutorProfile')
 @Controller('tutorProfile')
-export class TutorProfileController{
+export class TutorProfileController {
     constructor(
         private tutorProfileService: TutorProfileService
     ) { }
     @Post('')
-    async createTutorProfile(@Res() response, @Body() tutorProfilePayload: TutorProfileDto ) {
+    async createTutorProfile(@Res() response, @Body() tutorProfilePayload: TutorProfileDto) {
         try {
             const profile = await this.tutorProfileService.createTutorProfile(tutorProfilePayload)
             return response.status(HttpStatus.CREATED).json({
@@ -65,7 +65,7 @@ export class TutorProfileController{
     }
 
     @Get('/:id')
-    async getTutorProfileById(@Res() response, @Param('id') profileId : string) {
+    async getTutorProfileById(@Res() response, @Param('id') profileId: string) {
         try {
             const profile = await this.tutorProfileService.getTutorProfileById(profileId);
             return response.status(HttpStatus.OK).json({
@@ -82,7 +82,7 @@ export class TutorProfileController{
     }
 
     @Get('userId/:id')
-    async getTutorProfileByUserId(@Res() response, @Param('id')userId : string){
+    async getTutorProfileByUserId(@Res() response, @Param('id') userId: string) {
         try {
             const profile = await this.tutorProfileService.getProfileByUserId(userId);
             return response.status(HttpStatus.OK).json({
@@ -96,7 +96,7 @@ export class TutorProfileController{
     }
 
     @Get('course/:id')
-    async getAllProfilesByCourseName(@Res() response, @Param('id')courseName : string){
+    async getAllProfilesByCourseName(@Res() response, @Param('id') courseName: string) {
         try {
             const profile = await this.tutorProfileService.getAllProfilesByCourseName(courseName);
             return response.status(HttpStatus.OK).json({
@@ -114,12 +114,14 @@ export class TutorProfileController{
     }
 
     @Post('searchByCriteria')
-    async getAllProfilesBySearchByCriteria(@Res() response, @Body() tutorSearchCriteria: TutorSearchCriteria){
+    async getAllProfilesBySearchByCriteria(@Res() response, @Body() tutorSearchCriteria: TutorSearchCriteria) {
         try {
-            const profiles = await this.tutorProfileService.searchProfilesByCriteria(tutorSearchCriteria);
+            const data = await this.tutorProfileService.searchProfilesByCriteria(tutorSearchCriteria);
             return response.status(HttpStatus.OK).json({
-                message: profiles.length > 0 ? 'Profile found successfully' : 'No profiles found',
-                data: profiles,
+                message: data[0].profiles.length > 0 ? 'Profiles found' : 'No Profiles found',
+                data: data[0].profiles,
+                count: data[0].profiles?.length,
+                totalCount: data[0].metrics[0]?.totalCount
             });
         }
         catch (err) {
