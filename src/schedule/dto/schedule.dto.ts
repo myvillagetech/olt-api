@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDefined } from "class-validator";
 import { ISlots, ISubjects } from "src/tutorProfile/tutorProfile.schema";
+import { User } from "src/users/schema/user.schema";
 import { Status } from "../schedule.status";
 
 export class ScheduleDto {
@@ -9,13 +10,13 @@ export class ScheduleDto {
     @ApiProperty({
         type: String
     })
-    studentId: string;
+    student: string;
 
     @IsDefined()
     @ApiProperty({
         type: String
     })
-    tutorId: string;
+    tutor: string;
 
     @ApiProperty({
         type: Array<String>

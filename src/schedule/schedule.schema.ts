@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 import * as uniqueValidators from 'mongoose-unique-validator'
 import { ISlots, ISubjects } from "src/tutorProfile/tutorProfile.schema";
+import { User } from "src/users/schema/user.schema";
 import { Status } from "./schedule.status";
 
 
@@ -11,13 +12,17 @@ import { Status } from "./schedule.status";
 
 export class ScheduleSchemaCreator {
     @Prop({
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required : true
     })
-    studentId : string;
+    student : User;
     @Prop({
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required : true
     })
-    tutorId: string;
+    tutor: User;
     @Prop({
         required : true
     })

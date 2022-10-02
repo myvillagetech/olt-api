@@ -13,7 +13,7 @@ export class ScheduleService {
     @InjectModel(MODEL_ENUMS.SCHEDULE) private scheduleModel: Model<IScheduleDocument>,
   ) { }
 
-  async createSchedule(schedulePayload: ScheduleDto): Promise<ScheduleDto | UnprocessableEntityException> {
+  async createSchedule(schedulePayload: ScheduleDto): Promise<ScheduleDto| IScheduleDocument | UnprocessableEntityException> {
     try {
       const schedule = new this.scheduleModel(schedulePayload);
       return schedule.save();
@@ -31,7 +31,7 @@ export class ScheduleService {
     return schedule;
   }
 
-  async updateSchedule(schedulePayload: ScheduleDto, scheduleId: string): Promise<ScheduleDto | UnprocessableEntityException> {
+  async updateSchedule(schedulePayload: ScheduleDto, scheduleId: string): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
     const schedule = await this.scheduleModel.findByIdAndUpdate(scheduleId, schedulePayload, { new: true }).exec()
     if (!schedule) {
       throw new HttpException(`Schedule #${scheduleId} not found`, HttpStatus.NOT_MODIFIED);
@@ -94,6 +94,20 @@ export class ScheduleService {
       }
 
       result = await this.scheduleModel.aggregate([{
+        $lookup: {
+          from: "users",
+          localField: "tutor",
+          foreignField: "_id",
+          as: "tutor"
+        }
+      }, {
+        $lookup: {
+          from: "users",
+          localField: "student",
+          foreignField: "_id",
+          as: "student"
+        }
+      }, {
         $facet: {
           schedules: paginationProps,
           metrics: [
@@ -102,20 +116,14 @@ export class ScheduleService {
           ]
         }
       }
-      // ,
-      // {
-      //   $lookup: {
-      //     from: "users", // collection name in db
-      //     localField: "tutorId",
-      //     foreignField: "id",
-      //     as: "tutorName"
-      //   }
-      // }
     ])
     } catch (error) {
       console.log(error);
     }
-    // console.log(result[0].tutorName);
+    result[0].schedules.forEach(s => {
+      s.student = s.student[0];
+      s.tutor = s.tutor[0];
+    })
     return result;
   }
 }
