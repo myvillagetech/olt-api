@@ -58,38 +58,6 @@ export class ScheduleService {
     }
   }
 
-  // async getScheduleByTutorId(tutorId: string): Promise<Array<IScheduleDocument>> {
-  //   const schedule = await this.scheduleModel.find({ tutorId: tutorId }).exec();
-  //   if (!schedule) {
-  //     throw new HttpException(`Schedule ${tutorId} not Found`, HttpStatus.NOT_FOUND);
-  //   }
-  //   return schedule
-  // }
-
-  // async getScheduleByStart(start: string): Promise<Array<IScheduleDocument>> {
-  //   const schedule = await this.scheduleModel.find({ start: start }).exec();
-  //   if (!schedule) {
-  //     throw new HttpException(`Schedule ${start} not Found`, HttpStatus.NOT_FOUND);
-  //   }
-  //   return schedule
-  // }
-
-  // async getScheduleByEnd(end: string): Promise<Array<IScheduleDocument>> {
-  //   const schedule = await this.scheduleModel.find({ end: end }).exec();
-  //   if (!schedule) {
-  //     throw new HttpException(`Schedule ${end} not Found`, HttpStatus.NOT_FOUND);
-  //   }
-  //   return schedule
-  // }
-
-  // async getSchedulesByStudentId(studentId: string): Promise<Array<IScheduleDocument>> {
-  //   const schedules = await this.scheduleModel.find({ studentId: studentId }).exec();
-  //   if (!schedules) {
-  //     throw new HttpException(`Schedule ${studentId} not Found`, HttpStatus.NOT_FOUND);
-  //   }
-  //   return schedules
-  // }
-
   async searchProfilesByCriteria(criteria: ScheduleSearchCriteria):
     Promise<{schedules: Array<IScheduleDocument>, metrics: any}> {
     let result;
@@ -123,10 +91,7 @@ export class ScheduleService {
         sortObject = {};
         sortObject[criteria.sortField] = criteria.sortOrder;
         paginationProps.push({ $sort: sortObject});
-        console.log(sortObject)
       }
-
-      console.log(paginationProps)
 
       result = await this.scheduleModel.aggregate([{
         $facet: {
@@ -142,6 +107,4 @@ export class ScheduleService {
     }
     return result;
   }
-
-
 }
