@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types} from 'mongoose';
 import { MODEL_ENUMS } from 'src/shared/enums/models.enums';
 import { ScheduleDto } from './dto/schedule.dto';
 import { ScheduleSearchCriteria } from './dto/scheduleSearchCriteria';
@@ -69,7 +69,7 @@ export class ScheduleService {
       }
 
       if (criteria.studentIds && criteria.studentIds.length > 0) {
-        search.$and.push({ 'studentId': { $in: criteria.studentIds.map(s => new RegExp(s, "i")) } })
+        search.$and.push({ 'student._id': { $in: criteria.studentIds.map(s => new Types.ObjectId(s)) }})
       }
 
       if (criteria.status && criteria.status.length > 0) {
@@ -77,7 +77,7 @@ export class ScheduleService {
       }
 
       if (criteria.tutorIds && criteria.tutorIds.length > 0) {
-        search.$and.push({ 'tutorId': { $in: criteria.tutorIds.map(s => new RegExp(s, "i")) } })
+        search.$and.push({ 'tutor._id': { $in: criteria.tutorIds.map(s => new Types.ObjectId(s)) } })
       }
 
       let paginationProps: any = [{ $match: search.$and.length > 0 ? search : {} }];
