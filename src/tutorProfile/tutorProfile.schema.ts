@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 import * as uniqueValidators from 'mongoose-unique-validator'
 
 export interface ISlots {
@@ -28,6 +28,8 @@ export class ICancellationPolicy {
 
 export class TutorProfileSchemaCreator {
     @Prop({
+        type: Types.ObjectId,
+        ref: 'User',
         required : true,
         unique : true
     })

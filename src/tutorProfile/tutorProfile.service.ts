@@ -121,15 +121,27 @@ export class TutorProfileService {
                 paginationProps.push({ $limit: criteria.pageSize });
             }
 
-            profileDetails = await this.profileModel.aggregate([{
-                $facet: {
-                    profiles: paginationProps,
-                    metrics: [
-                        { $match: search.$and.length > 0 ? search : {} },
-                        { $count: 'totalCount' }
-                    ]
-                }
-            }])
+            profileDetails = await this.profileModel.aggregate([
+                {
+                    $lookup: {
+                        from: "ratings",
+                        localField: "userId",
+                        foreignField: "tutor",
+                        as: "ratings",
+                        pipeline: [{
+                            $group: { _id : '$tutor', avg: { $avg: '$rating' } }
+                        }]
+                    },
+                },
+                {
+                    $facet: {
+                        profiles: paginationProps,
+                        metrics: [
+                            { $match: search.$and.length > 0 ? search : {} },
+                            { $count: 'totalCount' }
+                        ]
+                    }
+                }])
 
             return profileDetails;
         } catch (error) {
