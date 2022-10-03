@@ -67,7 +67,7 @@ export class TutorProfileService {
     }
 
     async searchProfilesByCriteria(criteria: TutorSearchCriteria): Promise<
-    {profiles: ITutorProfileDocument[], metrics: any}> {
+        { profiles: ITutorProfileDocument[], metrics: any }> {
         const search = { $and: [] };
 
         let profileDetails;
@@ -99,6 +99,18 @@ export class TutorProfileService {
                 search.$and.push({
                     'subject':
                         { "$elemMatch": { 'courseName': { '$regex': criteria.cource, '$options': 'i' } } }
+                });
+            }
+
+            if (criteria.days && criteria.days.length > 0) {
+                search.$and.push({
+                    'slots': {
+                        "$elemMatch": {
+                            'day': { $in: criteria.days },
+                            $nor: [{ 'slots': { $size: 0 } }, { 'slots': { $exists: false } }]
+                        }
+                    }
+
                 });
             }
 
