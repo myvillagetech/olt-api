@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDefined, Max, Min } from "class-validator";
+import { IsDefined, Max, Min, ValidateIf } from "class-validator";
+import { Review } from "./review.dto";
 
 export class RatingDto {
     @IsDefined()
@@ -12,11 +13,14 @@ export class RatingDto {
         type: String
     })
     tutor: string;
-    @IsDefined()
+    
+    @ValidateIf(r => r.rating !== null || r.rating !== undefined)
     @Min(1)
     @Max(5)
     @ApiProperty({
         type: Number
     })
-    rating : number;
+    rating?: number;
+
+    review?: Review;
 }
