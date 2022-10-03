@@ -12,6 +12,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { TutorProfileModule } from './tutorProfile/tutorProfile.module';
 import { ScheduleModule } from './schedule/schedule.module';
+import { RatingsModule } from './ratings/ratings.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ScheduleModule } from './schedule/schedule.module';
     ConfigModule.forRoot(),
     CategoryModule,
     ScheduleModule,
+    RatingsModule,
   ],
   controllers: [AppController, CategoryController],
 })
