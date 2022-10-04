@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { MODEL_ENUMS } from "src/shared/enums/models.enums";
 import { TutorProfileDto } from "./tutorProfile.dto";
 import { IAvilableSlots, ISubjects, ITutorProfileDocument } from "./tutorProfile.schema";
@@ -48,11 +48,26 @@ export class TutorProfileService {
     }
 
     async getProfileByUserId(userId: string): Promise<ITutorProfileDocument> {
-        const profileDetails = await this.profileModel.findOne({ userId: userId }).exec();
+        const profileDetails = await this.profileModel.aggregate([
+            {$match : { 'userId': new Types.ObjectId(userId) }},
+            {$lookup : {
+                from: "ratings",
+                        localField: "userId",
+                        foreignField: "tutor",
+                        as: "ratings",
+                        pipeline: [{
+                            $group: {
+                                _id: '$tutor',
+                                avg: { $avg: '$rating' },
+                                count: { $count: {} }
+                            }
+                        }]
+            }}
+        ])
         if (!profileDetails) {
             throw new NotFoundException('Profile Data not Found!');
         }
-        return profileDetails;
+        return profileDetails[0];
     }
 
     async getAllProfilesByCourseName(CourseName: string): Promise<ITutorProfileDocument[]> {
