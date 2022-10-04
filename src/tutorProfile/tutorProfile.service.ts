@@ -129,7 +129,11 @@ export class TutorProfileService {
                         foreignField: "tutor",
                         as: "ratings",
                         pipeline: [{
-                            $group: { _id : '$tutor', avg: { $avg: '$rating' } }
+                            $group: {
+                                _id: '$tutor',
+                                avg: { $avg: '$rating' },
+                                count: { $count: {} }
+                            }
                         }]
                     },
                 },
