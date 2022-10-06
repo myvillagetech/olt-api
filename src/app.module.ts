@@ -17,7 +17,8 @@ import { RatingsModule } from './ratings/ratings.module';
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb://villagetech:SXvW1CFKqY2muXKE@ac-vegem53-shard-00-00.7mzkrzz.mongodb.net:27017,ac-vegem53-shard-00-01.7mzkrzz.mongodb.net:27017,ac-vegem53-shard-00-02.7mzkrzz.mongodb.net:27017/?ssl=true&replicaSet=atlas-r0113y-shard-0&authSource=admin&retryWrites=true&w=majority',
+      'mongodb+srv://OLTUser:rsg3Kr5FYeJLZtO4@olt.ywaomqw.mongodb.net/?retryWrites=true&w=majority'
+      // 'mongodb://villagetech:SXvW1CFKqY2muXKE@ac-vegem53-shard-00-00.7mzkrzz.mongodb.net:27017,ac-vegem53-shard-00-01.7mzkrzz.mongodb.net:27017,ac-vegem53-shard-00-02.7mzkrzz.mongodb.net:27017/?ssl=true&replicaSet=atlas-r0113y-shard-0&authSource=admin&retryWrites=true&w=majority',
       // 'mongodb+srv://villagetech:SXvW1CFKqY2muXKE@cluster0.7mzkrzz.mongodb.net/?retryWrites=true&w=majority',
     ),
     ServeStaticModule.forRoot({
