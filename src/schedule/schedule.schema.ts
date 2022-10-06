@@ -43,7 +43,13 @@ export class ScheduleSchemaCreator {
         required : false,
         default : 'SCHEDULED'
     })
-    status : Status
+    status : Status;
+
+    @Prop()
+    meetingLink: string;
+
+    @Prop()
+    recordingLink: string
 
 }
 

@@ -46,5 +46,14 @@ export class ScheduleDto {
     })
     @IsDefined()
     to: Number;
+
+    @ApiProperty({
+        type: String
+    })
+    meetingLink: string;
+    @ApiProperty({
+        type: String
+    })
+    recordingLink: string
 }
 
