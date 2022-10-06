@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types} from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { MODEL_ENUMS } from 'src/shared/enums/models.enums';
 import { ScheduleDto } from './dto/schedule.dto';
 import { ScheduleSearchCriteria } from './dto/scheduleSearchCriteria';
@@ -13,7 +13,7 @@ export class ScheduleService {
     @InjectModel(MODEL_ENUMS.SCHEDULE) private scheduleModel: Model<IScheduleDocument>,
   ) { }
 
-  async createSchedule(schedulePayload: ScheduleDto): Promise<ScheduleDto| IScheduleDocument | UnprocessableEntityException> {
+  async createSchedule(schedulePayload: ScheduleDto): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
     try {
       const schedule = new this.scheduleModel(schedulePayload);
       return schedule.save();
@@ -69,7 +69,7 @@ export class ScheduleService {
       }
 
       if (criteria.studentIds && criteria.studentIds.length > 0) {
-        search.$and.push({ 'student._id': { $in: criteria.studentIds.map(s => new Types.ObjectId(s)) }})
+        search.$and.push({ 'student._id': { $in: criteria.studentIds.map(s => new Types.ObjectId(s)) } })
       }
 
       if (criteria.status && criteria.status.length > 0) {
@@ -116,7 +116,7 @@ export class ScheduleService {
           ]
         }
       }
-    ])
+      ])
     } catch (error) {
       console.log(error);
     }
