@@ -4,11 +4,12 @@ import {
     isNumber,
     IsString,
     MaxLength,
+    ValidateIf,
 } from 'class-validator';
 
 export class CreateUserDto {
-    @IsNumber()
-    @IsNotEmpty()
+    // @IsNumber()
+    // @IsNotEmpty()
     readonly userId: number;
 
     @IsString()
@@ -40,16 +41,18 @@ export class CreateUserDto {
     readonly dob: Date;
 
     @IsString()
-    @MaxLength(1)
+    // @MaxLength(1)
     readonly active: string;
 
     readonly roles: Array<string>;
 
     address: string;
 
+    @ValidateIf(r => r.ssoProvider && r.ssoProvider !== '')
     @IsString()
-    ssoProvider: string
+    ssoProvider?: string
 
+    @ValidateIf(r => r.photoUrl && r.photoUrl !== '')
     @IsString()
-    photoUrl: string
+    photoUrl?: string
 }
