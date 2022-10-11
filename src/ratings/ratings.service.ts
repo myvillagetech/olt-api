@@ -38,4 +38,16 @@ export class RatingsService {
             throw new Error(error.message);
         }
     }
+
+    async getRatingByTutorId(tutorId: string) {
+        try {
+            const ratings = await this.ratingModel.find({
+                tutor: new Types.ObjectId(tutorId)
+            });
+            return ratings;
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    }
 }

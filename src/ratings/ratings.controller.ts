@@ -1,4 +1,4 @@
-import { Body, Controller, HttpException, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Res, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { get } from 'http';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
@@ -34,6 +34,20 @@ export class RatingsController {
         } catch (error) {
             throw new HttpException(error.message, 
                 error.message === 'Rating Not found' ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Get('/:tutorId')
+    async getRatingByTutorId(@Res() response, @Param('tutorId') tutorId: string) {
+        try {
+            const ratings = await this.ratingService.getRatingByTutorId(tutorId)
+            return response.status(HttpStatus.OK).json({
+                message: ratings.length > 0 ? 'Ratings found sucessfully': 'No Ratings found' ,
+                ratings
+            });
+        } catch (error) {
+            throw new HttpException(error.message, 
+                error.message === 'Ratings Not found' ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST);
         }
     }
 }
