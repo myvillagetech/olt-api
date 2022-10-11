@@ -94,7 +94,7 @@ export class TutorProfileService {
                     'state': { $in: criteria.states.map(s => new RegExp(s, "i")) }
                 })
             }
-            if (criteria.rateRange.from || criteria.rateRange.to) {
+            if (criteria.rateRange && (criteria.rateRange.from || criteria.rateRange.to)) {
                 const ratefilter: any = {};
 
                 if (criteria.rateRange.from) {
