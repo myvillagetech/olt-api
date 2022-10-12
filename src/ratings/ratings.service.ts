@@ -29,7 +29,7 @@ export class RatingsService {
                 student: new Types.ObjectId(payload.student),
                 tutor: new Types.ObjectId(payload.tutor)
             });
-            if(!rating) {
+            if (!rating) {
                 throw new Error("Rating Not found")
             }
             return rating;
@@ -41,9 +41,25 @@ export class RatingsService {
 
     async getRatingByTutorId(tutorId: string) {
         try {
-            const ratings = await this.ratingModel.find({
-                tutor: new Types.ObjectId(tutorId)
-            });
+            const ratings = await this.ratingModel.aggregate([
+                { $match: { tutor: new Types.ObjectId(tutorId) } },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "student",
+                        foreignField: "_id",
+                        as: "student"
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "tutor",
+                        foreignField: "_id",
+                        as: "tutor"
+                    }
+                }
+            ]);
             return ratings;
         }
         catch (error) {
