@@ -67,7 +67,7 @@ export class ScheduleController {
   @Post('searchByCriteria')
   async getAllSchedulesBySearchByCriteria(@Res() response, @Body() scheduleSearchCriteria: ScheduleSearchCriteria){
       try {
-        const schedulesData = await this.scheduleService.searchProfilesByCriteria(scheduleSearchCriteria);
+        const schedulesData = await this.scheduleService.getAllSchedulesBySearchByCriteria(scheduleSearchCriteria);
         return response.status(HttpStatus.OK).json({
             message: schedulesData[0].schedules.length > 0 ? 'Schedules found successfully' : 'No schedule found',
             data: schedulesData[0].schedules,

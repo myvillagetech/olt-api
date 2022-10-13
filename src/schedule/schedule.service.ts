@@ -58,7 +58,7 @@ export class ScheduleService {
     }
   }
 
-  async searchProfilesByCriteria(criteria: ScheduleSearchCriteria):
+  async getAllSchedulesBySearchByCriteria(criteria: ScheduleSearchCriteria):
     Promise<{ schedules: Array<IScheduleDocument>, metrics: any }> {
     let result;
     try {
