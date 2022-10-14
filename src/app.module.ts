@@ -13,6 +13,7 @@ import { join } from 'path';
 import { TutorProfileModule } from './tutorProfile/tutorProfile.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { RatingsModule } from './ratings/ratings.module';
+import { MesseagesModule } from './messeages/messages.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { RatingsModule } from './ratings/ratings.module';
     CategoryModule,
     ScheduleModule,
     RatingsModule,
+    MesseagesModule,
   ],
   controllers: [AppController, CategoryController],
 })
