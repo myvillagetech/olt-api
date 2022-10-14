@@ -65,7 +65,7 @@ export class ScheduleService {
       const search = { $and: [] };
 
       if (criteria.subjects && criteria.subjects.length > 0) {
-        search.$and.push({ 'subjects': { $elemMatch: { $in: criteria.subjects.map(s => new RegExp(s, "i")) } } });
+        search.$and.push({ 'subjects': { $elemMatch: { 'courseName': {$in: criteria.subjects.map(s => new RegExp(s, "i"))} } } });
       }
 
       if (criteria.studentIds && criteria.studentIds.length > 0) {
