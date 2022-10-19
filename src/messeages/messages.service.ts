@@ -21,19 +21,20 @@ export class MessagesService {
     }
 
     async getAllMessagesByFromAndTo(dto: FromAndTo) {
-        const messages = await this.messageModel.find({
+        const messages = await this.messageModel.find({$or: [{
             from: new Types.ObjectId(dto.from),
             to: new Types.ObjectId(dto.to)
-        }).exec()
+        },
+        {
+            from: new Types.ObjectId(dto.to),
+            to: new Types.ObjectId(dto.from)
+        }]})
+        .sort({createdAt:1}).exec();
 
         return messages;
     }
 
     async getAllMessagedUsers(user: string) {
-        // const users = await this.messageModel.find({
-        //     to: new Types.ObjectId(user)
-        // }).distinct('from').exec()
-
         return this.messageModel.aggregate([
             { $match: { $or : [{ to: new Types.ObjectId(user)}, { from: new Types.ObjectId(user)}] } },
             {
