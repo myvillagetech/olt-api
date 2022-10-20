@@ -46,14 +46,20 @@ export class ScheduleService {
         from: "users",
         localField: "tutor",
         foreignField: "_id",
-        as: "tutor"
+        as: "tutor",
+        "pipeline": [
+          { "$project": { "password": 0, "userId": 0}}
+        ]
       }
     }, {
       $lookup: {
         from: "users",
         localField: "student",
         foreignField: "_id",
-        as: "student"
+        as: "student",
+        "pipeline": [
+          { "$project": { "password": 0, "userId": 0}}
+        ]
       }
     }
     ]);
