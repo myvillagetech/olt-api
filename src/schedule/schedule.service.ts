@@ -40,11 +40,30 @@ export class ScheduleService {
   }
 
   async getScheduleByScheduleId(scheduleId: string): Promise<IScheduleDocument> {
-    const schedule = await this.scheduleModel.findById(scheduleId).exec()
+    const schedule = await this.scheduleModel.aggregate([
+      {$match : {"_id" : new Types.ObjectId(scheduleId)}},
+      {$lookup: {
+        from: "users",
+        localField: "tutor",
+        foreignField: "_id",
+        as: "tutor"
+      }
+    }, {
+      $lookup: {
+        from: "users",
+        localField: "student",
+        foreignField: "_id",
+        as: "student"
+      }
+    }
+    ]);
+    
+    
+    // .findById(scheduleId).exec()
     if (!schedule) {
       throw new HttpException(`Schedule ${scheduleId} not found`, HttpStatus.NOT_FOUND);
     }
-    return schedule
+    return schedule[0];
   }
 
   async cancelScheduleByScheduleId(scheduleId: string): Promise<IScheduleDocument> {
