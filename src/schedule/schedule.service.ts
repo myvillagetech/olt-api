@@ -43,12 +43,12 @@ export class ScheduleService {
     const schedule = await this.scheduleModel.aggregate([
       {$match : {"_id" : new Types.ObjectId(scheduleId)}},
       {$lookup: {
-        from: "users",
+        from: "profiles",
         localField: "tutor",
-        foreignField: "_id",
+        foreignField: "userId",
         as: "tutor",
         "pipeline": [
-          { "$project": { "password": 0, "userId": 0}}
+          { "$project": { "createdAt": 0, "updatedAt": 0}}
         ]
       }
     }, {
