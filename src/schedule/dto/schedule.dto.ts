@@ -5,6 +5,17 @@ import { ISlots, ISubjects } from "src/tutorProfile/tutorProfile.schema";
 import { User } from "src/users/schema/user.schema";
 import { Status } from "../schedule.status";
 
+export class PaymentInformation {
+    @ApiProperty({
+        type: String
+    })
+    trackingId: string;
+
+    @ApiProperty({
+        type: Object
+    })
+    payload: Object;
+}
 export class Slot {
     @ApiProperty({
         type: Date
@@ -69,6 +80,7 @@ export class ScheduleDto {
     recordingLink: string;
 
     @ApiProperty({
+        type: PaymentInformation
     })
     paymentInformation;
 }
