@@ -1,8 +1,29 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDefined } from "class-validator";
+import { Type } from "class-transformer";
 import { ISlots, ISubjects } from "src/tutorProfile/tutorProfile.schema";
 import { User } from "src/users/schema/user.schema";
 import { Status } from "../schedule.status";
+
+export class Slot {
+    @ApiProperty({
+        type: Date
+    })
+    @IsDefined()
+    date: Date;
+
+    @ApiProperty({
+        type: Number
+    })
+    @IsDefined()
+    from: Number;
+
+    @ApiProperty({
+        type: Number
+    })
+    @IsDefined()
+    to: Number;
+}
 
 export class ScheduleDto {
 
@@ -24,28 +45,19 @@ export class ScheduleDto {
     subjects: string[]
 
     @ApiProperty({
-        type: Array<String>,
+        type: String,
         enum: Status
     })
     @IsDefined()
     status: Status
     @ApiProperty({
-        type: Date
+        type: [Slot],
     })
     @IsDefined()
-    date: Date;
+    @Type(() => Slot)
+    slots: Array<Slot>;
 
-    @ApiProperty({
-        type: Number
-    })
-    @IsDefined()
-    from: Number;
 
-    @ApiProperty({
-        type: Number
-    })
-    @IsDefined()
-    to: Number;
 
     @ApiProperty({
         type: String
@@ -54,6 +66,10 @@ export class ScheduleDto {
     @ApiProperty({
         type: String
     })
-    recordingLink: string
+    recordingLink: string;
+
+    @ApiProperty({
+    })
+    paymentInformation;
 }
 

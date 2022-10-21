@@ -5,11 +5,31 @@ import { ISlots, ISubjects } from "src/tutorProfile/tutorProfile.schema";
 import { User } from "src/users/schema/user.schema";
 import { Status } from "./schedule.status";
 
+@Schema()
+export class SlotSchemaCreator {
+    @Prop({
+        required : true
+    })
+    date : Date;
+    @Prop({
+        required : true
+    })
+    from : number;
+    @Prop({
+        required : true
+    })
+    to : number;
+}
+
+export type ISlotDocument = SlotSchemaCreator & Document;
+export const SlotSchema = SchemaFactory.createForClass(
+    SlotSchemaCreator
+).plugin(uniqueValidators)
+
 
 @Schema({
     timestamps : true
 })
-
 export class ScheduleSchemaCreator {
     @Prop({
         type: mongoose.Schema.Types.ObjectId,
@@ -27,18 +47,12 @@ export class ScheduleSchemaCreator {
         required : true
     })
     subjects : Array<string>
+
     @Prop({
-        required : true
+        _id: false,
+        type: [SlotSchema]
     })
-    date : Date;
-    @Prop({
-        required : true
-    })
-    from : number;
-    @Prop({
-        required : true
-    })
-    to : number;
+    slots: SlotSchemaCreator[];
     @Prop({
         required : false,
         default : 'SCHEDULED'
@@ -49,7 +63,10 @@ export class ScheduleSchemaCreator {
     meetingLink: string;
 
     @Prop()
-    recordingLink: string
+    recordingLink: string;
+
+    @Prop({type: Object })
+    paymentInformation: any;
 
 }
 
