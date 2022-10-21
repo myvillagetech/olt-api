@@ -1,113 +1,169 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { MODEL_ENUMS } from 'src/shared/enums/models.enums';
-import { ScheduleDto } from './dto/schedule.dto';
-import { ScheduleSearchCriteria } from './dto/scheduleSearchCriteria';
-import { IScheduleDocument } from './schedule.schema';
-import { Status } from './schedule.status';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model, Types } from "mongoose";
+import { MODEL_ENUMS } from "src/shared/enums/models.enums";
+import { ScheduleDto } from "./dto/schedule.dto";
+import { ScheduleSearchCriteria } from "./dto/scheduleSearchCriteria";
+import { IScheduleDocument } from "./schedule.schema";
+import { Status } from "./schedule.status";
 
 @Injectable()
 export class ScheduleService {
   constructor(
-    @InjectModel(MODEL_ENUMS.SCHEDULE) private scheduleModel: Model<IScheduleDocument>,
-  ) { }
+    @InjectModel(MODEL_ENUMS.SCHEDULE)
+    private scheduleModel: Model<IScheduleDocument>
+  ) {}
 
-  async createSchedule(schedulePayload: ScheduleDto): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
+  async createSchedule(
+    schedulePayload: ScheduleDto
+  ): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
     try {
       const schedule = new this.scheduleModel(schedulePayload);
       return schedule.save();
-    }
-    catch (error) {
-      throw new HttpException(`Something went wrong ... Please try again`, HttpStatus.UNPROCESSABLE_ENTITY);
+    } catch (error) {
+      throw new HttpException(
+        `Something went wrong ... Please try again`,
+        HttpStatus.UNPROCESSABLE_ENTITY
+      );
     }
   }
 
-  async deleteSchedule(scheduleId: string): Promise<IScheduleDocument | NotFoundException | UnprocessableEntityException> {
-    const schedule = await this.scheduleModel.findByIdAndDelete(scheduleId).exec();
+  async deleteSchedule(
+    scheduleId: string
+  ): Promise<
+    IScheduleDocument | NotFoundException | UnprocessableEntityException
+  > {
+    const schedule = await this.scheduleModel
+      .findByIdAndDelete(scheduleId)
+      .exec();
     if (!schedule) {
-      throw new NotFoundException(`Schedule #${scheduleId} not found`)
+      throw new NotFoundException(`Schedule #${scheduleId} not found`);
     }
     return schedule;
   }
 
-  async updateSchedule(schedulePayload: ScheduleDto, scheduleId: string): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
-    const schedule = await this.scheduleModel.findByIdAndUpdate(scheduleId, schedulePayload, { new: true }).exec()
+  async updateSchedule(
+    schedulePayload: ScheduleDto,
+    scheduleId: string
+  ): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
+    const schedule = await this.scheduleModel
+      .findByIdAndUpdate(scheduleId, schedulePayload, { new: true })
+      .exec();
     if (!schedule) {
-      throw new HttpException(`Schedule #${scheduleId} not found`, HttpStatus.NOT_MODIFIED);
+      throw new HttpException(
+        `Schedule #${scheduleId} not found`,
+        HttpStatus.NOT_MODIFIED
+      );
     }
     return schedule;
   }
 
-  async getScheduleByScheduleId(scheduleId: string): Promise<IScheduleDocument> {
+  async getScheduleByScheduleId(
+    scheduleId: string
+  ): Promise<IScheduleDocument> {
     const schedule = await this.scheduleModel.aggregate([
-      {$match : {"_id" : new Types.ObjectId(scheduleId)}},
-      {$lookup: {
-        from: "profiles",
-        localField: "tutor",
-        foreignField: "userId",
-        as: "tutor",
-        "pipeline": [
-          { "$project": { "createdAt": 0, "updatedAt": 0}}
-        ]
-      }
-    }, {
-      $lookup: {
-        from: "users",
-        localField: "student",
-        foreignField: "_id",
-        as: "student",
-        "pipeline": [
-          { "$project": { "password": 0, "userId": 0}}
-        ]
-      }
-    }
+      { $match: { _id: new Types.ObjectId(scheduleId) } },
+      {
+        $lookup: {
+          from: "profiles",
+          localField: "tutor",
+          foreignField: "userId",
+          as: "tutor",
+          pipeline: [{ $project: { createdAt: 0, updatedAt: 0 } }],
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "student",
+          foreignField: "_id",
+          as: "student",
+          pipeline: [{ $project: { password: 0, userId: 0 } }],
+        },
+      },
     ]);
-    
-    
-    // .findById(scheduleId).exec()
+
     if (!schedule) {
-      throw new HttpException(`Schedule ${scheduleId} not found`, HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        `Schedule ${scheduleId} not found`,
+        HttpStatus.NOT_FOUND
+      );
     }
     return schedule[0];
   }
 
-  async cancelScheduleByScheduleId(scheduleId: string): Promise<IScheduleDocument> {
-    const schedule = await this.scheduleModel.findById(scheduleId).exec()
+  async cancelScheduleByScheduleId(
+    scheduleId: string
+  ): Promise<IScheduleDocument> {
+    const schedule = await this.scheduleModel.findById(scheduleId).exec();
     if (!schedule) {
-      throw new HttpException(`Schedule ${scheduleId} not Found`, HttpStatus.NOT_FOUND);
-    }
-    else {
+      throw new HttpException(
+        `Schedule ${scheduleId} not Found`,
+        HttpStatus.NOT_FOUND
+      );
+    } else {
       schedule.status = Status.CANCELLED;
       return await this.scheduleModel.findByIdAndUpdate(scheduleId, schedule);
     }
   }
 
-  async getAllSchedulesBySearchByCriteria(criteria: ScheduleSearchCriteria):
-    Promise<{ schedules: Array<IScheduleDocument>, metrics: any }> {
+  async getAllSchedulesBySearchByCriteria(
+    criteria: ScheduleSearchCriteria
+  ): Promise<{ schedules: Array<IScheduleDocument>; metrics: any }> {
     let result;
     try {
       const search = { $and: [] };
 
       if (criteria.subjects && criteria.subjects.length > 0) {
-        search.$and.push({ 'subjects': { $elemMatch: { 'courseName': {$in: criteria.subjects.map(s => new RegExp(s, "i"))} } } });
+        search.$and.push({
+          subjects: {
+            $elemMatch: {
+              courseName: {
+                $in: criteria.subjects.map((s) => new RegExp(s, "i")),
+              },
+            },
+          },
+        });
       }
 
       if (criteria.studentIds && criteria.studentIds.length > 0) {
-        search.$and.push({ 'student._id': { $in: criteria.studentIds.map(s => new Types.ObjectId(s)) } })
+        search.$and.push({
+          "student._id": {
+            $in: criteria.studentIds.map((s) => new Types.ObjectId(s)),
+          },
+        });
       }
 
       if (criteria.status && criteria.status.length > 0) {
-        search.$and.push({ 'status': { $in: criteria.status.map(s => new RegExp(s, "i")) } })
+        search.$and.push({
+          status: { $in: criteria.status.map((s) => new RegExp(s, "i")) },
+        });
       }
 
       if (criteria.tutorIds && criteria.tutorIds.length > 0) {
-        search.$and.push({ 'tutor._id': { $in: criteria.tutorIds.map(s => new Types.ObjectId(s)) } })
+        search.$and.push({
+          "tutor._id": {
+            $in: criteria.tutorIds.map((s) => new Types.ObjectId(s)),
+          },
+        });
       }
 
-      let paginationProps: any = [{ $match: search.$and.length > 0 ? search : {} }];
-      if ((criteria.pageSize || criteria.pageSize > 0) && (criteria.pageNumber || criteria.pageNumber === 0)) {
-        paginationProps.push({ $skip: criteria.pageNumber * criteria.pageSize });
+      let paginationProps: any = [
+        { $match: search.$and.length > 0 ? search : {} },
+      ];
+      if (
+        (criteria.pageSize || criteria.pageSize > 0) &&
+        (criteria.pageNumber || criteria.pageNumber === 0)
+      ) {
+        paginationProps.push({
+          $skip: criteria.pageNumber * criteria.pageSize,
+        });
         paginationProps.push({ $limit: criteria.pageSize });
       }
 
@@ -118,37 +174,42 @@ export class ScheduleService {
         paginationProps.push({ $sort: sortObject });
       }
 
-      result = await this.scheduleModel.aggregate([{
-        $lookup: {
-          from: "users",
-          localField: "tutor",
-          foreignField: "_id",
-          as: "tutor"
-        }
-      }, {
-        $lookup: {
-          from: "users",
-          localField: "student",
-          foreignField: "_id",
-          as: "student"
-        }
-      }, {
-        $facet: {
-          schedules: paginationProps,
-          metrics: [
-            { $match: search.$and.length > 0 ? search : {} },
-            { $count: 'totalCount' }
-          ]
-        }
-      }
-      ])
+      result = await this.scheduleModel.aggregate([
+        {
+          $lookup: {
+            from: "users",
+            localField: "tutor",
+            foreignField: "_id",
+            as: "tutor",
+            pipeline: [{ $project: { password: 0, userId: 0 } }],
+          },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "student",
+            foreignField: "_id",
+            as: "student",
+            pipeline: [{ $project: { password: 0, userId: 0 } }],
+          },
+        },
+        {
+          $facet: {
+            schedules: paginationProps,
+            metrics: [
+              { $match: search.$and.length > 0 ? search : {} },
+              { $count: "totalCount" },
+            ],
+          },
+        },
+      ]);
     } catch (error) {
       console.log(error);
     }
-    result[0].schedules.forEach(s => {
+    result[0].schedules.forEach((s) => {
       s.student = s.student[0];
       s.tutor = s.tutor[0];
-    })
+    });
     return result;
   }
 }

@@ -42,7 +42,10 @@ export class MessagesService {
                     from: "users",
                     localField: "from",
                     foreignField: "_id",
-                    as: "fromUser"
+                    as: "fromUser",
+                    "pipeline": [
+                        { "$project": { "password": 0, "userId": 0}}
+                    ]
                 }
             },
             {
@@ -50,7 +53,10 @@ export class MessagesService {
                     from: "users",
                     localField: "to",
                     foreignField: "_id",
-                    as: "toUser"
+                    as: "toUser",
+                    "pipeline": [
+                        { "$project": { "password": 0, "userId": 0}}
+                    ]
                 }
             },
             { $group : { _id : "$fromUser", 'messages' : { $push : {message: "$message", from: '$from', to: '$to'}}}}
