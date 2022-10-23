@@ -6,7 +6,8 @@ export const MODEL_ENUMS = {
     SCHEDULE : 'schedule',
     RATING : 'rating',
     MESSAGE : 'message',
-    SELECTED_COURSE : 'selectedCourse'
+    SELECTED_COURSE : 'selectedCourse',
+    PAYMENT: 'payments'
 }
 
 export const COLLECTION_NAMES = {

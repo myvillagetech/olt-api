@@ -10,87 +10,87 @@ import { ScheduleSearchCriteria } from './dto/scheduleSearchCriteria';
 // @UseGuards(JwtAuthGuard)
 // @ApiBearerAuth('access-token')
 export class ScheduleController {
-  constructor(private readonly scheduleService: ScheduleService) {}
+  constructor(private readonly scheduleService: ScheduleService) { }
 
   @Post('')
   async createSchedule(@Res() response, @Body() schedulePayload: ScheduleDto) {
     try {
       const schedule = await this.scheduleService.createSchedule(schedulePayload)
       return response.status(HttpStatus.CREATED).json({
-          message: 'Schedule Created sucessfully',
-          schedule
+        message: 'Schedule Created sucessfully',
+        schedule
       });
-  } catch (error) {
-    throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-  }
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Delete('/:id')
-  async deleteScheduleById(@Res() response, @Param('id') ScheduleId : string){
-    try{
+  async deleteScheduleById(@Res() response, @Param('id') ScheduleId: string) {
+    try {
       const schedule = await this.scheduleService.deleteSchedule(ScheduleId)
       return response.status(HttpStatus.OK).json({
         message: 'Course deleted successfully',
         schedule,
       });
-    }catch (err) {
+    } catch (err) {
       return response.status(err.status).json(err.response);
     }
   }
 
   @Put('/:id')
-  async updateScheduleById(@Res() response, @Param('id') ScheduleId : string, @Body() SchedulePayload : ScheduleDto){
-    try{
-      const schedule = await this.scheduleService.updateSchedule(SchedulePayload, ScheduleId );
+  async updateScheduleById(@Res() response, @Param('id') ScheduleId: string, @Body() SchedulePayload: ScheduleDto) {
+    try {
+      const schedule = await this.scheduleService.updateSchedule(SchedulePayload, ScheduleId);
       return response.status(HttpStatus.OK).json({
         message: 'Schedule Updated successfully',
         schedule,
       });
-    }catch (err) {
+    } catch (err) {
       return response.status(err.status).json(err.response);
     }
   }
 
   @Put('updatePayment/:id')
-  async updatePaymentInfoSchedule(@Res() response, @Param('id') ScheduleId : string, @Body() paymentInformation : PaymentInformation){
-    try{
-      const schedule = await this.scheduleService.updatePaymentInfoSchedule(paymentInformation, ScheduleId );
+  async updatePaymentInfoSchedule(@Res() response, @Param('id') ScheduleId: string, @Body() paymentInformation: PaymentInformation) {
+    try {
+      const schedule = await this.scheduleService.updatePaymentInfoSchedule(paymentInformation, ScheduleId);
       return response.status(HttpStatus.OK).json({
         message: 'paymentInformation Updated successfully',
         schedule,
       });
-    }catch (err) {
+    } catch (err) {
       return response.status(err.status).json(err.response);
     }
   }
 
   @Get('/:id')
-  async getScheduleByScheduleId(@Res() response, @Param('id') ScheduleId : string){
-    try{
-      const schedule = await this.scheduleService.getScheduleByScheduleId(ScheduleId );
+  async getScheduleByScheduleId(@Res() response, @Param('id') ScheduleId: string) {
+    try {
+      const schedule = await this.scheduleService.getScheduleByScheduleId(ScheduleId);
       return response.status(HttpStatus.OK).json({
         message: 'Schedule found successfully',
         schedule,
       });
-    }catch (err) {
+    } catch (err) {
       return response.status(err.status).json(err.response);
     }
   }
 
   @Post('searchByCriteria')
-  async getAllSchedulesBySearchByCriteria(@Res() response, @Body() scheduleSearchCriteria: ScheduleSearchCriteria){
-      try {
-        const schedulesData = await this.scheduleService.getAllSchedulesBySearchByCriteria(scheduleSearchCriteria);
-        return response.status(HttpStatus.OK).json({
-            message: schedulesData[0].schedules.length > 0 ? 'Schedules found successfully' : 'No schedule found',
-            data: schedulesData[0].schedules,
-            count: schedulesData[0].schedules?.length,
-            totalCount: schedulesData[0].metrics[0]?.totalCount
-        });
+  async getAllSchedulesBySearchByCriteria(@Res() response, @Body() scheduleSearchCriteria: ScheduleSearchCriteria) {
+    try {
+      const schedulesData = await this.scheduleService.getAllSchedulesBySearchByCriteria(scheduleSearchCriteria);
+      return response.status(HttpStatus.OK).json({
+        message: schedulesData[0].schedules.length > 0 ? 'Schedules found successfully' : 'No schedule found',
+        data: schedulesData[0].schedules,
+        count: schedulesData[0].schedules?.length,
+        totalCount: schedulesData[0].metrics[0]?.totalCount
+      });
     }
-      catch (err) {
-        throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
-      }
+    catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
   }
-  
+
 }
