@@ -43,7 +43,7 @@ export class ScheduleController {
     try{
       const schedule = await this.scheduleService.updateSchedule(SchedulePayload, ScheduleId );
       return response.status(HttpStatus.OK).json({
-        message: 'Course Updated successfully',
+        message: 'Schedule Updated successfully',
         schedule,
       });
     }catch (err) {
