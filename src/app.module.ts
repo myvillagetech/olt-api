@@ -14,6 +14,7 @@ import { TutorProfileModule } from './tutorProfile/tutorProfile.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { RatingsModule } from './ratings/ratings.module';
 import { MesseagesModule } from './messeages/messages.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { MesseagesModule } from './messeages/messages.module';
     ScheduleModule,
     RatingsModule,
     MesseagesModule,
+    PaymentsModule,
   ],
   controllers: [AppController, CategoryController],
 })
