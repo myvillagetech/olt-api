@@ -9,5 +9,5 @@ export class Experience {
     @ApiProperty({
         type: Number
     })
-    month: number
+    months: number
 }
