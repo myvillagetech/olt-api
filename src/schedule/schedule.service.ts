@@ -6,7 +6,7 @@ import {
   UnprocessableEntityException,
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { Model, ObjectId, Schema, Types } from "mongoose";
 import { MODEL_ENUMS } from "src/shared/enums/models.enums";
 import { ScheduleDto } from "./dto/schedule.dto";
 import { ScheduleSearchCriteria } from "./dto/scheduleSearchCriteria";
@@ -62,6 +62,18 @@ export class ScheduleService {
       );
     }
     return schedule;
+  }
+
+  async updatedPaymentDetails(schduleIDs: string[], paymentId: Types.ObjectId) {
+    const options: any = schduleIDs.map(sId => {
+      return {
+        updateOne: {
+          filter: { _id: sId },
+          update: { paymentId:  paymentId}
+        }
+      }
+    })
+    await this.scheduleModel.bulkWrite(options);
   }
 
   async updatePaymentInfoSchedule(

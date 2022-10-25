@@ -68,6 +68,11 @@ export class ScheduleSchemaCreator {
     @Prop({type: Object })
     paymentInformation: any;
 
+    @Prop({
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Payment',
+    })
+    paymentId;
 }
 
 export type IScheduleDocument = ScheduleSchemaCreator & Document;

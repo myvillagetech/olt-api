@@ -1,14 +1,19 @@
-import { Prop, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose from "mongoose";
-import { RatingSchemaCreator } from "src/ratings/rating.schema";
 import * as uniqueValidators from 'mongoose-unique-validator'
+import { ScheduleSchemaCreator } from "src/schedule/schedule.schema";
+
+@Schema({
+    timestamps : true
+})
 
 export class PaymentSchemaCreator {
     @Prop({
         type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Schedule',
         required : true
     })
-    scheduleIds: Array<string>;
+    scheduleIds: [ScheduleSchemaCreator];
 
     @Prop({
         required : true
@@ -22,13 +27,13 @@ export class PaymentSchemaCreator {
 
     @Prop({
         required : true,
-        type: Object
+        type: mongoose.Types.Map
     })
-    paymentInfo;
+    paymentInfo: Object;
 }
 
 
 export type IPaymentDocument = PaymentSchemaCreator & Document;
 export const PaymentSchema = SchemaFactory.createForClass(
-    RatingSchemaCreator
+    PaymentSchemaCreator
 ).plugin(uniqueValidators)

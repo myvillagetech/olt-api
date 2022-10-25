@@ -6,7 +6,7 @@ export class Payment {
     @ApiProperty({
         type: [String]
     })
-    scheduleIds: Array<string>;
+    scheduleIds: [string];
 
     @IsDefined()
     @ApiProperty({
@@ -24,5 +24,5 @@ export class Payment {
     @ApiProperty({
         type: Object
     })
-    data: Object;
+    paymentInfo: Object;
 }
