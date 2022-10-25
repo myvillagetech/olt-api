@@ -1,5 +1,6 @@
 import { ApiBody } from "@nestjs/swagger";
 import { IsDefined, IsEmail } from "class-validator";
+import { Experience } from "src/shared/DTOs/Experience";
 import { IAvilableSlots, ICancellationPolicy, ISubjects } from "./tutorProfile.schema";
 export class TutorProfileDto {
     userId : string;
@@ -16,5 +17,6 @@ export class TutorProfileDto {
     subject: ISubjects[];
     slots : IAvilableSlots[]
     hourlyRate : number;
-    cancellationPolicy : ICancellationPolicy
+    cancellationPolicy : ICancellationPolicy;
+    experience: Experience;
 }

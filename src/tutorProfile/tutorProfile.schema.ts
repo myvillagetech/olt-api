@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import mongoose, { Document } from "mongoose";
 import * as uniqueValidators from 'mongoose-unique-validator'
+import { Experience } from "src/shared/DTOs/Experience";
 
 export interface ISlots {
     from : number | null,
@@ -99,6 +100,12 @@ export class TutorProfileSchemaCreator {
         required : false
     })
     cancellationPolicy : ICancellationPolicy
+
+    @Prop({
+        required : false,
+        type: mongoose.Types.Map
+    })
+    experience: Experience;
 
 }
 
