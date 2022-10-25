@@ -74,10 +74,21 @@ export class PaymentsService {
             if (criteria.tutorId) {
                 postJoinFilters.push({ 'schedules.tutor': new Types.ObjectId(criteria.tutorId) })
             }
-            
+
+            const paginationProps = [];
+            if (
+                (criteria.pageSize || criteria.pageSize > 0) &&
+                (criteria.pageNumber || criteria.pageNumber === 0)
+            ) {
+                paginationProps.push({
+                    $skip: criteria.pageNumber * criteria.pageSize,
+                });
+                paginationProps.push({ $limit: criteria.pageSize });
+            }
+
             return this.paymentModel.aggregate([
                 {
-                    $match: preJoinFilters.length > 0 ? {$and: preJoinFilters} : {}
+                    $match: preJoinFilters.length > 0 ? { $and: preJoinFilters } : {}
                 },
                 {
                     $lookup: {
@@ -88,8 +99,9 @@ export class PaymentsService {
                     }
                 },
                 {
-                    $match: postJoinFilters.length > 0 ? {$and: postJoinFilters} : {}
+                    $match: postJoinFilters.length > 0 ? { $and: postJoinFilters } : {}
                 },
+                ...paginationProps
             ]);
 
         } catch (error) {
