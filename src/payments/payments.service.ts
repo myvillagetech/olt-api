@@ -5,6 +5,7 @@ import { ScheduleService } from 'src/schedule/schedule.service';
 import { MODEL_ENUMS } from 'src/shared/enums/models.enums';
 import { Payment } from './payment.dto';
 import { IPaymentDocument } from './payment.schema';
+import { PaymentSearchCriteria } from './paymentSearchCriteria';
 
 @Injectable()
 export class PaymentsService {
@@ -56,12 +57,28 @@ export class PaymentsService {
         }
     }
 
-    async getPaymentsByStudent(
-        studnetId: string
+    async getPaymentsCriteria(
+        criteria: PaymentSearchCriteria
     ) {
-        console.log(studnetId)
         try {
+            const preJoinFilters = [];
+            if (criteria.paymentId) {
+                preJoinFilters.push({ 'paymentId': criteria.paymentId })
+            }
+            const postJoinFilters = [];
+
+            if (criteria.studentId) {
+                postJoinFilters.push({ 'schedules.student': new Types.ObjectId(criteria.studentId) })
+            }
+
+            if (criteria.tutorId) {
+                postJoinFilters.push({ 'schedules.tutor': new Types.ObjectId(criteria.tutorId) })
+            }
+            
             return this.paymentModel.aggregate([
+                {
+                    $match: preJoinFilters.length > 0 ? {$and: preJoinFilters} : {}
+                },
                 {
                     $lookup: {
                         from: "schedules",
@@ -71,7 +88,7 @@ export class PaymentsService {
                     }
                 },
                 {
-                    $match: { 'schedules.student': new Types.ObjectId(studnetId) }
+                    $match: postJoinFilters.length > 0 ? {$and: postJoinFilters} : {}
                 },
             ]);
 
@@ -79,7 +96,7 @@ export class PaymentsService {
             console.log(error);
             throw new HttpException(
                 `Something went wrong ... Please try again`,
-                HttpStatus.UNPROCESSABLE_ENTITY
+                HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
     }

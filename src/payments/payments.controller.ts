@@ -2,6 +2,7 @@ import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Res } fr
 import { ApiTags } from '@nestjs/swagger';
 import { Payment } from './payment.dto';
 import { PaymentsService } from './payments.service';
+import { PaymentSearchCriteria } from './paymentSearchCriteria';
 
 @Controller('payments')
 @ApiTags('payments')
@@ -40,13 +41,13 @@ export class PaymentsController {
         }
     }
 
-    @Get('getPaymentByStudent/:studentId')
-    async getPaymentByStudent(
-        @Res() response, @Param('studentId') studentId: string
+    @Post('getPaymentsCriteria')
+    async getPaymentsCriteria(
+        @Res() response, @Body() criteria: PaymentSearchCriteria
     ) {
         try {
-            const payment = await this.paymentService.getPaymentsByStudent(studentId)
-            return response.status(HttpStatus.CREATED).json({
+            const payment = await this.paymentService.getPaymentsCriteria(criteria)
+            return response.status(HttpStatus.OK).json({
                 message: 'Payment details retrieved sucessfully',
                 payment
             });
