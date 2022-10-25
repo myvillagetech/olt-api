@@ -26,6 +26,11 @@ export class PaymentSchemaCreator {
     status: string;
 
     @Prop({
+        required : true
+    })
+    amount: number;
+
+    @Prop({
         required : true,
         type: mongoose.Types.Map
     })

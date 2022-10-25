@@ -22,6 +22,12 @@ export class Payment {
 
     @IsDefined()
     @ApiProperty({
+        type: Number
+    })
+    amount: number;
+
+    @IsDefined()
+    @ApiProperty({
         type: Object
     })
     paymentInfo: Object;
