@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import mongoose, { Document } from "mongoose";
 import * as uniqueValidators from 'mongoose-unique-validator'
+import { BankAccount as BankAccountDTO } from "src/shared/DTOs/BankAccount";
 import { Experience } from "src/shared/DTOs/Experience";
 
 export interface ISlots {
@@ -22,6 +23,27 @@ export class ICancellationPolicy {
     quantity: string;
     charge: string;
 }
+
+
+@Schema({})
+export class BankAccount {
+    @Prop({
+        required: true,
+    })
+    accountNumber: string;
+    @Prop({
+        required: true,
+    })
+    bankerName: string;
+    @Prop({
+        required: true,
+    })
+    name: string;
+}
+
+export const BankAccountSchema = SchemaFactory.createForClass(
+    BankAccount
+).plugin(uniqueValidators)
 
 @Schema({
     timestamps: true
@@ -110,6 +132,11 @@ export class TutorProfileSchemaCreator {
     @Prop({
     })
     timeZone: string;
+
+    @Prop({
+        type: [BankAccountSchema]
+    })
+    bankAccountDetails: BankAccountDTO[];
 }
 
 export type ITutorProfileDocument = TutorProfileSchemaCreator & Document;

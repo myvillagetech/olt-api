@@ -1,5 +1,6 @@
 import { ApiBody } from "@nestjs/swagger";
 import { IsDefined, IsEmail } from "class-validator";
+import { BankAccount } from "src/shared/DTOs/BankAccount";
 import { Experience } from "src/shared/DTOs/Experience";
 import { IAvilableSlots, ICancellationPolicy, ISubjects } from "./tutorProfile.schema";
 export class TutorProfileDto {
@@ -19,5 +20,6 @@ export class TutorProfileDto {
     hourlyRate : number;
     cancellationPolicy : ICancellationPolicy;
     experience: Experience;
+    bankAccountDetails: BankAccount[];
     timeZone: string;
 }

@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, 
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { response } from "express";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guards";
+import { BankAccount } from "src/shared/DTOs/BankAccount";
 import { TutorProfileDto } from "./tutorProfile.dto";
 import { IAvilableSlots } from "./tutorProfile.schema";
 import { TutorProfileService } from "./tutorProfile.service";
@@ -42,6 +43,25 @@ export class TutorProfileController {
             return response.status(HttpStatus.BAD_REQUEST).json({
                 statusCode: 400,
                 message: 'Error: Course not created!',
+                error: 'Bad Request',
+            });
+        }
+    }
+
+    @Put('/bankAccount/:profileId/:accontId')
+    async updateTutorBankDetails(@Res() response, @Body() account: BankAccount, @Param('profileId') profileId: string, @Param('accontId') accontId: string) {
+        try {
+            const profile = await this.tutorProfileService.updateTutorBankDetails(account, profileId, accontId)
+            return response.status(HttpStatus.CREATED).json({
+                statusCode: 201,
+                message: 'bank account Added sucessfully',
+                profile
+            });
+        } catch (error) {
+            console.log(error)
+            return response.status(HttpStatus.BAD_REQUEST).json({
+                statusCode: 400,
+                message: 'Error while updating bank account details!',
                 error: 'Bad Request',
             });
         }

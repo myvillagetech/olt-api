@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
+import { BankAccount } from "src/shared/DTOs/BankAccount";
 import { MODEL_ENUMS } from "src/shared/enums/models.enums";
 import { TutorProfileDto } from "./tutorProfile.dto";
 import { IAvilableSlots, ISubjects, ITutorProfileDocument } from "./tutorProfile.schema";
@@ -47,22 +48,67 @@ export class TutorProfileService {
         return profile;
     }
 
+    async updateTutorBankDetails(account: BankAccount, profileId: string, accontId: string):
+    Promise<any> {
+
+        const userProfile = await this.profileModel.findOne({ userId: profileId });
+
+        const bankAccounts = userProfile.bankAccountDetails;
+
+        console.log(userProfile)
+        if (!bankAccounts || bankAccounts.length === 0) {
+            console.log('no accounts')
+            userProfile.bankAccountDetails = [
+                account
+            ];
+            console.log(userProfile)
+            return await this.profileModel.findByIdAndUpdate(userProfile._id, {'bankAccountDetails': userProfile.bankAccountDetails});
+        } else {
+            const bankAccount = userProfile.bankAccountDetails.find((ac: any) => {
+                console.log(ac._id);
+                console.log(ac._id.toString());
+                console.log(accontId);
+                return ac._id.toString() === accontId;
+            });
+
+            if(bankAccount) {
+                let index = userProfile.bankAccountDetails.findIndex((ac: any) => ac._id.toString() === accontId);
+                userProfile.bankAccountDetails[index] = {...bankAccount, ...account};
+            } else {
+                userProfile.bankAccountDetails.push(account)
+            }
+            console.log(userProfile)
+            return await this.profileModel.findByIdAndUpdate(userProfile._id, {'bankAccountDetails': userProfile.bankAccountDetails});
+        }
+
+        const profile = await this.profileModel.findOneAndUpdate
+            ({ userId: profileId, bankAccountDetails: { '$elemMatch': { '_id': accontId } } }
+                , { bankAccountDetails: account },
+                { new: true }).exec()
+        if (!profile) {
+            throw new HttpException(`Profile #${profileId} not found`, HttpStatus.NOT_MODIFIED);
+        }
+        return profile;
+    }
+
     async getProfileByUserId(userId: string): Promise<ITutorProfileDocument> {
         const profileDetails = await this.profileModel.aggregate([
-            {$match : { 'userId': new Types.ObjectId(userId) }},
-            {$lookup : {
-                from: "ratings",
-                        localField: "userId",
-                        foreignField: "tutor",
-                        as: "ratings",
-                        pipeline: [{
-                            $group: {
-                                _id: '$tutor',
-                                avg: { $avg: '$rating' },
-                                count: { $count: {} }
-                            }
-                        }]
-            }}
+            { $match: { 'userId': new Types.ObjectId(userId) } },
+            {
+                $lookup: {
+                    from: "ratings",
+                    localField: "userId",
+                    foreignField: "tutor",
+                    as: "ratings",
+                    pipeline: [{
+                        $group: {
+                            _id: '$tutor',
+                            avg: { $avg: '$rating' },
+                            count: { $count: {} }
+                        }
+                    }]
+                }
+            }
         ])
         if (!profileDetails) {
             throw new NotFoundException('Profile Data not Found!');
