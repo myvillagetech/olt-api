@@ -19,4 +19,5 @@ export class TutorProfileDto {
     hourlyRate : number;
     cancellationPolicy : ICancellationPolicy;
     experience: Experience;
+    timeZone: string;
 }

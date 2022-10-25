@@ -4,17 +4,17 @@ import * as uniqueValidators from 'mongoose-unique-validator'
 import { Experience } from "src/shared/DTOs/Experience";
 
 export interface ISlots {
-    from : number | null,
-    to : number | null
+    from: number | null,
+    to: number | null
 }
 export interface IAvilableSlots {
-    day : number,
-    slots : ISlots[]
+    day: number,
+    slots: ISlots[]
 }
 
 export interface ISubjects {
-    courseName : string,
-    _id : string
+    courseName: string,
+    _id: string
 }
 
 export class ICancellationPolicy {
@@ -31,10 +31,10 @@ export class TutorProfileSchemaCreator {
     @Prop({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required : true,
+        required: true,
         // unique : true
     })
-    userId : string;
+    userId: string;
     @Prop({
         required: true,
     })
@@ -66,10 +66,10 @@ export class TutorProfileSchemaCreator {
     address: string;
 
     @Prop({
-        required : true,
-        unique : true
+        required: true,
+        unique: true
     })
-    email : string;
+    email: string;
 
     @Prop({
         required: true
@@ -82,31 +82,34 @@ export class TutorProfileSchemaCreator {
     description: string;
 
     @Prop({
-        required : false
+        required: false
     })
     subject: ISubjects[];
 
     @Prop({
-        required : false
+        required: false
     })
-    slots : IAvilableSlots[];
-   
-    @Prop({
-        required : false
-    })
-    hourlyRate : number;
+    slots: IAvilableSlots[];
 
     @Prop({
-        required : false
+        required: false
     })
-    cancellationPolicy : ICancellationPolicy
+    hourlyRate: number;
 
     @Prop({
-        required : false,
+        required: false
+    })
+    cancellationPolicy: ICancellationPolicy
+
+    @Prop({
+        required: false,
         type: mongoose.Types.Map
     })
     experience: Experience;
 
+    @Prop({
+    })
+    timeZone: string;
 }
 
 export type ITutorProfileDocument = TutorProfileSchemaCreator & Document;
