@@ -56,4 +56,32 @@ export class PaymentsService {
         }
     }
 
+    async getPaymentsByStudent(
+        studnetId: string
+    ) {
+        console.log(studnetId)
+        try {
+            return this.paymentModel.aggregate([
+                {
+                    $lookup: {
+                        from: "schedules",
+                        localField: "scheduleIds",
+                        foreignField: "_id",
+                        as: "schedules",
+                    }
+                },
+                {
+                    $match: { 'schedules.student': new Types.ObjectId(studnetId) }
+                },
+            ]);
+
+        } catch (error) {
+            console.log(error);
+            throw new HttpException(
+                `Something went wrong ... Please try again`,
+                HttpStatus.UNPROCESSABLE_ENTITY
+            );
+        }
+    }
+
 }

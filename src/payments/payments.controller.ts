@@ -39,4 +39,20 @@ export class PaymentsController {
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @Get('getPaymentByStudent/:studentId')
+    async getPaymentByStudent(
+        @Res() response, @Param('studentId') studentId: string
+    ) {
+        try {
+            const payment = await this.paymentService.getPaymentsByStudent(studentId)
+            return response.status(HttpStatus.CREATED).json({
+                message: 'Payment details retrieved sucessfully',
+                payment
+            });
+        } catch (error) {
+            console.log(error);
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+        }
+    }
 }
