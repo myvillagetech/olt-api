@@ -9,6 +9,11 @@ export class BankAccount {
     @ApiProperty({
         type: String
     })
+    _id: string;
+
+    @ApiProperty({
+        type: String
+    })
     bankerName: string;
 
     @ApiProperty({

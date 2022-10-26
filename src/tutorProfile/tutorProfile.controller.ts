@@ -48,19 +48,16 @@ export class TutorProfileController {
         }
     }
 
-    @Put('/bankAccount/:profileId/:accontId')
-    async updateTutorBankDetails(@Res() response, @Body() account: BankAccount, @Param('profileId') profileId: string, @Param('accontId') accontId: string) {
+    @Put('/bankAccount/:profileId')
+    async updateTutorBankDetails(@Res() response, @Body() account: BankAccount, @Param('profileId') profileId: string) {
         try {
-            const profile = await this.tutorProfileService.updateTutorBankDetails(account, profileId, accontId)
+            const profile = await this.tutorProfileService.updateTutorBankDetails(account, profileId)
             return response.status(HttpStatus.CREATED).json({
-                statusCode: 201,
                 message: 'bank account Added sucessfully',
-                profile
             });
         } catch (error) {
             console.log(error)
             return response.status(HttpStatus.BAD_REQUEST).json({
-                statusCode: 400,
                 message: 'Error while updating bank account details!',
                 error: 'Bad Request',
             });

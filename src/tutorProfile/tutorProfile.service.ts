@@ -49,47 +49,34 @@ export class TutorProfileService {
     }
 
     // REfactor :: https://www.mongodb.com/docs/manual/reference/operator/update/positional-all/
-    async updateTutorBankDetails(account: BankAccount, profileId: string, accontId: string):
-    Promise<any> {
+    async updateTutorBankDetails(account: BankAccount, profileId: string):
+        Promise<any> {
 
+        const accontId = account._id;
         const userProfile = await this.profileModel.findOne({ userId: profileId });
 
         const bankAccounts = userProfile.bankAccountDetails;
 
-        console.log(userProfile)
         if (!bankAccounts || bankAccounts.length === 0) {
             console.log('no accounts')
             userProfile.bankAccountDetails = [
                 account
             ];
-            console.log(userProfile)
-            return await this.profileModel.findByIdAndUpdate(userProfile._id, {'bankAccountDetails': userProfile.bankAccountDetails});
+            return await this.profileModel.findByIdAndUpdate(userProfile._id, { 'bankAccountDetails': userProfile.bankAccountDetails });
         } else {
-            const bankAccount = userProfile.bankAccountDetails.find((ac: any) => {
-                console.log(ac._id);
-                console.log(ac._id.toString());
-                console.log(accontId);
-                return ac._id.toString() === accontId;
-            });
-
-            if(bankAccount) {
-                let index = userProfile.bankAccountDetails.findIndex((ac: any) => ac._id.toString() === accontId);
-                userProfile.bankAccountDetails[index] = {...bankAccount, ...account};
+            if (accontId) {
+                return await this.profileModel.updateOne(
+                    { userId: profileId },
+                    { $set: { "bankAccountDetails.$[account]": { ...account, _id: accontId } } },
+                    { arrayFilters: [{ "account._id": accontId }] }
+                )
             } else {
-                userProfile.bankAccountDetails.push(account)
+                return await this.profileModel.updateOne(
+                    { userId: profileId },
+                    { $push: { bankAccountDetails: account } }
+                )
             }
-            console.log(userProfile)
-            return await this.profileModel.findByIdAndUpdate(userProfile._id, {'bankAccountDetails': userProfile.bankAccountDetails});
         }
-
-        const profile = await this.profileModel.findOneAndUpdate
-            ({ userId: profileId, bankAccountDetails: { '$elemMatch': { '_id': accontId } } }
-                , { bankAccountDetails: account },
-                { new: true }).exec()
-        if (!profile) {
-            throw new HttpException(`Profile #${profileId} not found`, HttpStatus.NOT_MODIFIED);
-        }
-        return profile;
     }
 
     async getProfileByUserId(userId: string): Promise<ITutorProfileDocument> {
