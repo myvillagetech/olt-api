@@ -20,6 +20,9 @@ export class ScheduleService {
     private scheduleModel: Model<IScheduleDocument>
   ) {}
 
+  getScheduleModel(): Model<IScheduleDocument> {
+    return this.scheduleModel;
+  }
   async createSchedule(
     schedulePayload: ScheduleDto
   ): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
@@ -241,4 +244,10 @@ export class ScheduleService {
     });
     return result;
   }
+
+  getUnPaidSchdulesByTutorId(tutorId: string) {
+    this.scheduleModel.aggregate([
+        { $match : {tutor: tutorId, paymentInformation: {$or: [{ $ne: null }, { $exists: false }]}}}
+    ]);
+}
 }

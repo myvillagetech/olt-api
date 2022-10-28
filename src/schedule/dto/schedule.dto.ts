@@ -1,8 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDefined } from "class-validator";
 import { Type } from "class-transformer";
-import { ISlots, ISubjects } from "src/tutorProfile/tutorProfile.schema";
-import { User } from "src/users/schema/user.schema";
 import { Status } from "../schedule.status";
 
 export class PaymentInformation {
@@ -83,5 +81,10 @@ export class ScheduleDto {
         type: PaymentInformation
     })
     paymentInformation;
+
+    @ApiProperty({
+        type: Boolean
+    })
+    isFreeDemo: boolean;
 }
 
