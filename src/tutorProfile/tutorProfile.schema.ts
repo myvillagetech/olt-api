@@ -39,6 +39,10 @@ export class BankAccount {
         required: true,
     })
     name: string;
+    @Prop({
+        required: true,
+    })
+    isDefault: boolean;
 }
 
 export const BankAccountSchema = SchemaFactory.createForClass(

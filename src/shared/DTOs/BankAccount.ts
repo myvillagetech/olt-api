@@ -20,4 +20,9 @@ export class BankAccount {
         type: String
     })
     name: string;
+
+    @ApiProperty({
+        type: Boolean
+    })
+    isDefault: boolean;
 }
