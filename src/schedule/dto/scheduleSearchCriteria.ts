@@ -32,7 +32,7 @@ export class ScheduleSearchCriteria extends CriteriaWithPaginationAndSorting {
     status: Status[]
 
     @ApiProperty({
-        type: Date
+        type: DateRange
     })
     @IsDefined()
     dateRange: DateRange;
