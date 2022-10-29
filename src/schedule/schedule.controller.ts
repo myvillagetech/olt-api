@@ -64,18 +64,18 @@ export class ScheduleController {
     }
   }
 
-  @Put('updatePayment/:id')
-  async updatePaymentInfoSchedule(@Res() response, @Param('id') ScheduleId: string, @Body() paymentInformation: PaymentInformation) {
-    try {
-      const schedule = await this.scheduleService.updatePaymentInfoSchedule(paymentInformation, ScheduleId);
-      return response.status(HttpStatus.OK).json({
-        message: 'paymentInformation Updated successfully',
-        schedule,
-      });
-    } catch (err) {
-      return response.status(err.status).json(err.response);
-    }
-  }
+  // @Put('updatePayment/:id')
+  // async updatePaymentInfoSchedule(@Res() response, @Param('id') ScheduleId: string, @Body() paymentInformation: PaymentInformation) {
+  //   try {
+  //     const schedule = await this.scheduleService.updatePaymentInfoSchedule(paymentInformation, ScheduleId);
+  //     return response.status(HttpStatus.OK).json({
+  //       message: 'paymentInformation Updated successfully',
+  //       schedule,
+  //     });
+  //   } catch (err) {
+  //     return response.status(err.status).json(err.response);
+  //   }
+  // }
 
   @Get('/:id')
   async getScheduleByScheduleId(@Res() response, @Param('id') ScheduleId: string) {
