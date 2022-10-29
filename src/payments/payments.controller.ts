@@ -26,12 +26,12 @@ export class PaymentsController {
         }
     }
 
-    @Post('/updateTutorPayouot')
-    async updateTutorPayouot(
+    @Post('/updateTutorPayout')
+    async updateTutorPayout(
         @Res() response, @Body() payload: Payout
     ) {
         try {
-            const payment = await this.paymentService.updateTutorPayouot(payload)
+            const payment = await this.paymentService.updateTutorPayout(payload)
             return response.status(HttpStatus.CREATED).json({
                 message: 'Payment details added sucessfully',
                 payment

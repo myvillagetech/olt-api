@@ -32,7 +32,7 @@ export class PaymentsService {
         }
     }
 
-    async updateTutorPayouot(
+    async updateTutorPayout(
         payload: Payout
     ) {
         try {
