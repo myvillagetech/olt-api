@@ -179,6 +179,23 @@ export class ScheduleService {
         });
       }
 
+      if (criteria.dateRange && (criteria.dateRange.from || criteria.dateRange.to)) {
+        const searchOption: any = {};
+        if(criteria.dateRange.from) {
+          searchOption.$gte = new Date(criteria.dateRange.from);
+        }
+        if(criteria.dateRange.to) {
+          searchOption.$lte = new Date(criteria.dateRange.to);
+        }
+        search.$and.push({
+          slots: {
+            $elemMatch: {
+                  date: searchOption
+              },
+          },
+        });
+      }
+
       if (criteria.studentIds && criteria.studentIds.length > 0) {
         search.$and.push({
           "student._id": {
@@ -260,10 +277,10 @@ export class ScheduleService {
     return result;
   }
 
-  getUnPaidSchdulesByTutorId(tutorId: string) {
-    this.scheduleModel.aggregate([
-      { $match: { tutor: tutorId, paymentInformation: { $or: [{ $ne: null }, { $exists: false }] } } }
-    ]);
-  }
+  // getUnPaidSchdulesByTutorId(tutorId: string) {
+  //   this.scheduleModel.aggregate([
+  //     { $match: { tutor: tutorId, paymentInformation: { $or: [{ $ne: null }, { $exists: false }] } } }
+  //   ]);
+  // }
 
 }
