@@ -34,6 +34,19 @@ export class Slot {
     to: Number;
 }
 
+export class AcceptScheduleDto{
+    @IsDefined()
+    @ApiProperty({
+        type: String
+    })
+    id: string; 
+
+    @IsDefined()
+    @ApiProperty({
+        type: Number
+    })
+    amount: number;
+}
 export class ScheduleDto {
 
     @IsDefined()

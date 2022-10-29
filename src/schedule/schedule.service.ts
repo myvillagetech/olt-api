@@ -67,6 +67,23 @@ export class ScheduleService {
     return schedule;
   }
 
+  async updateScheduleStatus(
+    scheduleId: string,
+    status: string,
+    props: object
+  ): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
+    const schedule = await this.scheduleModel
+      .findByIdAndUpdate(scheduleId, {status: status, ...props}, { new: true })
+      .exec();
+    if (!schedule) {
+      throw new HttpException(
+        `Schedule #${scheduleId} not found`,
+        HttpStatus.NOT_MODIFIED
+      );
+    }
+    return schedule;
+  }
+
   async updatedPaymentDetails(schduleIDs: string[], paymentId: Types.ObjectId) {
     const options: any = schduleIDs.map(sId => {
       return {

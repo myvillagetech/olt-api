@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards, HttpStatus, Put, HttpException } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
-import { ScheduleDto, PaymentInformation } from './dto/schedule.dto';
+import { ScheduleDto, PaymentInformation, AcceptScheduleDto } from './dto/schedule.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ScheduleSearchCriteria } from './dto/scheduleSearchCriteria';
@@ -44,6 +44,19 @@ export class ScheduleController {
       const schedule = await this.scheduleService.updateSchedule(SchedulePayload, ScheduleId);
       return response.status(HttpStatus.OK).json({
         message: 'Schedule Updated successfully',
+        schedule,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
+  @Put('/acceptSchdule')
+  async acceptSchdule(@Res() response, @Body() payload: AcceptScheduleDto) {
+    try {
+      const schedule = await this.scheduleService.updateScheduleStatus(payload.id, 'ACCEPTED', {amount: payload.amount});
+      return response.status(HttpStatus.OK).json({
+        message: 'Schedule accpeted successfully',
         schedule,
       });
     } catch (err) {
