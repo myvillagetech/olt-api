@@ -74,6 +74,9 @@ export class ScheduleSchemaCreator {
     @Prop({type: Boolean })
     isFreeDemo: boolean;
 
+    @Prop({type: Number })
+    amount: number;
+
     @Prop({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Payment',
