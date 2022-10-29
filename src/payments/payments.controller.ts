@@ -58,6 +58,22 @@ export class PaymentsController {
         }
     }
 
+    @Get('payout-details/:payoutId')
+    async getPayout(
+        @Res() response, @Param('payoutId') payoutId: string
+    ) {
+        try {
+            const payment = await this.paymentService.getPayoutDetails(payoutId)
+            return response.status(HttpStatus.CREATED).json({
+                message: 'payout details retrieved sucessfully',
+                payment
+            });
+        } catch (error) {
+            console.log(error);
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @Post('getPaymentsCriteria')
     async getPaymentsCriteria(
         @Res() response, @Body() criteria: PaymentSearchCriteria

@@ -78,6 +78,33 @@ export class PaymentsService {
         }
     }
 
+    async getPayoutDetails(
+        payoutId: string
+    ) {
+        try {
+            return this.payoutModel.aggregate([
+                {
+                    $match: { '_id': new Types.ObjectId(payoutId) }
+                },
+                {
+                    $lookup: {
+                        from: "schedules",
+                        localField: "scheduleIds",
+                        foreignField: "_id",
+                        as: "Schedules",
+                    }
+                }
+            ]);
+
+        } catch (error) {
+            console.log(error);
+            throw new HttpException(
+                `Something went wrong ... Please try again`,
+                HttpStatus.UNPROCESSABLE_ENTITY
+            );
+        }
+    }
+
     async getPaymentsCriteria(
         criteria: PaymentSearchCriteria
     ) {
