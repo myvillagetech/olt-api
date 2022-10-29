@@ -10,7 +10,7 @@ import { Payout } from './payout';
 export class PaymentsController {
 
     constructor(private paymentService: PaymentsService) { }
-    @Post('')
+    @Post('/updatePayment')
     async addPayment(
         @Res() response, @Body() payload: Payment
     ) {
@@ -33,7 +33,7 @@ export class PaymentsController {
         try {
             const payment = await this.paymentService.updateTutorPayout(payload)
             return response.status(HttpStatus.CREATED).json({
-                message: 'Payment details added sucessfully',
+                message: 'Payout details added sucessfully',
                 payment
             });
         } catch (error) {
