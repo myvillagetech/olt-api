@@ -51,7 +51,7 @@ export class ScheduleController {
     }
   }
 
-  @Put('/acceptSchdule')
+  @Post('/acceptSchdule')
   async acceptSchdule(@Res() response, @Body() payload: AcceptScheduleDto) {
     try {
       const schedule = await this.scheduleService.updateScheduleStatus(payload.id, 'ACCEPTED', {amount: payload.amount});

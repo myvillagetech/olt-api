@@ -47,6 +47,7 @@ export class AcceptScheduleDto{
     })
     amount: number;
 }
+
 export class ScheduleDto {
 
     @IsDefined()
