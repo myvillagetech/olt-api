@@ -79,6 +79,21 @@ export class ScheduleService {
     await this.scheduleModel.bulkWrite(options);
   }
 
+  async updatedtutorPayoutDetails(schduleIDs: string[], paymentId: Types.ObjectId) {
+    const options: any = schduleIDs.map(sId => {
+      return {
+        updateOne: {
+          filter: { _id: sId },
+          update: { payoutId: paymentId }
+        }
+      }
+    })
+
+    console.log(options);
+    console.log(schduleIDs, paymentId);
+    await this.scheduleModel.bulkWrite(options);
+  }
+
   async updatePaymentInfoSchedule(
     payload: any,
     scheduleId: string

@@ -6,11 +6,14 @@ import { MODEL_ENUMS } from 'src/shared/enums/models.enums';
 import { Payment } from './payment.dto';
 import { IPaymentDocument } from './payment.schema';
 import { PaymentSearchCriteria } from './paymentSearchCriteria';
+import { Payout } from './payout';
+import { IPayoutDocument } from './payout.schema';
 
 @Injectable()
 export class PaymentsService {
     constructor(private readonly scheduleService: ScheduleService,
-        @InjectModel(MODEL_ENUMS.PAYMENT) private paymentModel: Model<IPaymentDocument>) { }
+        @InjectModel(MODEL_ENUMS.PAYMENT) private paymentModel: Model<IPaymentDocument>,
+        @InjectModel(MODEL_ENUMS.PAYOUT) private payoutModel: Model<IPayoutDocument>) { }
 
     async addPayment(
         payload: Payment
@@ -19,6 +22,23 @@ export class PaymentsService {
             const payment = new this.paymentModel(payload);
             const results = await payment.save();
             await this.scheduleService.updatedPaymentDetails(payload.scheduleIds, results["_id"])
+            return results;
+        } catch (error) {
+            console.log(error);
+            throw new HttpException(
+                `Something went wrong ... Please try again`,
+                HttpStatus.UNPROCESSABLE_ENTITY
+            );
+        }
+    }
+
+    async updateTutorPayouot(
+        payload: Payout
+    ) {
+        try {
+            const payment = new this.payoutModel(payload);
+            const results = await payment.save();
+            await this.scheduleService.updatedtutorPayoutDetails(payload.scheduleIds, results["_id"])
             return results;
         } catch (error) {
             console.log(error);
@@ -119,8 +139,9 @@ export class PaymentsService {
             {
                 $match: {
                     $and: [
-                        { paymentInformation: { $exists: true } },
-                        { paymentInformation: { $ne: null } },
+                        { paymentId: { $exists: true } },
+                        { paymentId: { $ne: null } },
+                        { payoutId: {$exists: false } },
                         { tutor: new Types.ObjectId(tutorId) }
                     ],
                 }
@@ -143,10 +164,10 @@ export class PaymentsService {
             {
                 $match: {
                     $and: [
-                        { paymentInformation: { $exists: true } },
-                        { paymentInformation: { $ne: null } }
+                        { paymentId: { $exists: true } },
+                        { paymentId: { $ne: null } },
+                        { payoutId: {$exists: false } }
                     ],
-                    tutorPayoutInformation: { $exists: false }
                 }
             },
             {

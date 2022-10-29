@@ -7,7 +7,8 @@ export const MODEL_ENUMS = {
     RATING : 'rating',
     MESSAGE : 'message',
     SELECTED_COURSE : 'selectedCourse',
-    PAYMENT: 'payments'
+    PAYMENT: 'payments',
+    PAYOUT: 'payouts'
 }
 
 export const COLLECTION_NAMES = {
