@@ -28,6 +28,7 @@ export class PaymentsService {
             );
         }
     }
+    
 
     async getPaymentDetails(
         paymentId: string
@@ -113,4 +114,58 @@ export class PaymentsService {
         }
     }
 
+    async getAllUnpaidSchdulesByTutorId(tutorId: string) {
+        const result = await this.scheduleService.getScheduleModel().aggregate([
+            {
+                $match: {
+                    $and: [
+                        { paymentInformation: { $exists: true } },
+                        { paymentInformation: { $ne: null } },
+                        { tutor: new Types.ObjectId(tutorId) }
+                    ],
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "student",
+                    foreignField: "_id",
+                    as: "student",
+                }
+            }
+        ]);
+
+        return result.map( r => ({...r, student: r.student[0]}))
+    }
+
+    async getAllUnpaidTutors() {
+        const result = await this.scheduleService.getScheduleModel().aggregate([
+            {
+                $match: {
+                    $and: [
+                        { paymentInformation: { $exists: true } },
+                        { paymentInformation: { $ne: null } }
+                    ],
+                    tutorPayoutInformation: { $exists: false }
+                }
+            },
+            {
+                $group: {
+                    _id: '$tutor'
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "tutorObj",
+                }
+            }
+        ]);
+
+        return result.map(r => {
+            return r.tutorObj[0];
+        })
+    }
 }

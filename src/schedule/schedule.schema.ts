@@ -68,6 +68,9 @@ export class ScheduleSchemaCreator {
     @Prop({type: Object })
     paymentInformation: any;
 
+    @Prop({type: Object })
+    tutorPayoutInformation: any;
+
     @Prop({type: Boolean })
     isFreeDemo: boolean;
 

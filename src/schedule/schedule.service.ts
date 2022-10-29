@@ -18,7 +18,7 @@ export class ScheduleService {
   constructor(
     @InjectModel(MODEL_ENUMS.SCHEDULE)
     private scheduleModel: Model<IScheduleDocument>
-  ) {}
+  ) { }
 
   getScheduleModel(): Model<IScheduleDocument> {
     return this.scheduleModel;
@@ -72,7 +72,7 @@ export class ScheduleService {
       return {
         updateOne: {
           filter: { _id: sId },
-          update: { paymentId:  paymentId}
+          update: { paymentId: paymentId }
         }
       }
     })
@@ -84,8 +84,8 @@ export class ScheduleService {
     scheduleId: string
   ): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
     const schedule = await this.scheduleModel
-      .findOneAndUpdate({_id: new Types.ObjectId(scheduleId)},
-      {$set: {"paymentInformation":payload}}, { new: true })
+      .findOneAndUpdate({ _id: new Types.ObjectId(scheduleId) },
+        { $set: { "paymentInformation": payload } }, { new: true })
       .exec();
     if (!schedule) {
       throw new HttpException(
@@ -247,7 +247,8 @@ export class ScheduleService {
 
   getUnPaidSchdulesByTutorId(tutorId: string) {
     this.scheduleModel.aggregate([
-        { $match : {tutor: tutorId, paymentInformation: {$or: [{ $ne: null }, { $exists: false }]}}}
+      { $match: { tutor: tutorId, paymentInformation: { $or: [{ $ne: null }, { $exists: false }] } } }
     ]);
-}
+  }
+
 }

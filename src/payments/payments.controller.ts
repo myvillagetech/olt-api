@@ -25,7 +25,7 @@ export class PaymentsController {
         }
     }
 
-    @Get('/:paymentId')
+    @Get('details/:paymentId')
     async getPayment(
         @Res() response, @Param('paymentId') paymentId: string
     ) {
@@ -55,5 +55,15 @@ export class PaymentsController {
             console.log(error);
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Get('getAllUnpaidTutors')
+    async getAllUnpaidTutors() {
+        return await this.paymentService.getAllUnpaidTutors();
+    }
+
+    @Get('getAllUnpaidSchedulesByTutorid/:tutorId')
+    async getAllUnpaidSchedulesByTutorid(@Param('tutorId') tutorId: string) {
+        return await this.paymentService.getAllUnpaidSchdulesByTutorId(tutorId);
     }
 }
