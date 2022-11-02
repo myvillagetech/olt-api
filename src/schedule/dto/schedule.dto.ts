@@ -71,12 +71,12 @@ export class ScheduleDto {
         type: String,
         enum: Status
     })
-    @IsDefined()
+    // @IsDefined()
     status: Status
     @ApiProperty({
         type: [Slot],
     })
-    @IsDefined()
+    // @IsDefined()
     @Type(() => Slot)
     slots: Array<Slot>;
 
