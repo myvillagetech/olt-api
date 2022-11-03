@@ -154,7 +154,7 @@ function toggleFullscreen(elem) {
   }
 }
 
-document.getElementById('btnFullscreen').addEventListener('click', function() {
+document.getElementById('btnFullscreen')?.addEventListener('click', function() {
   toggleFullscreen();
 });
 

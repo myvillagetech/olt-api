@@ -57,25 +57,25 @@ Version      : 1.0
 	1. General
 -----------------------*/
 
- @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+ /* @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap'); */
 
-@font-face {
+/* @font-face {
 	font-family: 'Material Icons';
 	font-style: normal;
 	font-weight: 400;
 	src: url(../fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
-	src: local('Material Icons'),
+	/* src: local('Material Icons'),
 	local('MaterialIcons-Regular'),
 	url(../fonts/MaterialIcons-Regular.woff2) format('woff2'),
 	url(../fonts/MaterialIcons-Regular.woff) format('woff'),
 	url(../fonts/MaterialIcons-Regular.ttf) format('truetype');
-}
-@font-face {
+} */
+/* @font-face {
 	font-family: 'Impact';
 	font-style: normal;
 	font-weight: 400;
 	src: local('Impact'), url('../fonts/impact.ttf') format('ttf');
-}
+} */ */
 .material-icons {
 	font-family: 'Material Icons';
 	font-weight: normal;
@@ -221,12 +221,17 @@ textarea.form-control {
 }
 .content {
 	min-height: 200px;
-	padding: 30px 0 0;
+	padding-top: 10px;
 }
 p:last-child {
 	margin-bottom: 0;
 }
 
+/*overriding prime ng*/
+
+.p-inputtext, .p-dropdown, .p-calendar .p-inputtext,.p-calendar,.p-multiselect{
+	width:100% !important;
+}
 /*-----------------
 	2. Table
 -----------------------*/
@@ -1627,7 +1632,7 @@ a.text-primary:focus, a.text-primary:hover {
 }
 .main-nav li a {
 	display: block;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;;
 	color: #26292c;
 }
@@ -1638,6 +1643,12 @@ a.text-primary:focus, a.text-primary:hover {
     display: inline-block;
     margin-right: 30px;
     width: 160px;
+}
+.logo h2{
+	margin-bottom: 0;
+}
+.header .navbar .container-fluid{
+	justify-content: normal;
 }
 .header-navbar-rht {
     margin: 0;
@@ -1753,6 +1764,112 @@ a.text-primary:focus, a.text-primary:hover {
 	-ms-transform: rotate(-135deg);
 	transform: rotate(-135deg);
 }
+.header .user-menu{
+	margin-left: auto;
+}
+.user-menu .dropdown-menu {
+	min-width: 200px;
+	padding: 0;
+}
+
+.user-menu .dropdown-menu .dropdown-item {
+	padding: 7px 15px;
+}
+
+.user-menu .dropdown-menu .dropdown-item:first-child {
+	border-top: 0;
+	border-radius: .8rem .8rem 0 0;
+}
+
+.user-menu .dropdown-menu .dropdown-item:last-child {
+	border-radius: 0 0 .8rem .8rem;
+}
+
+.user-menu .dropdown-menu .dropdown-item {
+	display: flex;
+	align-items: center;
+	border-top: 1px solid #f0f2f8;
+	padding: 10px 15px;
+}
+
+.user-menu .dropdown-menu .dropdown-item i {
+	margin-right: 5px;
+	font-size: 15px;
+	color: #212529;
+}
+
+.user-menu .dropdown-menu .dropdown-item:hover,
+.user-menu .dropdown-menu .dropdown-item:hover i {
+	color: #323584;
+}
+
+.header .dropdown-menu > li > a:focus,
+.header .dropdown-menu > li > a:hover {
+	background-color: #00bcd4;
+	color: #fff;
+}
+
+.header .dropdown-menu > li > a:focus i,
+.header .dropdown-menu > li > a:hover i {
+	color: #fff;
+}
+
+.header .dropdown-menu > li > a {
+	padding: 10px 18px;
+}
+
+.header .dropdown-menu > li > a i {
+	color: #00bcd4;
+	margin-right: 10px;
+	text-align: center;
+	width: 18px;
+}
+
+.header .dropdown-menu > li > a {
+	position: relative;
+}
+
+.header .dropdown-toggle:after {
+	display: none;
+}
+
+.header .has-arrow .dropdown-toggle[aria-expanded="true"]:after {
+	-webkit-transform: rotate(-135deg);
+	-transform: rotate(-135deg);
+	transform: rotate(-135deg);
+}
+
+.header .user-menu .dropdown-menu > li > a i {
+	color: #00bcd4;
+	font-size: 16px;
+	margin-right: 10px;
+	min-width: 18px;
+	text-align: center;
+}
+
+.header .user-menu .dropdown-menu > li > a:focus i,
+.header .user-menu .dropdown-menu > li > a:hover i {
+	color: #fff;
+}
+
+.user-menu .dropdown-menu {
+    border: 1px solid #c8cdd5;
+    border-radius: 0.8rem;
+    transform-origin: left top 0;
+    background-color: #fff;
+    box-shadow: 0 0 1.25rem rgb(31 45 61 / 33%);
+    position: absolute;
+    inset: 0px 0px auto auto;
+    transform: translate(-10px, 53px);
+}
+.user-layout.page-wrapper{
+	margin-left: 0;
+}
+.page-wrapper.admin_layout{
+	margin-left: 240px;
+	padding-top: 60px;
+}
+
 .user-menu {
     float: right;
     margin: 0;
@@ -1760,15 +1877,39 @@ a.text-primary:focus, a.text-primary:hover {
     z-index: 99;
 }
 .user-menu.nav > li > a {
-	color: #fff;
-	font-size: 14px;
-	line-height: 58px;
-	padding: 0 15px;
-	height: 60px;
+	color: #2a3042;
+    font-size: 15px;
+    line-height: 58px;
+    padding: 0 15px;
+    height: 60px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+	margin-right: 0;
 }
 .user-menu.nav > li > a:hover i,
 .user-menu.nav > li > a:focus i {
 	color: #fff;
+}
+.user-menu.nav > li > a:hover i,
+.user-menu.nav > li > a:focus i {
+	opacity: .8;
+	color: inherit;
+}
+
+.user-img {
+	display: inline-block;
+	margin-right: 3px;
+	position: relative;
+}
+
+.user-img img {
+    width: 34px;
+    border-radius: 50%;
+    border: 3px solid #f6f6f6;
+}
+
+.dropdown-item img {
+	margin-right: 5px;
 }
 .user-img {
     display: inline-block;
@@ -1858,7 +1999,7 @@ a.text-primary:focus, a.text-primary:hover {
 	-ms-flex-align: center;
 	align-items: center;
 	background-color: #fff;
-    height: 60px;
+    height: 70px;
     padding:  0 20px;
 	justify-content: space-between;
 	-webkit-justify-content: space-between;
@@ -2449,8 +2590,9 @@ html.menu-opened body {
     color: #6e82a3;
 }
 .banner-section {
+	padding-top: 100px;
 	position: relative;
-    background: url(../img/bg.jpg);
+    background: url(../img/Home-bg1.jpg);
 	background-position: 50% 0;
     background-size: cover;
     background-repeat: no-repeat;
@@ -8035,6 +8177,7 @@ div.dataTables_wrapper div.dataTables_filter input {
 	.login-right {
 		margin: 0 15px;
 		padding: 15px;
+		margin-top: 50px;
 	}
 	.chat-cont-left .chat-users-list a.media .media-body > div:first-child .user-name,
 	.chat-cont-left .chat-users-list a.media .media-body > div:first-child .user-last-chat {
@@ -8442,7 +8585,7 @@ div.dataTables_wrapper div.dataTables_filter input {
 		padding: 30px 0;
 	}
 	.banner-content {
-		padding: 60px 0;
+		padding: 95px 0 60x;
 	}
 	.banner-details > div {
 		width: 100%;

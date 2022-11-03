@@ -62,6 +62,7 @@ export class ScheduleController {
     } catch (err) {
       return response.status(err.status).json(err.response);
     }
+    
   }
 
   // @Put('updatePayment/:id')
