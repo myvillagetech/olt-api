@@ -2311,7 +2311,7 @@ html.menu-opened body {
 	color: #fff;
 }
 .bg-pattern-style {
-    background: url(../img/home_art.jpg) no-repeat;
+    background: url(../img/home_login.jpg) no-repeat;
     background-position: center;
     background-size: cover;
     width: 100%;
@@ -2320,6 +2320,7 @@ html.menu-opened body {
     transform: translate3d(0,0,0);
     opacity: 1;
 }
+
 .bg-pattern-style:before {
 	position: absolute;
     content: '';
