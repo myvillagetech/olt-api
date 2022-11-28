@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import mongoose, { Document } from "mongoose";
 import * as uniqueValidators from 'mongoose-unique-validator'
 import { BankAccount as BankAccountDTO } from "src/shared/DTOs/BankAccount";
+import { EducationQualification as EducationQualificationDTO} from "src/shared/DTOs/EducationQualification";
 import { Experience } from "src/shared/DTOs/Experience";
 
 export interface ISlots {
@@ -47,6 +48,43 @@ export class BankAccount {
 
 export const BankAccountSchema = SchemaFactory.createForClass(
     BankAccount
+).plugin(uniqueValidators)
+
+@Schema({})
+export class EducationQualification {
+    @Prop({
+        required : true,
+    })
+    course : string;
+
+    @Prop({
+        required : true,
+    })
+    endYear : string;
+
+    @Prop({
+        required : true,
+    })
+    grade : string;
+
+    @Prop({
+        required : true,
+    })
+    specialization : string;
+
+    @Prop({
+        required : true,
+    })
+    startYear : string;
+
+    @Prop({
+        required : true,
+    })
+    university : string;
+}
+
+export const EducationQualificationSchema = SchemaFactory.createForClass(
+    EducationQualification
 ).plugin(uniqueValidators)
 
 @Schema({
@@ -141,6 +179,11 @@ export class TutorProfileSchemaCreator {
         type: [BankAccountSchema]
     })
     bankAccountDetails: BankAccountDTO[];
+
+    @Prop({
+        type:[EducationQualificationSchema]
+    })
+    educationQualification : EducationQualificationDTO[];
 }
 
 export type ITutorProfileDocument = TutorProfileSchemaCreator & Document;

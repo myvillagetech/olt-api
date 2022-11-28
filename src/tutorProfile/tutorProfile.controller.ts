@@ -3,6 +3,7 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { response } from "express";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guards";
 import { BankAccount } from "src/shared/DTOs/BankAccount";
+import { EducationQualification } from "src/shared/DTOs/EducationQualification";
 import { TutorProfileDto } from "./tutorProfile.dto";
 import { IAvilableSlots } from "./tutorProfile.schema";
 import { TutorProfileService } from "./tutorProfile.service";
@@ -61,6 +62,23 @@ export class TutorProfileController {
                 message: 'Error while updating bank account details!',
                 error: 'Bad Request',
             });
+        }
+    }
+
+    @Put('/educationQualification/:profileId')
+    async updateTutorEducationQualification(@Res() response, @Body() qualification: EducationQualification, @Param('profileId') profileId: string) {
+        try {
+            const profile = await this.tutorProfileService.updateTutorEducationQualifications(qualification, profileId)
+            return response.status(HttpStatus.CREATED).json({
+                message: 'education qualifications Added sucessfully',
+            });
+        } catch (error) {
+            console.log(error)
+            return response.status(HttpStatus.BAD_REQUEST).json({
+                message: 'Error while updating education qualifications!',
+                error: 'Bad Request'
+            });
+            
         }
     }
 

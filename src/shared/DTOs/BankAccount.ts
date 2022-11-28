@@ -1,3 +1,4 @@
+import { Optional } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger"
 
 export class BankAccount {
@@ -7,8 +8,9 @@ export class BankAccount {
     accountNumber: string;
 
     @ApiProperty({
-        type: String
+        type: String,
     })
+    @Optional()
     _id: string;
 
     @ApiProperty({
