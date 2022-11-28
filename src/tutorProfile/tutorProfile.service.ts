@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable, NotFoundException, Unpro
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { BankAccount } from "src/shared/DTOs/BankAccount";
+import { EducationQualification } from "src/shared/DTOs/EducationQualification";
 import { MODEL_ENUMS } from "src/shared/enums/models.enums";
 import { TutorProfileDto } from "./tutorProfile.dto";
 import { IAvilableSlots, ISubjects, ITutorProfileDocument } from "./tutorProfile.schema";
@@ -74,6 +75,32 @@ export class TutorProfileService {
                 return await this.profileModel.updateOne(
                     { userId: profileId },
                     { $push: { bankAccountDetails: account } }
+                )
+            }
+        }
+    }
+
+    async updateTutorEducationQualifications(qualification : EducationQualification, profileId : string ):Promise<any>{
+        const qualificationId = qualification._id;
+        const userProfile = await this.profileModel.findOne({userId : profileId});
+        const qualifications = userProfile.educationQualification;
+
+        if(!qualifications || qualifications.length === 0) {
+            userProfile.educationQualification = [
+                qualification
+            ];
+            return await this.profileModel.findByIdAndUpdate(userProfile._id,{ 'educationQualification' :userProfile.educationQualification});
+        } else {
+            if(qualificationId){
+                return await this.profileModel.updateOne(
+                    { userId: profileId },
+                    { $set: { "educationQualification.$[qualification]": { ...qualification, _id: qualificationId } } },
+                    { arrayFilters: [{ "qualification._id": qualificationId }] }
+                )
+            } else {
+                return await this.profileModel.updateOne(
+                    { userId: profileId },
+                    { $push: { educationQualification: qualification } }
                 )
             }
         }
