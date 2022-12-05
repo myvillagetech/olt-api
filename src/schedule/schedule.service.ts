@@ -84,12 +84,12 @@ export class ScheduleService {
     return schedule;
   }
 
-  async updatedPaymentDetails(schduleIDs: string[], paymentId: Types.ObjectId) {
+  async updatedPaymentDetails(schduleIDs: string[], paymentId: Types.ObjectId, status : string) {
     const options: any = schduleIDs.map(sId => {
       return {
         updateOne: {
           filter: { _id: sId },
-          update: { paymentId: paymentId }
+          update: { paymentId: paymentId , status : status }
         }
       }
     })

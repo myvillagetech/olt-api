@@ -21,7 +21,7 @@ export class PaymentsService {
         try {
             const payment = new this.paymentModel(payload);
             const results = await payment.save();
-            await this.scheduleService.updatedPaymentDetails(payload.scheduleIds, results["_id"])
+            await this.scheduleService.updatedPaymentDetails(payload.scheduleIds, results["_id"],payload.status)
             return results;
         } catch (error) {
             console.log(error);
