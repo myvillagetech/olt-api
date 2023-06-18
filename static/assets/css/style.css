@@ -1991,8 +1991,12 @@ a.text-primary:focus, a.text-primary:hover {
 	width: 100%;
 	z-index: 1040;
 }
+
 .menu-opened .main-menu-wrapper {
     transform: translateX(0);
+}
+.menu-opened .main-menu-wrapper .welcome-msg{
+	display: block;
 }
 .menu-header {
 	-webkit-box-align: center;
@@ -7535,6 +7539,15 @@ html.menu-opened body {
 	font-weight: 500;
     font-size: 14px;
 }
+.confirm {
+	background-color: rgb(15 67 183 / 12%);
+    color: #263daf;
+	border-radius:4px;
+	text-transform: uppercase;
+	padding: 7px 10px;
+	font-weight: 500;
+    font-size: 14px;
+}
 .reject {
     background-color: rgba(242, 17, 54, 0.12);
     color: #e63c3c;
@@ -7601,6 +7614,9 @@ div.dataTables_wrapper div.dataTables_filter input {
 	}
 }
 @media (min-width: 992px) {
+	.main-nav > li.welcome-msg{
+		display: none;
+	}
 	.main-nav > li {
 		margin-right: 30px;
 	}
@@ -7817,6 +7833,10 @@ div.dataTables_wrapper div.dataTables_filter input {
 	}
 }
 @media only screen and (max-width: 991.98px) {
+
+	.page-wrapper.admin_layout{
+		margin-left: 0px;
+	}
 	.main-nav {
 		padding: 0;
 		-ms-flex-direction: column;

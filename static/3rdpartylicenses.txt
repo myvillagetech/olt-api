@@ -415,6 +415,9 @@ MIT
 ngx-bootstrap/utils
 MIT
 
+ngx-infinite-scroll
+MIT
+
 ngx-owl-carousel-o
 MIT
 

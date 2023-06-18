@@ -464,7 +464,7 @@ table.table td h2 span {
 a.bg-primary:focus,
 a.bg-primary:hover,
 button.bg-primary:focus,
-button.bg-primary:hover {
+button.bg-primary:hover { 
     background-color: #19c1dc !important;
 }
 .bg-success,
