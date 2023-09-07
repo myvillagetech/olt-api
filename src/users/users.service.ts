@@ -67,7 +67,7 @@ export class UsersService {
     return existingUser;
   }
 
-  async getAllRequstedUsers(userType: string): Promise<UserDocument> {
+  async getAllUsersByRole(userType: string): Promise<UserDocument> {
     let queryObject={
       roles:{
         $in:[userType]
