@@ -13,12 +13,12 @@ export class CourseSchemaCreator {
     courseName : string;
 
     @Prop({
-        required:true
+        required:false
     })
     courseDiscription : string;
 
     @Prop({
-        required : true
+        required : false
     })
     category : string;
 }
