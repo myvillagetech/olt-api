@@ -72,4 +72,37 @@ export class RatingsService {
             throw new Error(error.message);
         }
     }
+    async getRatingByStudentId(studentId: string) {
+        try {
+            const ratings = await this.ratingModel.aggregate([
+                { $match: { student: new Types.ObjectId(studentId) } },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "tutor",
+                        foreignField: "_id",
+                        as: "tutor",
+                        "pipeline": [
+                            { "$project": { "password": 0, "userId": 0}}
+                        ]
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "student",
+                        foreignField: "_id",
+                        as: "student",
+                        "pipeline": [
+                            { "$project": { "password": 0, "userId": 0}}
+                        ]
+                    }
+                }
+            ]);
+            return ratings;
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    }
 }
