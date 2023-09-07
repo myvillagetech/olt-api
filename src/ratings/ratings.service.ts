@@ -54,17 +54,7 @@ export class RatingsService {
                         ]
                     }
                 },
-                {
-                    $lookup: {
-                        from: "users",
-                        localField: "tutor",
-                        foreignField: "_id",
-                        as: "tutor",
-                        "pipeline": [
-                            { "$project": { "password": 0, "userId": 0}}
-                        ]
-                    }
-                }
+               
             ]);
             return ratings;
         }
@@ -87,17 +77,7 @@ export class RatingsService {
                         ]
                     }
                 },
-                {
-                    $lookup: {
-                        from: "users",
-                        localField: "student",
-                        foreignField: "_id",
-                        as: "student",
-                        "pipeline": [
-                            { "$project": { "password": 0, "userId": 0}}
-                        ]
-                    }
-                }
+                
             ]);
             return ratings;
         }
