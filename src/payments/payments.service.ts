@@ -147,6 +147,28 @@ export class PaymentsService {
                     }
                 },
                 {
+                    $lookup: {
+                        from: "users",
+                        localField: "schedules.student",
+                        foreignField: "_id",
+                        as: "student",
+                        "pipeline": [
+                            { "$project": { "password": 0, "userId": 0}}
+                        ]
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "schedules.tutor",
+                        foreignField: "_id",
+                        as: "tutor",
+                        "pipeline": [
+                            { "$project": { "password": 0, "userId": 0}}
+                        ]
+                    }
+                },
+                {
                     $match: postJoinFilters.length > 0 ? { $and: postJoinFilters } : {}
                 },
                 ...paginationProps
