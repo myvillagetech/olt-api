@@ -50,4 +50,17 @@ export class RatingsController {
                 error.message === 'Ratings Not found' ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST);
         }
     }
+    @Get('/student/:studentId')
+    async getRatingByStudentId(@Res() response, @Param('studentId') studentId: string) {
+        try {
+            const ratings = await this.ratingService.getRatingByStudentId(studentId)
+            return response.status(HttpStatus.OK).json({
+                message: ratings.length > 0 ? 'Ratings found sucessfully': 'No Ratings found' ,
+                ratings
+            });
+        } catch (error) {
+            throw new HttpException(error.message, 
+                error.message === 'Ratings Not found' ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST);
+        }
+    }
 }
