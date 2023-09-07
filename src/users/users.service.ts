@@ -67,6 +67,19 @@ export class UsersService {
     return existingUser;
   }
 
+  async getAllRequstedUsers(userType: string): Promise<UserDocument> {
+    let queryObject={
+      roles:{
+        $in:[userType]
+      }
+    }
+    const requstedUserList: any = await this.userModel.find(queryObject).exec();
+    if (!requstedUserList) {
+      throw new NotFoundException(`user #${userType} not found`);
+    }
+    return requstedUserList;
+  }
+
   async getUserByEmail(email: string): Promise<UserDocument> {
     const existingUser = await this.userModel.findOne({ email: email }).exec();
     if (!existingUser) {

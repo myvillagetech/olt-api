@@ -73,6 +73,32 @@ export class UsersController {
     }
   }
 
+  @Get('/all-students')
+  async getAllStudents(@Res() response) {
+    try {
+      const allStudents = await this.userService.getAllRequstedUsers('Student');
+      return response.status(HttpStatus.OK).json({
+        message: 'User found successfully',
+        allStudents,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
+  @Get('/all-tutors')
+  async getAllTutors(@Res() response) {
+    try {
+      const allTutors = await this.userService.getAllRequstedUsers('Tutor');
+      return response.status(HttpStatus.OK).json({
+        message: 'User found successfully',
+        allTutors,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
   @Get('/:id')
   async getUser(@Res() response, @Param('id') userId: string) {
     try {
