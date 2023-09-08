@@ -70,12 +70,6 @@ export class ScheduleService {
       );
     }
 
-    if(schedulePayload.status==='REJECTED' && !schedulePayload.rejectedNote ){
-      throw new HttpException(
-        `Reject Note Is Required`,
-        HttpStatus.NOT_ACCEPTABLE
-      );
-    }
     const schedule = await this.scheduleModel
       .findByIdAndUpdate(scheduleId, schedulePayload, { new: true })
       .exec();
