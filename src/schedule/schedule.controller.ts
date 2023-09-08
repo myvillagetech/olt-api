@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards, HttpStatus, Put, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards, HttpStatus, Put, HttpException, Query } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { ScheduleDto, PaymentInformation, AcceptScheduleDto } from './dto/schedule.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ScheduleSearchCriteria } from './dto/scheduleSearchCriteria';
+import { query } from 'express';
 
 @Controller('schedule')
 @ApiTags('schedule')
@@ -77,6 +78,47 @@ export class ScheduleController {
   //     return response.status(err.status).json(err.response);
   //   }
   // }
+
+  @Get('/student-schedule-counts')
+  async getStudentScheduleCounts(@Res() response, @Query() user:any, ) {
+    try {
+      const schedule = await this.scheduleService.getScheduleByStatus(user);
+      return response.status(HttpStatus.OK).json({
+        message: 'Schedule status details for student found successfully',
+        schedule,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
+  @Get('/tutor-schedule-counts')
+  async getTutorScheduleCounts(@Res() response, @Query() user:any, ) {
+    try {
+      const schedule = await this.scheduleService.getScheduleByStatus(user);
+      return response.status(HttpStatus.OK).json({
+        message: 'Schedule status details for tutor found successfully',
+        schedule,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
+  @Get('/admin-schedule-counts')
+  async getadminScheduleCounts(@Res() response ) {
+    try {
+      const schedule = await this.scheduleService.getAdminScheduleByStatus();
+      return response.status(HttpStatus.OK).json({
+        message: 'Schedule status details for admin found successfully',
+        schedule,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
+  
 
   @Get('/:id')
   async getScheduleByScheduleId(@Res() response, @Param('id') ScheduleId: string) {
