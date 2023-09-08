@@ -65,7 +65,7 @@ export class ScheduleService {
 
     if(schedulePayload.status==='CANCELLED' && !schedulePayload.cancelNote ){
       throw new HttpException(
-        `Cnacel Note Is Required`,
+        `Cancel Note Is Required`,
         HttpStatus.NOT_ACCEPTABLE
       );
     }
