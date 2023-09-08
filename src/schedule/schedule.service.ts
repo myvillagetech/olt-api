@@ -183,6 +183,38 @@ export class ScheduleService {
     return schedule[0];
   }
 
+  async getScheduleByStatus(user): Promise<IScheduleDocument> {
+    const query :any={} 
+    if(user.student){
+      query.student=new Types.ObjectId(user.student)
+    }
+    if(user.tutor){
+      query.tutor=new Types.ObjectId(user.tutor)
+    }
+    if(user.student || user.tutor){
+      const schedule :any = await this.scheduleModel.aggregate([
+        {$match:query},
+          { $group: { 
+              _id:"$status", 
+              count: {$sum : 1 }, 
+             }
+           }
+      ]); 
+      return schedule;
+  }
+  }
+  
+  async   getAdminScheduleByStatus() : Promise<IScheduleDocument> {
+    const schedule :any = await this.scheduleModel.aggregate([
+            { $group: { 
+                _id:"$status", 
+                count: {$sum : 1 }, 
+               }
+             }
+        ]); 
+        return schedule;
+  }
+
   async cancelScheduleByScheduleId(
     scheduleId: string
   ): Promise<IScheduleDocument> {
