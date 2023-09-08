@@ -73,6 +73,17 @@ export class ScheduleDto {
     })
     // @IsDefined()
     status: Status
+
+    @ApiProperty({
+        type: String,
+    })
+    rejectedNote: Status
+    
+    @ApiProperty({
+        type: String,
+    })
+    cancelNote: Status
+
     @ApiProperty({
         type: [Slot],
     })
