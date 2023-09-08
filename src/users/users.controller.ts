@@ -85,6 +85,19 @@ export class UsersController {
       return response.status(err.status).json(err.response);
     }
   }
+  
+  @Get('/users-count')
+  async getAllUsersCount(@Res() response) {
+    try {
+      const usersCount = await this.userService.getAllUsersCount();
+      return response.status(HttpStatus.OK).json({
+        message: 'Users Count Fetch Successfully',
+        usersCount,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
 
   @Get('/all-tutors')
   async getAllTutors(@Res() response) {

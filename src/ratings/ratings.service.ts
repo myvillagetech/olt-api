@@ -62,6 +62,31 @@ export class RatingsService {
             throw new Error(error.message);
         }
     }
+
+    async getAllRatingMetrics() {
+        try {
+            const rating = await this.ratingModel.countDocuments()
+            return rating;
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    async getTopReviews() {
+        try {
+            const rating = await this.ratingModel.find()
+            .sort({ rating: -1 }) 
+            .limit(5) 
+            .select({ rating: 1, review: 1 ,tutor: 1, student:1})
+            .populate('student tutor')
+            .exec();
+            return rating;
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
     async getRatingByStudentId(studentId: string) {
         try {
             const ratings = await this.ratingModel.aggregate([
