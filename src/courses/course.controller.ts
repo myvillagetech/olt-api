@@ -8,8 +8,6 @@ import { CourseService } from "./course.service";
 
 
 @Controller('course')
-@ApiBearerAuth('access-token')
-@UseGuards(JwtAuthGuard)
 @ApiTags('Course')
 export class CourseController {
     constructor(
