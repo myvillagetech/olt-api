@@ -55,6 +55,21 @@ export class ScheduleService {
     schedulePayload: ScheduleDto,
     scheduleId: string
   ): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
+    
+    if(schedulePayload.status==='REJECTED' && !schedulePayload.rejectedNote ){
+      throw new HttpException(
+        `Reject Note Is Required`,
+        HttpStatus.NOT_ACCEPTABLE
+      );
+    }
+
+    if(schedulePayload.status==='CANCELLED' && !schedulePayload.cancelNote ){
+      throw new HttpException(
+        `Cancel Note Is Required`,
+        HttpStatus.NOT_ACCEPTABLE
+      );
+    }
+
     const schedule = await this.scheduleModel
       .findByIdAndUpdate(scheduleId, schedulePayload, { new: true })
       .exec();

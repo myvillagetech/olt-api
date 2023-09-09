@@ -58,6 +58,14 @@ export class ScheduleSchemaCreator {
         default : 'SCHEDULED'
     })
     status : Status;
+    @Prop({
+        required : false,
+    })
+    rejectedNote : string;
+    @Prop({
+        required : false,
+    })
+    cancelNote : string;
 
     @Prop()
     meetingLink: string;
