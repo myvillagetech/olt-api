@@ -14,6 +14,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guards';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
+import { query } from 'express';
 
 @UseGuards(JwtAuthGuard)
 @Controller('/user')
