@@ -16,9 +16,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { query } from 'express';
 
-@UseGuards(JwtAuthGuard)
 @Controller('/user')
-@ApiBearerAuth('access-token')
 @ApiTags('Users')
 
 export class UsersController {
