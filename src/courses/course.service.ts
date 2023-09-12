@@ -13,6 +13,12 @@ export class CourseService {
 
     async createCourse(coursePayload : CreateCourseDto) : Promise<CreateCourseDto | UnprocessableEntityException>{
         try{
+
+            const existingCourse = await this.courseModel.findOne({ courseName: coursePayload.courseName }).exec();
+            if (existingCourse) {
+                throw new HttpException('Course name already exists. Please choose a different name.', HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+
             const course = new this.courseModel(coursePayload);
             return course.save();
         }
@@ -39,7 +45,10 @@ export class CourseService {
     }
 
     async deleteCourse(courseId : string) : Promise < ICourseDocument | NotFoundException | UnprocessableEntityException > {
-        const course = await this.courseModel.findByIdAndDelete(courseId).exec();
+        const course = await this.courseModel.findByIdAndUpdate(courseId,{
+            isActive: false},
+            { new: true}
+        ).exec();
         if(!course){
             throw new NotFoundException(`Course #${courseId} not found`)
         }
