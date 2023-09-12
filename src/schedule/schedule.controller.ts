@@ -5,6 +5,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ScheduleSearchCriteria } from './dto/scheduleSearchCriteria';
 import { query } from 'express';
+import { DateRange } from 'src/shared/DTOs/dateRange';
 
 @Controller('schedule')
 @ApiTags('schedule')
@@ -146,6 +147,32 @@ export class ScheduleController {
     }
     catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Get('latest-updated-schedules/:studentId')
+  async getLatestUpdatedSchedules(@Res() response, @Param('studentId') studentId: string){
+    try{
+      const scheduleSearchCriteria: ScheduleSearchCriteria ={
+        sortOrder: -1,
+        sortField: 'updatedAt',
+        studentIds: [studentId],
+        tutorIds: [],
+        subjects: [],
+        status: [],
+        pageNumber: 0,
+        pageSize: 5,
+        dateRange: new DateRange
+      }
+      const schedulesData = await this.scheduleService.getAllSchedulesBySearchByCriteria(scheduleSearchCriteria);
+      return response.status(HttpStatus.OK).json({
+        message: schedulesData[0].schedules.length > 0 ? 'Schedules found successfully' : 'No schedule found',
+        data: schedulesData[0].schedules,
+        count: schedulesData[0].schedules?.length,
+        totalCount: schedulesData[0].metrics[0]?.totalCount
+      })
+    }catch (error){
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
