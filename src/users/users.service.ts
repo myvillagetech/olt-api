@@ -80,6 +80,11 @@ export class UsersService {
     return requstedUserList;
   }
 
+  async getAllUsersCount(): Promise<UserDocument> {
+      const usersCount :any = await this.userModel.countDocuments(); 
+      return usersCount;
+  }
+
   async getUserByEmail(email: string): Promise<UserDocument> {
     const existingUser = await this.userModel.findOne({ email: email }).exec();
     if (!existingUser) {

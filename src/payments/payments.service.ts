@@ -147,6 +147,9 @@ export class PaymentsService {
                     }
                 },
                 {
+                    $match: postJoinFilters.length > 0 ? { $and: postJoinFilters } : {}
+                },
+                {
                     $lookup: {
                         from: "users",
                         localField: "schedules.student",
@@ -167,9 +170,6 @@ export class PaymentsService {
                             { "$project": { "password": 0, "userId": 0}}
                         ]
                     }
-                },
-                {
-                    $match: postJoinFilters.length > 0 ? { $and: postJoinFilters } : {}
                 },
                 ...paginationProps
             ]);

@@ -8,4 +8,6 @@ export class CreateCourseDto {
     courseDiscription?:string;
 
     category?:string
+
+    isActive?: Boolean
 }

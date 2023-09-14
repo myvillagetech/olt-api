@@ -36,6 +36,35 @@ export class RatingsController {
                 error.message === 'Rating Not found' ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST);
         }
     }
+ 
+    @Get('ratings-metrics')
+    async getAllRatingMetrics(@Res() response) {
+        try {
+            const ratings = await this.ratingService.getAllRatingMetrics()
+            return response.status(HttpStatus.OK).json({
+                message: 'Ratings Metrics Fetch sucessfully',
+                ratings
+            });
+        } catch (error) {
+            throw new HttpException(error.message, 
+                error.message === 'Ratings Not found' ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST);
+        }
+    }
+
+      
+    @Get('top-reviews')
+    async getTopReviews(@Res() response) {
+        try {
+            const reviews = await this.ratingService.getTopReviews()
+            return response.status(HttpStatus.OK).json({
+                message: 'Top Reviews Found Sucessfully',
+                reviews
+            });
+        } catch (error) {
+            throw new HttpException(error.message, 
+                error.message === 'Failed To Find Reviews' ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @Get('/student/:studentId')
     async getRatingByStudentId(@Res() response, @Param('studentId') studentId: string) {
@@ -78,4 +107,5 @@ export class RatingsController {
                 error.message === 'Ratings Not found' ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST);
         }
     }
+
 }

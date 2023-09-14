@@ -21,6 +21,12 @@ export class CourseSchemaCreator {
         required : false
     })
     category : string;
+
+    @Prop({
+        required: true,
+        default: true
+    })
+    isActive: Boolean
 }
 
 export type ICourseDocument = CourseSchemaCreator & Document;

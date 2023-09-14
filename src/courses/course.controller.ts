@@ -8,8 +8,6 @@ import { CourseService } from "./course.service";
 
 
 @Controller('course')
-@ApiBearerAuth('access-token')
-@UseGuards(JwtAuthGuard)
 @ApiTags('Course')
 export class CourseController {
     constructor(
@@ -93,5 +91,21 @@ export class CourseController {
       } catch (err) {
         return response.status(err.status).json(err.response);
       }
+    }
+
+    @Put('activate/:id')
+    async activateCourse(@Res() response, @Param('id') courseId: string) {
+        try{
+            const course = await this.courseService.updateCourse({
+                isActive : true
+            }, courseId);
+            
+            return response.status(HttpStatus.OK).json({
+                message: 'Course Activated Successfully',
+                course,
+            })
+        } catch (error) {
+            return response.status(error.status).json(error.response);
+        }
     }
 }

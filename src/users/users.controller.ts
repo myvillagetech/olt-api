@@ -14,10 +14,9 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guards';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
+import { query } from 'express';
 
-@UseGuards(JwtAuthGuard)
 @Controller('/user')
-@ApiBearerAuth('access-token')
 @ApiTags('Users')
 
 export class UsersController {
@@ -80,6 +79,19 @@ export class UsersController {
       return response.status(HttpStatus.OK).json({
         message: 'Student found successfully',
         allStudents,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+  
+  @Get('/users-count')
+  async getAllUsersCount(@Res() response) {
+    try {
+      const usersCount = await this.userService.getAllUsersCount();
+      return response.status(HttpStatus.OK).json({
+        message: 'Users Count Fetch Successfully',
+        usersCount,
       });
     } catch (err) {
       return response.status(err.status).json(err.response);
