@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards, HttpStatus, Put, HttpException, Query } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
-import { ScheduleDto, PaymentInformation, AcceptScheduleDto } from './dto/schedule.dto';
+import { ScheduleDto, PaymentInformation, AcceptScheduleDto, RejectScheduleDto } from './dto/schedule.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ScheduleSearchCriteria } from './dto/scheduleSearchCriteria';
@@ -70,7 +70,7 @@ export class ScheduleController {
   }
 
   @Post('/rejectSchdule')
-  async rejectSchdule(@Res() response, @Body() payload: any) {
+  async rejectSchdule(@Res() response, @Body() payload: RejectScheduleDto) {
     try {
       if(!payload.reason){
         return response.status(400).json({
@@ -90,7 +90,7 @@ export class ScheduleController {
   }
 
   @Post('/cancelSchdule')
-  async cancelSchdule(@Res() response, @Body() payload: any) {
+  async cancelSchdule(@Res() response, @Body() payload: RejectScheduleDto) {
     try {
       if(!payload.reason){
         return response.status(400).json({
@@ -109,10 +109,10 @@ export class ScheduleController {
     
   }
 
-  @Put('/completed')
-  async completedSchdule(@Res() response, @Body() payload: any) {
+  @Put('/completed/:id')
+  async completedSchdule(@Res() response,   @Param('id') ScheduleId: string,) {
     try {
-      const schedule = await this.scheduleService.updateScheduleStatus(payload.id, Status.CANCELLED, {rejectedNote: payload.reason});
+      const schedule = await this.scheduleService.updateScheduleStatus(ScheduleId, Status.COMPLETED,{});
       return response.status(HttpStatus.OK).json({
         message: 'Schedule completed successfully',
         schedule,

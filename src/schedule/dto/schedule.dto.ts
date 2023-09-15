@@ -113,3 +113,14 @@ export class ScheduleDto {
     isFreeDemo: boolean;
 }
 
+export class RejectScheduleDto{
+    @ApiProperty({
+        type: String
+    })
+    id: string;
+    @ApiProperty({
+        type: String
+    })
+    reason: string;
+}
+
