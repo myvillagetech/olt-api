@@ -121,8 +121,6 @@ export class ScheduleService {
       }
     })
 
-    console.log(options);
-    console.log(schduleIDs, paymentId);
     await this.scheduleModel.bulkWrite(options);
   }
 

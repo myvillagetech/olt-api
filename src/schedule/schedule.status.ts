@@ -1,12 +1,11 @@
 export enum Status {
     REQUESTED = 'REQUESTED',
-
+    ACCEPTED = 'ACCEPTED',
     APPROVED = 'APPROVED',
     REJECTED = 'REJECTED',
-
     CANCELLED = 'CANCELLED',
-    
     COMPLETED = 'COMPLETED',
+    CONFIRMED = 'CONFIRMED'
 }
 
 /*

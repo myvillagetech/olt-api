@@ -6,6 +6,8 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ScheduleSearchCriteria } from './dto/scheduleSearchCriteria';
 import { query } from 'express';
 import { DateRange } from 'src/shared/DTOs/dateRange';
+import { Status } from './schedule.status';
+import { PayoutSchema } from 'src/payments/payout.schema';
 
 @Controller('schedule')
 @ApiTags('schedule')
@@ -59,6 +61,60 @@ export class ScheduleController {
       const schedule = await this.scheduleService.updateScheduleStatus(payload.id, 'ACCEPTED', {amount: payload.amount});
       return response.status(HttpStatus.OK).json({
         message: 'Schedule accpeted successfully',
+        schedule,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+    
+  }
+
+  @Post('/rejectSchdule')
+  async rejectSchdule(@Res() response, @Body() payload: any) {
+    try {
+      if(!payload.reason){
+        return response.status(400).json({
+          message: 'Reason required'
+        });
+      }
+
+      const schedule = await this.scheduleService.updateScheduleStatus(payload.id, Status.REJECTED, {rejectedNote: payload.reason});
+      return response.status(HttpStatus.OK).json({
+        message: 'Schedule rejected successfully',
+        schedule,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+    
+  }
+
+  @Post('/cancelSchdule')
+  async cancelSchdule(@Res() response, @Body() payload: any) {
+    try {
+      if(!payload.reason){
+        return response.status(400).json({
+          message: 'Reason required'
+        });
+      }
+      
+      const schedule = await this.scheduleService.updateScheduleStatus(payload.id, Status.CANCELLED, {rejectedNote: payload.reason});
+      return response.status(HttpStatus.OK).json({
+        message: 'Schedule rejected successfully',
+        schedule,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+    
+  }
+
+  @Put('/Schdule/completed')
+  async completedSchdule(@Res() response, @Body() payload: any) {
+    try {
+      const schedule = await this.scheduleService.updateScheduleStatus(payload.id, Status.CANCELLED, {rejectedNote: payload.reason});
+      return response.status(HttpStatus.OK).json({
+        message: 'Schedule completed successfully',
         schedule,
       });
     } catch (err) {

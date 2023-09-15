@@ -63,5 +63,24 @@ export class CourseService {
         return course;
     }
 
+    async addMultipleCourses(coursePayload : CreateCourseDto[]): Promise<any>{
+        try{
+            let newCourses: any = coursePayload.map( async(course: any)=>{
+                const existingCourse = await this.courseModel.findOne({ courseName: course.courseName }).exec();
+                if (existingCourse) {
+                    return existingCourse._id;
+                }
+                
+                let newcourse: any =  new this.courseModel(coursePayload).save();
+                return newcourse._id
+            });
+
+            return newCourses;
+        }
+        catch (error) {
+            throw new HttpException(`Something went wrong ... Please try again`, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
 
 }
