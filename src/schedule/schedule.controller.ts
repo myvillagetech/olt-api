@@ -109,7 +109,7 @@ export class ScheduleController {
     
   }
 
-  @Put('/Schdule/completed')
+  @Put('/completed')
   async completedSchdule(@Res() response, @Body() payload: any) {
     try {
       const schedule = await this.scheduleService.updateScheduleStatus(payload.id, Status.CANCELLED, {rejectedNote: payload.reason});
