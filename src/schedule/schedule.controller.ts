@@ -14,21 +14,17 @@ import {
   Query,
   NotFoundException,
 } from "@nestjs/common";
-import { ScheduleService } from "./schedule.service";
-import {
-  ScheduleDto,
-  PaymentInformation,
-  AcceptScheduleDto,
-} from "./dto/schedule.dto";
-import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guards";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
-import { ScheduleSearchCriteria } from "./dto/scheduleSearchCriteria";
-import { query } from "express";
-import { DateRange } from "src/shared/DTOs/dateRange";
-import { Status } from "./schedule.status";
-import { PayoutSchema } from "src/payments/payout.schema";
 import { UsersService } from "src/users/users.service";
 import axios from "axios";
+import { ScheduleService } from './schedule.service';
+import { ScheduleDto, PaymentInformation, AcceptScheduleDto, RejectScheduleDto } from './dto/schedule.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ScheduleSearchCriteria } from './dto/scheduleSearchCriteria';
+import { query } from 'express';
+import { DateRange } from 'src/shared/DTOs/dateRange';
+import { Status } from './schedule.status';
+import { PayoutSchema } from 'src/payments/payout.schema';
 
 @Controller("schedule")
 @ApiTags("schedule")
@@ -288,14 +284,10 @@ export class ScheduleController {
     }
   }
 
-  @Put("/Schdule/completed")
-  async completedSchdule(@Res() response, @Body() payload: any) {
+  @Put('/completed/:id')
+  async completedSchdule(@Res() response,   @Param('id') ScheduleId: string,) {
     try {
-      const schedule = await this.scheduleService.updateScheduleStatus(
-        payload.id,
-        Status.CANCELLED,
-        { rejectedNote: payload.reason }
-      );
+      const schedule = await this.scheduleService.updateScheduleStatus(ScheduleId, Status.COMPLETED,{});
       return response.status(HttpStatus.OK).json({
         message: "Schedule completed successfully",
         schedule,
