@@ -4,6 +4,7 @@ export const MODEL_ENUMS = {
     CATEGORIES : 'category',
     PROFILE : 'profile',
     SCHEDULE : 'schedule',
+    OTP : 'otp',
     RATING : 'rating',
     MESSAGE : 'message',
     SELECTED_COURSE : 'selectedCourse',

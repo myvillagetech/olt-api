@@ -19,6 +19,7 @@ import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ResetPasswordDto } from './dto/resetPassword';
 import { SignUpDTO } from './dto/singup.dto';
+import axios from 'axios';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -45,6 +46,54 @@ export class AuthController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
+
+  @Post('forgotPassword')
+  async forgotPassword( @Res() response,@Body() emailId: any) {
+    try {
+      const user= await this.authService.forgotPassword(emailId.email);
+      const userDetails =  user._doc
+      const templatePayloadForTutor = {
+        templateName: "ForgotOtp",
+        to:emailId.email,
+        ...userDetails
+        // to: "villagetechvenkat@gmail.com",
+     
+      };
+      
+      axios
+        .post(
+          "http://localhost:6004/notification/emailNotification",
+          templatePayloadForTutor
+        )
+        .then(function (response) {
+          // console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+        return response.status(HttpStatus.OK).json({
+          message: "Otp sent sucessfully",
+        });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Post('verifyOtp')
+  async verifyOtp( @Res() response,@Body() verifyOtpData: any) {
+    try {
+      const user= await this.authService.verifyOtp(verifyOtpData);
+      return response.status(HttpStatus.OK).json({
+        message: "Password Updated sucessfully",
+      });
+      
+      
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+
 
   @Post('googleSignIn')
   async googleSignIn(@Req() request, @Ip() ip: string, @Body() body: GoogleLoginDto) {

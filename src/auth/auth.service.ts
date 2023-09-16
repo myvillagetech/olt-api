@@ -7,13 +7,17 @@ import { ResetPasswordDto } from './dto/resetPassword';
 //import { User } from 'src/users/entities/user.entity';
 import { SignUpDTO } from './dto/singup.dto';
 import RefreshToken from './entities/refresh-token.entity';
+import { OtpDocument } from './otp.schema';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { MODEL_ENUMS } from 'src/shared/enums/models.enums';
 
 @Injectable()
 export class AuthService {
 
   private refreshTokens: RefreshToken[] = [];
 
-  constructor(private readonly userService: UsersService) {
+  constructor(@InjectModel(MODEL_ENUMS.OTP) private OtpModel: Model<OtpDocument>, private readonly userService: UsersService) {
 
   }
 
@@ -83,6 +87,55 @@ export class AuthService {
       { password: resetPasswordDto.newPassword });
     return { messsage: 'Successfully updated' }
   }
+
+  async forgotPassword(emailId:string): Promise<any>{
+    const otpData = await this.OtpModel.findOne({email:emailId})
+    const user  =  await this.userService.getUserByEmail(emailId)
+    if(!user){
+      throw new Error("Invalid user details");
+    }
+    if(otpData){
+      const otpCode = await this.generateOTP()
+      otpData.otpCode =otpCode
+      let userDetailsWithOtp:any = new this.OtpModel(otpData)
+      return userDetailsWithOtp.save()
+    }else{
+    const userData:any ={email:user.email,
+      firstName:user.firstName,
+      lastName: user.lastName
+    }
+    const otpCode = await this.generateOTP()
+    userData.otpCode =otpCode
+    let userDetailsWithOtp:any = new this.OtpModel(userData)
+    return userDetailsWithOtp.save()
+  }
+  }
+
+  async verifyOtp(otpdata:any): Promise<any>{
+    const otpFromDb = await this.OtpModel.findOne({email:otpdata.email})
+    if(otpFromDb.otpCode=== otpdata.otp){
+      const updateUserPassword = await this.userService.updatePartialUserByEmail(otpdata.email,{password:otpdata.password})
+      if(!updateUserPassword){
+          throw new Error("Invalid user details")
+      }
+      await this.OtpModel.deleteOne({ _id: otpFromDb._id })
+      return updateUserPassword
+    }else{
+      throw new Error("Otp not match")
+    }
+  }
+
+  generateOTP() {
+    const length = 6;
+    const charset = "0123456789";
+    let otp = "";
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charset.length);
+        otp += charset[randomIndex];
+    }
+    return otp;
+}
+
 
   async googleSignIn(body: GoogleLoginDto, values: { userAgent: string; ipAddress: string }) {
     try {
