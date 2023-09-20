@@ -52,18 +52,17 @@ export class AuthController {
     try {
       const user= await this.authService.forgotPassword(emailId.email);
       const userDetails =  user._doc
-      const templatePayloadForTutor = {
+      const templatePayload = {
         templateName: "ForgotOtp",
         to:emailId.email,
         ...userDetails
         // to: "villagetechvenkat@gmail.com",
-     
       };
       
       axios
         .post(
           "http://localhost:6004/notification/emailNotification",
-          templatePayloadForTutor
+          templatePayload
         )
         .then(function (response) {
           // console.log(response);

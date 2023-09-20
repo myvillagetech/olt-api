@@ -90,7 +90,7 @@ export class ScheduleController {
         ...schedulePayload,
         templateName: "bookingAlertForStudent",
         to:studentDetails.email,
-        // to: "kanakaprasad.villagetech@gmail.com",
+        // to: "swathirekha.kasturi@gmail.com",
         studentName: studentDetails.firstName,
         studentLastName: studentDetails.lastName,
         tutorName: tutorDetails.firstName,
@@ -167,6 +167,47 @@ export class ScheduleController {
         "ACCEPTED",
         { amount: payload.amount }
       );
+      const scheduledata: any =
+        await this.scheduleService.getScheduleByScheduleId(payload.id);
+      const templatePayload = {
+        ...scheduledata,
+        templateName: "bookingConformationForStudent",
+        to: scheduledata.student[0].email,
+        // to:"swathirekha.kasturi@gmail.com",
+        studentName: scheduledata.student[0].firstName,
+        studentLastName: scheduledata.student[0].lastName,
+        tutorName: scheduledata.tutor[0].firstName,
+        tutorLastName: scheduledata.tutor[0].lastName,
+        slots:scheduledata.slots.map((slot) => {
+          const formattedDate = slot.date.toLocaleString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+          const formattedFromTime = formatTime(slot.from);
+          const formattedToTime = formatTime(slot.to);
+          function formatTime(hour: any) {
+            const ampm = hour >= 12 ? "PM" : "AM";
+            const formattedHour = hour % 12 || 12;
+            return `${formattedHour}:${"00"} ${ampm}`;
+          }
+          return ` ${formattedDate}, From: ${formattedFromTime}, To: ${formattedToTime}`;
+        }),
+        subjects: scheduledata.subjects
+          .map((subject: any) => subject.courseName.trim())
+          .join(", "),
+      };
+      
+
+      axios
+        .post(
+          "http://localhost:6004/notification/emailNotification",
+          templatePayload
+        )
+        .then(function (response) {
+          // console.log(response);
+        });
       return response.status(HttpStatus.OK).json({
         message: "Schedule accpeted successfully",
         schedule,
@@ -194,8 +235,8 @@ export class ScheduleController {
       const templatePayload = {
         ...scheduledata,
         templateName: "tutorRejectsStudent",
-        to: scheduledata.student[0].email,
-        // to:"kanakaprasad.villagetech@gmail.com",
+        // to: scheduledata.student[0].email,
+        to:"swathirekha.kasturi@gmail.com",
         studentName: scheduledata.student[0].firstName,
         studentLastName: scheduledata.student[0].lastName,
         tutorName: scheduledata.tutor[0].firstName,
@@ -244,8 +285,8 @@ export class ScheduleController {
       const templatePayload = {
         ...scheduledata,
         templateName: "studentCancelCourse",
-        to: scheduledata.tutor[0].email,
-        // to:"kanakaprasad.villagetech@gmail.com",
+        // to: scheduledata.tutor[0].email,
+        to:"swathi.villagetech@gmail.com",
         studentName: scheduledata.student[0].firstName,
         studentLastName: scheduledata.student[0].lastName,
         tutorName: scheduledata.tutor[0].firstName,

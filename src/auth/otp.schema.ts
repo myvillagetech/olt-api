@@ -12,6 +12,11 @@ export class OtpSchemaCreator {
     otpCode : string;
 
     @Prop({
+        default :'forgotPassword',
+    })
+    type : string;
+
+    @Prop({
         required :true,
     })
     email : string;
