@@ -15,6 +15,7 @@ export class TutorProfileDto {
     email : string;
     title: string;  
     description: string;   
+    newSubjects?:any[];
     subject: ISubjects[];
     slots : IAvilableSlots[]
     hourlyRate : number;

@@ -71,10 +71,9 @@ export class CourseService {
                     return existingCourse._id;
                 }
                 
-                let newcourse: any =  new this.courseModel(coursePayload).save();
-                return newcourse._id
+                let newcourse: any =  await new this.courseModel(course).save();
+                return newcourse._doc
             });
-
             return newCourses;
         }
         catch (error) {
