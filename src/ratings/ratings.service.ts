@@ -78,6 +78,7 @@ export class RatingsService {
           $group: {
               _id: null,
               totalNumberOfRatings: { $sum: "$numberOfRatings" },
+              averageRatings: { $avg: "$_id" },
               ratings: { $push: { rating: "$_id", numberOfRatings: "$numberOfRatings" } },
           },
       },
