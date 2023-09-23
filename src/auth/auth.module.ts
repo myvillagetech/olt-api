@@ -6,10 +6,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 // import { ScheduleSchema } from './schedule.schema';
 import { MODEL_ENUMS } from 'src/shared/enums/models.enums';
 import { UsersModule } from 'src/users/users.module';
-import { OtpSchema } from './otp.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: MODEL_ENUMS.OTP, schema: OtpSchema}]),UsersModule],
+  imports: [UsersModule],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy]
 })

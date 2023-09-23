@@ -7,7 +7,6 @@ import { ResetPasswordDto } from "./dto/resetPassword";
 //import { User } from 'src/users/entities/user.entity';
 import { SignUpDTO } from "./dto/singup.dto";
 import RefreshToken from "./entities/refresh-token.entity";
-import { OtpDocument } from "./otp.schema";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { MODEL_ENUMS } from "src/shared/enums/models.enums";
@@ -17,7 +16,6 @@ export class AuthService {
   private refreshTokens: RefreshToken[] = [];
 
   constructor(
-    @InjectModel(MODEL_ENUMS.OTP) private OtpModel: Model<OtpDocument>,
     private readonly userService: UsersService
   ) {}
 
