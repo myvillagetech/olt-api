@@ -30,81 +30,81 @@ export class PaymentsController {
       const scheduledata = await this.scheduleService.getScheduleByScheduleId(
         payload.scheduleIds[0]
       );
-      const templatePayloadForTutor = {
-        templateName: "paymentAlertForTutor",
-        // to: scheduledata.tutor[0].email,
-        to:"swathi.villagetech@gmail.com",
-        studentName: scheduledata.student[0].firstName,
-        studentLastName: scheduledata.student[0].lastName,
-        tutorName: scheduledata.tutor[0].firstName,
-        tutorLastName: scheduledata.tutor[0].lastName,
-        subjects: scheduledata.subjects
-          .map((subject: any) => subject.courseName.trim())
-          .join(", "),
-        paymentAmount: payload.amount,
-        paymentDate: new Date(
-          payload.paymentInfo.create_time
-        ).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }),
-        paymentMode: payload.paymentInfo.purchase_units[0].soft_descriptor,
-        paymentId: payload.paymentId,
-      };
-      axios
-        .post(
-          "http://localhost:6004/notification/emailNotification",
-          templatePayloadForTutor
-        )
-        .then(function (response) {
-          // console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-      const templatePayloadForStudent = {
-        templateName: "paymentAlertForStudent",
-        // to: scheduledata.student[0].email,
-        to: "swathirekha.kasturi@gmail.com",
-        studentName: scheduledata.student[0].firstName,
-        studentLastName: scheduledata.student[0].lastName,
-        tutorName: scheduledata.tutor[0].firstName,
-        tutorLastName: scheduledata.tutor[0].lastName,
-        subjects: scheduledata.subjects
-          .map((subject: any) => subject.courseName.trim())
-          .join(", "),
+      // const templatePayloadForTutor = {
+      //   templateName: "paymentAlertForTutor",
+      //   // to: scheduledata.tutor[0].email,
+      //   to:"swathi.villagetech@gmail.com",
+      //   studentName: scheduledata.student[0].firstName,
+      //   studentLastName: scheduledata.student[0].lastName,
+      //   tutorName: scheduledata.tutor[0].firstName,
+      //   tutorLastName: scheduledata.tutor[0].lastName,
+      //   subjects: scheduledata.subjects
+      //     .map((subject: any) => subject.courseName.trim())
+      //     .join(", "),
+      //   paymentAmount: payload.amount,
+      //   paymentDate: new Date(
+      //     payload.paymentInfo.create_time
+      //   ).toLocaleDateString("en-US", {
+      //     year: "numeric",
+      //     month: "long",
+      //     day: "numeric",
+      //   }),
+      //   paymentMode: payload.paymentInfo.purchase_units[0].soft_descriptor,
+      //   paymentId: payload.paymentId,
+      // };
+      // axios
+      //   .post(
+      //     "http://localhost:6004/notification/emailNotification",
+      //     templatePayloadForTutor
+      //   )
+      //   .then(function (response) {
+      //     // console.log(response);
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   });
+      // const templatePayloadForStudent = {
+      //   templateName: "paymentAlertForStudent",
+      //   // to: scheduledata.student[0].email,
+      //   to: "swathirekha.kasturi@gmail.com",
+      //   studentName: scheduledata.student[0].firstName,
+      //   studentLastName: scheduledata.student[0].lastName,
+      //   tutorName: scheduledata.tutor[0].firstName,
+      //   tutorLastName: scheduledata.tutor[0].lastName,
+      //   subjects: scheduledata.subjects
+      //     .map((subject: any) => subject.courseName.trim())
+      //     .join(", "),
 
-        scheduleDate: scheduledata.slots.map((slot) => {
-          const formattedDate = slot.date.toLocaleString("en-US", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          });
-          const formattedFromTime = formatTime(slot.from);
-          const formattedToTime = formatTime(slot.to);
-          function formatTime(hour: any) {
-            const ampm = hour >= 12 ? "PM" : "AM";
-            const formattedHour = hour % 12 || 12;
-            return `${formattedHour}:${"00"} ${ampm}`;
-          }
+      //   scheduleDate: scheduledata.slots.map((slot) => {
+      //     const formattedDate = slot.date.toLocaleString("en-US", {
+      //       weekday: "long",
+      //       year: "numeric",
+      //       month: "long",
+      //       day: "numeric",
+      //     });
+      //     const formattedFromTime = formatTime(slot.from);
+      //     const formattedToTime = formatTime(slot.to);
+      //     function formatTime(hour: any) {
+      //       const ampm = hour >= 12 ? "PM" : "AM";
+      //       const formattedHour = hour % 12 || 12;
+      //       return `${formattedHour}:${"00"} ${ampm}`;
+      //     }
 
-          return ` ${formattedDate}, From: ${formattedFromTime}, To: ${formattedToTime}`;
-        }),
-      };
-      console.log(templatePayloadForStudent.scheduleDate);
-      axios
-        .post(
-          "http://localhost:6004/notification/emailNotification",
-          templatePayloadForStudent
-        )
-        .then(function (response) {
-          // console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      //     return ` ${formattedDate}, From: ${formattedFromTime}, To: ${formattedToTime}`;
+      //   }),
+      // };
+    
+      // axios
+      //   .post(
+      //     "http://localhost:6004/notification/emailNotification",
+      //     templatePayloadForStudent
+      //   )
+      //   .then(function (response) {
+      //     // console.log(response);
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   });
       return response.status(HttpStatus.CREATED).json({
         message: "Payment details added sucessfully",
         payment,
