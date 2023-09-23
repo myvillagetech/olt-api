@@ -51,76 +51,76 @@ export class ScheduleController {
       if (!tutorDetails) {
         throw new NotFoundException(`user #${schedulePayload.tutor} not found`);
       }
-      const templatePayloadForTutor = {
-        ...schedulePayload,
-        templateName: "bookingAlertForTutor",
-        to:tutorDetails.email,
-        // to: "villagetechvenkat@gmail.com",
-        tutorName: tutorDetails.firstName,
-        tutorLastName: tutorDetails.lastName,
-        studentName: studentDetails.firstName,
-        studentLastName: studentDetails.lastName,
-        subjects: schedulePayload.subjects
-          .map((subject: any) => subject.courseName.trim())
-          .join(", "),
-        slots: schedulePayload.slots
-          .map((slot) => {
-            const date = new Date(slot.date);
-            const formattedDate = date.toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
-            return formattedDate;
-          })
-          .join("; "),
-      };
-      axios
-        .post(
-          "http://localhost:6004/notification/emailNotification",
-          templatePayloadForTutor
-        )
-        .then(function (response) {
-          // console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-      const templatePayloadForStudent = {
-        ...schedulePayload,
-        templateName: "bookingAlertForStudent",
-        to:studentDetails.email,
-        // to: "swathirekha.kasturi@gmail.com",
-        studentName: studentDetails.firstName,
-        studentLastName: studentDetails.lastName,
-        tutorName: tutorDetails.firstName,
-        tutorLastName: tutorDetails.lastName,
-        subjects: schedulePayload.subjects
-          .map((subject: any) => subject.courseName.trim())
-          .join(", "),
-        slots: schedulePayload.slots
-          .map((slot) => {
-            const date = new Date(slot.date);
-            const formattedDate = date.toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
-            return formattedDate;
-          })
-          .join("; "),
-      };
-      axios
-        .post(
-          "http://localhost:6004/notification/emailNotification",
-          templatePayloadForStudent
-        )
-        .then(function (response) {
-          // console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      // const templatePayloadForTutor = {
+      //   ...schedulePayload,
+      //   templateName: "bookingAlertForTutor",
+      //   to:tutorDetails.email,
+      //   // to: "villagetechvenkat@gmail.com",
+      //   tutorName: tutorDetails.firstName,
+      //   tutorLastName: tutorDetails.lastName,
+      //   studentName: studentDetails.firstName,
+      //   studentLastName: studentDetails.lastName,
+      //   subjects: schedulePayload.subjects
+      //     .map((subject: any) => subject.courseName.trim())
+      //     .join(", "),
+      //   slots: schedulePayload.slots
+      //     .map((slot) => {
+      //       const date = new Date(slot.date);
+      //       const formattedDate = date.toLocaleDateString("en-US", {
+      //         year: "numeric",
+      //         month: "long",
+      //         day: "numeric",
+      //       });
+      //       return formattedDate;
+      //     })
+      //     .join("; "),
+      // };
+      // axios
+      //   .post(
+      //     "http://localhost:6004/notification/emailNotification",
+      //     templatePayloadForTutor
+      //   )
+      //   .then(function (response) {
+      //     // console.log(response);
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   });
+      // const templatePayloadForStudent = {
+      //   ...schedulePayload,
+      //   templateName: "bookingAlertForStudent",
+      //   to:studentDetails.email,
+      //   // to: "swathirekha.kasturi@gmail.com",
+      //   studentName: studentDetails.firstName,
+      //   studentLastName: studentDetails.lastName,
+      //   tutorName: tutorDetails.firstName,
+      //   tutorLastName: tutorDetails.lastName,
+      //   subjects: schedulePayload.subjects
+      //     .map((subject: any) => subject.courseName.trim())
+      //     .join(", "),
+      //   slots: schedulePayload.slots
+      //     .map((slot) => {
+      //       const date = new Date(slot.date);
+      //       const formattedDate = date.toLocaleDateString("en-US", {
+      //         year: "numeric",
+      //         month: "long",
+      //         day: "numeric",
+      //       });
+      //       return formattedDate;
+      //     })
+      //     .join("; "),
+      // };
+      // axios
+      //   .post(
+      //     "http://localhost:6004/notification/emailNotification",
+      //     templatePayloadForStudent
+      //   )
+      //   .then(function (response) {
+      //     // console.log(response);
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   });
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
@@ -169,45 +169,45 @@ export class ScheduleController {
       );
       const scheduledata: any =
         await this.scheduleService.getScheduleByScheduleId(payload.id);
-      const templatePayload = {
-        ...scheduledata,
-        templateName: "bookingConformationForStudent",
-        to: scheduledata.student[0].email,
-        // to:"swathirekha.kasturi@gmail.com",
-        studentName: scheduledata.student[0].firstName,
-        studentLastName: scheduledata.student[0].lastName,
-        tutorName: scheduledata.tutor[0].firstName,
-        tutorLastName: scheduledata.tutor[0].lastName,
-        slots:scheduledata.slots.map((slot) => {
-          const formattedDate = slot.date.toLocaleString("en-US", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          });
-          const formattedFromTime = formatTime(slot.from);
-          const formattedToTime = formatTime(slot.to);
-          function formatTime(hour: any) {
-            const ampm = hour >= 12 ? "PM" : "AM";
-            const formattedHour = hour % 12 || 12;
-            return `${formattedHour}:${"00"} ${ampm}`;
-          }
-          return ` ${formattedDate}, From: ${formattedFromTime}, To: ${formattedToTime}`;
-        }),
-        subjects: scheduledata.subjects
-          .map((subject: any) => subject.courseName.trim())
-          .join(", "),
-      };
+      // const templatePayload = {
+      //   ...scheduledata,
+      //   templateName: "bookingConformationForStudent",
+      //   to: scheduledata.student[0].email,
+      //   // to:"swathirekha.kasturi@gmail.com",
+      //   studentName: scheduledata.student[0].firstName,
+      //   studentLastName: scheduledata.student[0].lastName,
+      //   tutorName: scheduledata.tutor[0].firstName,
+      //   tutorLastName: scheduledata.tutor[0].lastName,
+      //   slots:scheduledata.slots.map((slot) => {
+      //     const formattedDate = slot.date.toLocaleString("en-US", {
+      //       weekday: "long",
+      //       year: "numeric",
+      //       month: "long",
+      //       day: "numeric",
+      //     });
+      //     const formattedFromTime = formatTime(slot.from);
+      //     const formattedToTime = formatTime(slot.to);
+      //     function formatTime(hour: any) {
+      //       const ampm = hour >= 12 ? "PM" : "AM";
+      //       const formattedHour = hour % 12 || 12;
+      //       return `${formattedHour}:${"00"} ${ampm}`;
+      //     }
+      //     return ` ${formattedDate}, From: ${formattedFromTime}, To: ${formattedToTime}`;
+      //   }),
+      //   subjects: scheduledata.subjects
+      //     .map((subject: any) => subject.courseName.trim())
+      //     .join(", "),
+      // };
       
 
-      axios
-        .post(
-          "http://localhost:6004/notification/emailNotification",
-          templatePayload
-        )
-        .then(function (response) {
-          // console.log(response);
-        });
+      // axios
+      //   .post(
+      //     "http://localhost:6004/notification/emailNotification",
+      //     templatePayload
+      //   )
+      //   .then(function (response) {
+      //     // console.log(response);
+      //   });
       return response.status(HttpStatus.OK).json({
         message: "Schedule accpeted successfully",
         schedule,
@@ -232,29 +232,29 @@ export class ScheduleController {
       );
       const scheduledata: any =
         await this.scheduleService.getScheduleByScheduleId(payload.id);
-      const templatePayload = {
-        ...scheduledata,
-        templateName: "tutorRejectsStudent",
-        // to: scheduledata.student[0].email,
-        to:"swathirekha.kasturi@gmail.com",
-        studentName: scheduledata.student[0].firstName,
-        studentLastName: scheduledata.student[0].lastName,
-        tutorName: scheduledata.tutor[0].firstName,
-        tutorLastName: scheduledata.tutor[0].lastName,
-        subjects: scheduledata.subjects
-          .map((subject: any) => subject.courseName.trim())
-          .join(", "),
-        reason: payload.reason,
-      };
+      // const templatePayload = {
+      //   ...scheduledata,
+      //   templateName: "tutorRejectsStudent",
+      //   // to: scheduledata.student[0].email,
+      //   to:"swathirekha.kasturi@gmail.com",
+      //   studentName: scheduledata.student[0].firstName,
+      //   studentLastName: scheduledata.student[0].lastName,
+      //   tutorName: scheduledata.tutor[0].firstName,
+      //   tutorLastName: scheduledata.tutor[0].lastName,
+      //   subjects: scheduledata.subjects
+      //     .map((subject: any) => subject.courseName.trim())
+      //     .join(", "),
+      //   reason: payload.reason,
+      // };
 
-      axios
-        .post(
-          "http://localhost:6004/notification/emailNotification",
-          templatePayload
-        )
-        .then(function (response) {
-          // console.log(response);
-        });
+      // axios
+      //   .post(
+      //     "http://localhost:6004/notification/emailNotification",
+      //     templatePayload
+      //   )
+      //   .then(function (response) {
+      //     // console.log(response);
+      //   });
 
       return response.status(HttpStatus.OK).json({
         message: "Schedule rejected successfully",
@@ -282,40 +282,40 @@ export class ScheduleController {
 
       const scheduledata: any =
         await this.scheduleService.getScheduleByScheduleId(payload.id);
-      const templatePayload = {
-        ...scheduledata,
-        templateName: "studentCancelCourse",
-        // to: scheduledata.tutor[0].email,
-        to:"swathi.villagetech@gmail.com",
-        studentName: scheduledata.student[0].firstName,
-        studentLastName: scheduledata.student[0].lastName,
-        tutorName: scheduledata.tutor[0].firstName,
-        tutorLastName: scheduledata.tutor[0].lastName,
-        subjects: scheduledata.subjects
-          .map((subject: any) => subject.courseName.trim())
-          .join(", "),
-        slots: scheduledata.slots
-          .map((slot) => {
-            const date = new Date(slot.date);
-            const formattedDate = date.toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
-            return formattedDate;
-          })
-          .join("; "),
-        reason: payload.reason,
-      };
+      // const templatePayload = {
+      //   ...scheduledata,
+      //   templateName: "studentCancelCourse",
+      //   // to: scheduledata.tutor[0].email,
+      //   to:"swathi.villagetech@gmail.com",
+      //   studentName: scheduledata.student[0].firstName,
+      //   studentLastName: scheduledata.student[0].lastName,
+      //   tutorName: scheduledata.tutor[0].firstName,
+      //   tutorLastName: scheduledata.tutor[0].lastName,
+      //   subjects: scheduledata.subjects
+      //     .map((subject: any) => subject.courseName.trim())
+      //     .join(", "),
+      //   slots: scheduledata.slots
+      //     .map((slot) => {
+      //       const date = new Date(slot.date);
+      //       const formattedDate = date.toLocaleDateString("en-US", {
+      //         year: "numeric",
+      //         month: "long",
+      //         day: "numeric",
+      //       });
+      //       return formattedDate;
+      //     })
+      //     .join("; "),
+      //   reason: payload.reason,
+      // };
 
-      axios
-        .post(
-          "http://localhost:6004/notification/emailNotification",
-          templatePayload
-        )
-        .then(function (response) {
-          // console.log(response);
-        });
+      // axios
+      //   .post(
+      //     "http://localhost:6004/notification/emailNotification",
+      //     templatePayload
+      //   )
+      //   .then(function (response) {
+      //     // console.log(response);
+      //   });
       return response.status(HttpStatus.OK).json({
         message: "Schedule rejected successfully",
         schedule,
