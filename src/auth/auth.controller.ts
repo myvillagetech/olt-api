@@ -19,6 +19,7 @@ import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ResetPasswordDto } from './dto/resetPassword';
 import { SignUpDTO } from './dto/singup.dto';
+import axios from 'axios';
 
 @Controller('auth')
 @ApiTags('auth')
