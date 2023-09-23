@@ -88,53 +88,6 @@ export class AuthService {
     return { messsage: "Successfully updated" };
   }
 
-  async forgotPassword(emailId: string): Promise<any> {
-    const otpData = await this.OtpModel.findOne({ email: emailId});
-    const user = await this.userService.getUserByEmail(emailId);
-    if (!user) {
-      throw new Error("Invalid user details");
-    }
-    const newOtp = this.generateOTP();
-    if (otpData) {
-      otpData.otpCode = newOtp;
-      let userDetailsWithOtp: any = new this.OtpModel(otpData);
-      return userDetailsWithOtp.save();
-    } else {
-      const userData: any = {
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-      };
-      userData.otpCode = newOtp;
-      let userDetailsWithOtp: any = new this.OtpModel(userData);
-      return userDetailsWithOtp.save();
-    }
-  }
-
-  async verifyOtp(otpdata: any): Promise<any> {
-    const otpFromDb = await this.OtpModel.findOne({ email: otpdata.email });
-    if (otpFromDb.otpCode == otpdata.otp && otpFromDb.type==='forgotPassword') {
-      const updateUserPassword =
-        await this.userService.updatePartialUserByEmail(otpdata.email, {
-          password: otpdata.password,
-        });
-      await this.OtpModel.deleteOne({ _id: otpFromDb._id });
-      return updateUserPassword;
-    } else {
-      throw new Error("Otp not match");
-    }
-  }
-
-  generateOTP() {
-    const length = 6;
-    const charset = "0123456789";
-    let otp = "";
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * charset.length);
-      otp += charset[randomIndex];
-    }
-    return otp;
-  }
 
   async googleSignIn(
     body: GoogleLoginDto,
