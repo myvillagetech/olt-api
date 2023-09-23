@@ -74,9 +74,16 @@ export class RatingsService {
         },
         {
           $sort: { _id: -1 },
-        },
+        },{
+          $group: {
+              _id: null,
+              totalNumberOfRatings: { $sum: "$numberOfRatings" },
+              ratings: { $push: { rating: "$_id", numberOfRatings: "$numberOfRatings" } },
+          },
+      },
+      
       ]);
-      return ratings;
+      return ratings[0];
     } catch (error) {
       throw new Error(error.message);
     }
