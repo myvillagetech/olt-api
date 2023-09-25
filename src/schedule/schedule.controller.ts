@@ -432,6 +432,42 @@ export class ScheduleController {
     }
   }
 
+  @Get("latest-updated-schedules/tutor:tutorId")
+  async getLatestUpdatedTutorSchedules(
+    @Res() response,
+    @Param("tutorId") tutorId: string
+  ) {
+    try {
+      const scheduleSearchCriteria: ScheduleSearchCriteria = {
+        sortOrder: -1,
+        sortField: "updatedAt",
+        studentIds: [],
+        tutorIds: [tutorId],
+        subjects: [],
+        status: [],
+        pageNumber: 0,
+        pageSize: 5,
+        dateRange: new DateRange(),
+        searchTerm: ''
+      };
+      const schedulesData =
+        await this.scheduleService.getAllSchedulesBySearchByCriteria(
+          scheduleSearchCriteria
+        );
+      return response.status(HttpStatus.OK).json({
+        message:
+          schedulesData[0].schedules.length > 0
+            ? "Schedules found successfully"
+            : "No schedule found",
+        data: schedulesData[0].schedules,
+        count: schedulesData[0].schedules?.length,
+        totalCount: schedulesData[0].metrics[0]?.totalCount,
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   @Get("latest-updated-schedules/:studentId")
   async getLatestUpdatedSchedules(
     @Res() response,
@@ -467,4 +503,5 @@ export class ScheduleController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
+
 }
