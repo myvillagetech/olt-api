@@ -23,13 +23,12 @@ export class CourseSchemaCreator {
     category : string;
 
     @Prop({
-        required: true,
         default: true
     })
     isActive: Boolean
 }
 
-export type ICourseDocument = CourseSchemaCreator & Document;
+export type ICourseDocument  = CourseSchemaCreator & Document;
 export const CourseSchema = SchemaFactory.createForClass(
     CourseSchemaCreator
 ).plugin(uniqueValidators)

@@ -7,12 +7,14 @@ import { MODEL_ENUMS } from "src/shared/enums/models.enums";
 import { TutorProfileDto } from "./tutorProfile.dto";
 import { IAvilableSlots, ISubjects, ITutorProfileDocument } from "./tutorProfile.schema";
 import { TutorSearchCriteria } from "./tutorSearchCriteria.dto";
+import { CourseService } from "src/courses/course.service";
 
 
 @Injectable()
 export class TutorProfileService {
     constructor(
         @InjectModel(MODEL_ENUMS.PROFILE) private profileModel: Model<ITutorProfileDocument>,
+        private courseService :CourseService
     ) { }
 
     async createTutorProfile(profilePayload: TutorProfileDto): Promise<TutorProfileDto | UnprocessableEntityException> {
@@ -33,7 +35,14 @@ export class TutorProfileService {
         return profileDetails;
     }
 
-    async updateTutorProfile(profilePayload: TutorProfileDto, profileId: string): Promise<TutorProfileDto | UnprocessableEntityException> {
+    async updateTutorProfile(profilePayload: any, profileId: string): Promise<TutorProfileDto | UnprocessableEntityException> {
+        if (profilePayload.newSubjects) {
+            for (const subject of profilePayload.newSubjects) {
+                let newSubject:any = await this.courseService.createCourse(subject)
+                profilePayload.subject.push(newSubject._doc)
+            }
+          
+        }
         const profile = await this.profileModel.findByIdAndUpdate(profileId, profilePayload, { new: true }).exec()
         if (!profile) {
             throw new HttpException(`Profile #${profileId} not found`, HttpStatus.NOT_MODIFIED);

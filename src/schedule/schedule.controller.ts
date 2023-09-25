@@ -1,4 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards, HttpStatus, Put, HttpException, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Res,
+  UseGuards,
+  HttpStatus,
+  Put,
+  HttpException,
+  Query,
+  NotFoundException,
+} from "@nestjs/common";
+import { UsersService } from "src/users/users.service";
+import axios from "axios";
 import { ScheduleService } from './schedule.service';
 import { ScheduleDto, PaymentInformation, AcceptScheduleDto, RejectScheduleDto } from './dto/schedule.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
@@ -9,32 +26,112 @@ import { DateRange } from 'src/shared/DTOs/dateRange';
 import { Status } from './schedule.status';
 import { PayoutSchema } from 'src/payments/payout.schema';
 
-@Controller('schedule')
-@ApiTags('schedule')
+@Controller("schedule")
+@ApiTags("schedule")
 // @UseGuards(JwtAuthGuard)
 // @ApiBearerAuth('access-token')
 export class ScheduleController {
-  constructor(private readonly scheduleService: ScheduleService) { }
+  constructor(
+    private readonly scheduleService: ScheduleService,
+    private readonly usersService: UsersService
+  ) {}
 
-  @Post('')
+  @Post("")
   async createSchedule(@Res() response, @Body() schedulePayload: ScheduleDto) {
     try {
-      const schedule = await this.scheduleService.createSchedule(schedulePayload)
-      return response.status(HttpStatus.CREATED).json({
-        message: 'Schedule Created sucessfully',
-        schedule
-      });
+      const schedule = await this.scheduleService.createSchedule(
+        schedulePayload
+      );
+      const tutorDetails = await this.usersService.getUser(
+        schedulePayload.tutor
+      );
+      const studentDetails = await this.usersService.getUser(
+        schedulePayload.student
+      );
+      if (!tutorDetails) {
+        throw new NotFoundException(`user #${schedulePayload.tutor} not found`);
+      }
+      // const templatePayloadForTutor = {
+      //   ...schedulePayload,
+      //   templateName: "bookingAlertForTutor",
+      //   to:tutorDetails.email,
+      //   // to: "villagetechvenkat@gmail.com",
+      //   tutorName: tutorDetails.firstName,
+      //   tutorLastName: tutorDetails.lastName,
+      //   studentName: studentDetails.firstName,
+      //   studentLastName: studentDetails.lastName,
+      //   subjects: schedulePayload.subjects
+      //     .map((subject: any) => subject.courseName.trim())
+      //     .join(", "),
+      //   slots: schedulePayload.slots
+      //     .map((slot) => {
+      //       const date = new Date(slot.date);
+      //       const formattedDate = date.toLocaleDateString("en-US", {
+      //         year: "numeric",
+      //         month: "long",
+      //         day: "numeric",
+      //       });
+      //       return formattedDate;
+      //     })
+      //     .join("; "),
+      // };
+      // axios
+      //   .post(
+      //     "http://localhost:6004/notification/emailNotification",
+      //     templatePayloadForTutor
+      //   )
+      //   .then(function (response) {
+      //     // console.log(response);
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   });
+      // const templatePayloadForStudent = {
+      //   ...schedulePayload,
+      //   templateName: "bookingAlertForStudent",
+      //   to:studentDetails.email,
+      //   // to: "swathirekha.kasturi@gmail.com",
+      //   studentName: studentDetails.firstName,
+      //   studentLastName: studentDetails.lastName,
+      //   tutorName: tutorDetails.firstName,
+      //   tutorLastName: tutorDetails.lastName,
+      //   subjects: schedulePayload.subjects
+      //     .map((subject: any) => subject.courseName.trim())
+      //     .join(", "),
+      //   slots: schedulePayload.slots
+      //     .map((slot) => {
+      //       const date = new Date(slot.date);
+      //       const formattedDate = date.toLocaleDateString("en-US", {
+      //         year: "numeric",
+      //         month: "long",
+      //         day: "numeric",
+      //       });
+      //       return formattedDate;
+      //     })
+      //     .join("; "),
+      // };
+      // axios
+      //   .post(
+      //     "http://localhost:6004/notification/emailNotification",
+      //     templatePayloadForStudent
+      //   )
+      //   .then(function (response) {
+      //     // console.log(response);
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   });
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
-  @Delete('/:id')
-  async deleteScheduleById(@Res() response, @Param('id') ScheduleId: string) {
+  @Delete("/:id")
+  async deleteScheduleById(@Res() response, @Param("id") ScheduleId: string) {
     try {
-      const schedule = await this.scheduleService.deleteSchedule(ScheduleId)
+      const schedule = await this.scheduleService.deleteSchedule(ScheduleId);
       return response.status(HttpStatus.OK).json({
-        message: 'Course deleted successfully',
+        message: "Course deleted successfully",
         schedule,
       });
     } catch (err) {
@@ -42,12 +139,19 @@ export class ScheduleController {
     }
   }
 
-  @Put('/:id')
-  async updateScheduleById(@Res() response, @Param('id') ScheduleId: string, @Body() SchedulePayload: ScheduleDto) {
+  @Put("/:id")
+  async updateScheduleById(
+    @Res() response,
+    @Param("id") ScheduleId: string,
+    @Body() SchedulePayload: ScheduleDto
+  ) {
     try {
-      const schedule = await this.scheduleService.updateSchedule(SchedulePayload, ScheduleId);
+      const schedule = await this.scheduleService.updateSchedule(
+        SchedulePayload,
+        ScheduleId
+      );
       return response.status(HttpStatus.OK).json({
-        message: 'Schedule Updated successfully',
+        message: "Schedule Updated successfully",
         schedule,
       });
     } catch (err) {
@@ -55,58 +159,170 @@ export class ScheduleController {
     }
   }
 
-  @Post('/acceptSchdule')
+  @Post("/acceptSchdule")
   async acceptSchdule(@Res() response, @Body() payload: AcceptScheduleDto) {
     try {
-      const schedule = await this.scheduleService.updateScheduleStatus(payload.id, 'ACCEPTED', {amount: payload.amount});
-      return response.status(HttpStatus.OK).json({
-        message: 'Schedule accpeted successfully',
-        schedule,
-      });
-    } catch (err) {
-      return response.status(err.status).json(err.response);
-    }
-    
-  }
-
-  @Post('/rejectSchdule')
-  async rejectSchdule(@Res() response, @Body() payload: RejectScheduleDto) {
-    try {
-      if(!payload.reason){
-        return response.status(400).json({
-          message: 'Reason required'
-        });
-      }
-
-      const schedule = await this.scheduleService.updateScheduleStatus(payload.id, Status.REJECTED, {rejectedNote: payload.reason});
-      return response.status(HttpStatus.OK).json({
-        message: 'Schedule rejected successfully',
-        schedule,
-      });
-    } catch (err) {
-      return response.status(err.status).json(err.response);
-    }
-    
-  }
-
-  @Post('/cancelSchdule')
-  async cancelSchdule(@Res() response, @Body() payload: RejectScheduleDto) {
-    try {
-      if(!payload.reason){
-        return response.status(400).json({
-          message: 'Reason required'
-        });
-      }
+      const schedule = await this.scheduleService.updateScheduleStatus(
+        payload.id,
+        "ACCEPTED",
+        { amount: payload.amount }
+      );
+      const scheduledata: any =
+        await this.scheduleService.getScheduleByScheduleId(payload.id);
+      // const templatePayload = {
+      //   ...scheduledata,
+      //   templateName: "bookingConformationForStudent",
+      //   to: scheduledata.student[0].email,
+      //   // to:"swathirekha.kasturi@gmail.com",
+      //   studentName: scheduledata.student[0].firstName,
+      //   studentLastName: scheduledata.student[0].lastName,
+      //   tutorName: scheduledata.tutor[0].firstName,
+      //   tutorLastName: scheduledata.tutor[0].lastName,
+      //   slots:scheduledata.slots.map((slot) => {
+      //     const formattedDate = slot.date.toLocaleString("en-US", {
+      //       weekday: "long",
+      //       year: "numeric",
+      //       month: "long",
+      //       day: "numeric",
+      //     });
+      //     const formattedFromTime = formatTime(slot.from);
+      //     const formattedToTime = formatTime(slot.to);
+      //     function formatTime(hour: any) {
+      //       const ampm = hour >= 12 ? "PM" : "AM";
+      //       const formattedHour = hour % 12 || 12;
+      //       return `${formattedHour}:${"00"} ${ampm}`;
+      //     }
+      //     return ` ${formattedDate}, From: ${formattedFromTime}, To: ${formattedToTime}`;
+      //   }),
+      //   subjects: scheduledata.subjects
+      //     .map((subject: any) => subject.courseName.trim())
+      //     .join(", "),
+      // };
       
-      const schedule = await this.scheduleService.updateScheduleStatus(payload.id, Status.CANCELLED, {rejectedNote: payload.reason});
+
+      // axios
+      //   .post(
+      //     "http://localhost:6004/notification/emailNotification",
+      //     templatePayload
+      //   )
+      //   .then(function (response) {
+      //     // console.log(response);
+      //   });
       return response.status(HttpStatus.OK).json({
-        message: 'Schedule rejected successfully',
+        message: "Schedule accpeted successfully",
         schedule,
       });
     } catch (err) {
       return response.status(err.status).json(err.response);
     }
-    
+  }
+
+  @Post("/rejectSchdule")
+  async rejectSchdule(@Res() response, @Body() payload: any) {
+    try {
+      if (!payload.reason) {
+        return response.status(400).json({
+          message: "Reason required",
+        });
+      }
+      const schedule = await this.scheduleService.updateScheduleStatus(
+        payload.id,
+        Status.REJECTED,
+        { rejectedNote: payload.reason }
+      );
+      const scheduledata: any =
+        await this.scheduleService.getScheduleByScheduleId(payload.id);
+      // const templatePayload = {
+      //   ...scheduledata,
+      //   templateName: "tutorRejectsStudent",
+      //   // to: scheduledata.student[0].email,
+      //   to:"swathirekha.kasturi@gmail.com",
+      //   studentName: scheduledata.student[0].firstName,
+      //   studentLastName: scheduledata.student[0].lastName,
+      //   tutorName: scheduledata.tutor[0].firstName,
+      //   tutorLastName: scheduledata.tutor[0].lastName,
+      //   subjects: scheduledata.subjects
+      //     .map((subject: any) => subject.courseName.trim())
+      //     .join(", "),
+      //   reason: payload.reason,
+      // };
+
+      // axios
+      //   .post(
+      //     "http://localhost:6004/notification/emailNotification",
+      //     templatePayload
+      //   )
+      //   .then(function (response) {
+      //     // console.log(response);
+      //   });
+
+      return response.status(HttpStatus.OK).json({
+        message: "Schedule rejected successfully",
+        schedule,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
+  @Post("/cancelSchdule")
+  async cancelSchdule(@Res() response, @Body() payload: any) {
+    try {
+      if (!payload.reason) {
+        return response.status(400).json({
+          message: "Reason required",
+        });
+      }
+
+      const schedule = await this.scheduleService.updateScheduleStatus(
+        payload.id,
+        Status.CANCELLED,
+        { rejectedNote: payload.reason }
+      );
+
+      const scheduledata: any =
+        await this.scheduleService.getScheduleByScheduleId(payload.id);
+      // const templatePayload = {
+      //   ...scheduledata,
+      //   templateName: "studentCancelCourse",
+      //   // to: scheduledata.tutor[0].email,
+      //   to:"swathi.villagetech@gmail.com",
+      //   studentName: scheduledata.student[0].firstName,
+      //   studentLastName: scheduledata.student[0].lastName,
+      //   tutorName: scheduledata.tutor[0].firstName,
+      //   tutorLastName: scheduledata.tutor[0].lastName,
+      //   subjects: scheduledata.subjects
+      //     .map((subject: any) => subject.courseName.trim())
+      //     .join(", "),
+      //   slots: scheduledata.slots
+      //     .map((slot) => {
+      //       const date = new Date(slot.date);
+      //       const formattedDate = date.toLocaleDateString("en-US", {
+      //         year: "numeric",
+      //         month: "long",
+      //         day: "numeric",
+      //       });
+      //       return formattedDate;
+      //     })
+      //     .join("; "),
+      //   reason: payload.reason,
+      // };
+
+      // axios
+      //   .post(
+      //     "http://localhost:6004/notification/emailNotification",
+      //     templatePayload
+      //   )
+      //   .then(function (response) {
+      //     // console.log(response);
+      //   });
+      return response.status(HttpStatus.OK).json({
+        message: "Schedule rejected successfully",
+        schedule,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
   }
 
   @Put('/completed/:id')
@@ -114,13 +330,12 @@ export class ScheduleController {
     try {
       const schedule = await this.scheduleService.updateScheduleStatus(ScheduleId, Status.COMPLETED,{});
       return response.status(HttpStatus.OK).json({
-        message: 'Schedule completed successfully',
+        message: "Schedule completed successfully",
         schedule,
       });
     } catch (err) {
       return response.status(err.status).json(err.response);
     }
-    
   }
 
   // @Put('updatePayment/:id')
@@ -136,12 +351,12 @@ export class ScheduleController {
   //   }
   // }
 
-  @Get('/student-schedule-counts')
-  async getStudentScheduleCounts(@Res() response, @Query() user:any, ) {
+  @Get("/student-schedule-counts")
+  async getStudentScheduleCounts(@Res() response, @Query() user: any) {
     try {
       const schedule = await this.scheduleService.getScheduleByStatus(user);
       return response.status(HttpStatus.OK).json({
-        message: 'Schedule status details for student found successfully',
+        message: "Schedule status details for student found successfully",
         schedule,
       });
     } catch (err) {
@@ -149,12 +364,12 @@ export class ScheduleController {
     }
   }
 
-  @Get('/tutor-schedule-counts')
-  async getTutorScheduleCounts(@Res() response, @Query() user:any, ) {
+  @Get("/tutor-schedule-counts")
+  async getTutorScheduleCounts(@Res() response, @Query() user: any) {
     try {
       const schedule = await this.scheduleService.getScheduleByStatus(user);
       return response.status(HttpStatus.OK).json({
-        message: 'Schedule status details for tutor found successfully',
+        message: "Schedule status details for tutor found successfully",
         schedule,
       });
     } catch (err) {
@@ -162,12 +377,12 @@ export class ScheduleController {
     }
   }
 
-  @Get('/admin-schedule-counts')
-  async getadminScheduleCounts(@Res() response ) {
+  @Get("/admin-schedule-counts")
+  async getadminScheduleCounts(@Res() response) {
     try {
       const schedule = await this.scheduleService.getAdminScheduleByStatus();
       return response.status(HttpStatus.OK).json({
-        message: 'Schedule status details for admin found successfully',
+        message: "Schedule status details for admin found successfully",
         schedule,
       });
     } catch (err) {
@@ -175,14 +390,17 @@ export class ScheduleController {
     }
   }
 
-  
-
-  @Get('/:id')
-  async getScheduleByScheduleId(@Res() response, @Param('id') ScheduleId: string) {
+  @Get("/:id")
+  async getScheduleByScheduleId(
+    @Res() response,
+    @Param("id") ScheduleId: string
+  ) {
     try {
-      const schedule = await this.scheduleService.getScheduleByScheduleId(ScheduleId);
+      const schedule = await this.scheduleService.getScheduleByScheduleId(
+        ScheduleId
+      );
       return response.status(HttpStatus.OK).json({
-        message: 'Schedule found successfully',
+        message: "Schedule found successfully",
         schedule,
       });
     } catch (err) {
@@ -190,46 +408,62 @@ export class ScheduleController {
     }
   }
 
-  @Post('searchByCriteria')
-  async getAllSchedulesBySearchByCriteria(@Res() response, @Body() scheduleSearchCriteria: ScheduleSearchCriteria) {
+  @Post("searchByCriteria")
+  async getAllSchedulesBySearchByCriteria(
+    @Res() response,
+    @Body() scheduleSearchCriteria: ScheduleSearchCriteria
+  ) {
     try {
-      const schedulesData = await this.scheduleService.getAllSchedulesBySearchByCriteria(scheduleSearchCriteria);
+      const schedulesData =
+        await this.scheduleService.getAllSchedulesBySearchByCriteria(
+          scheduleSearchCriteria
+        );
       return response.status(HttpStatus.OK).json({
-        message: schedulesData[0].schedules.length > 0 ? 'Schedules found successfully' : 'No schedule found',
+        message:
+          schedulesData[0].schedules.length > 0
+            ? "Schedules found successfully"
+            : "No schedule found",
         data: schedulesData[0].schedules,
         count: schedulesData[0].schedules?.length,
-        totalCount: schedulesData[0].metrics[0]?.totalCount
+        totalCount: schedulesData[0].metrics[0]?.totalCount,
       });
-    }
-    catch (err) {
+    } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 
-  @Get('latest-updated-schedules/:studentId')
-  async getLatestUpdatedSchedules(@Res() response, @Param('studentId') studentId: string){
-    try{
-      const scheduleSearchCriteria: ScheduleSearchCriteria ={
+  @Get("latest-updated-schedules/:studentId")
+  async getLatestUpdatedSchedules(
+    @Res() response,
+    @Param("studentId") studentId: string
+  ) {
+    try {
+      const scheduleSearchCriteria: ScheduleSearchCriteria = {
         sortOrder: -1,
-        sortField: 'updatedAt',
+        sortField: "updatedAt",
         studentIds: [studentId],
         tutorIds: [],
         subjects: [],
         status: [],
         pageNumber: 0,
         pageSize: 5,
-        dateRange: new DateRange
-      }
-      const schedulesData = await this.scheduleService.getAllSchedulesBySearchByCriteria(scheduleSearchCriteria);
+        dateRange: new DateRange(),
+      };
+      const schedulesData =
+        await this.scheduleService.getAllSchedulesBySearchByCriteria(
+          scheduleSearchCriteria
+        );
       return response.status(HttpStatus.OK).json({
-        message: schedulesData[0].schedules.length > 0 ? 'Schedules found successfully' : 'No schedule found',
+        message:
+          schedulesData[0].schedules.length > 0
+            ? "Schedules found successfully"
+            : "No schedule found",
         data: schedulesData[0].schedules,
         count: schedulesData[0].schedules?.length,
-        totalCount: schedulesData[0].metrics[0]?.totalCount
-      })
-    }catch (error){
+        totalCount: schedulesData[0].metrics[0]?.totalCount,
+      });
+    } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
-
 }
