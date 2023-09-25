@@ -78,9 +78,32 @@ export class RatingsService {
           $group: {
               _id: null,
               totalNumberOfRatings: { $sum: "$numberOfRatings" },
+              averageRatings: { $avg: "$_id" },
               ratings: { $push: { rating: "$_id", numberOfRatings: "$numberOfRatings" } },
           },
-      },
+      },{
+        $project: {
+            overallRating: 1,
+            totalNumberOfRatings: 1,
+            averageRatings:1,
+            ratings: {
+                $map: {
+                    input: "$ratings",
+                    as: "rating",
+                    in: {
+                        rating: "$$rating.rating",
+                        numberOfRatings: "$$rating.numberOfRatings",
+                        percentage: {
+                          $round: [
+                              { $multiply: [{ $divide: ["$$rating.numberOfRatings", "$totalNumberOfRatings"] }, 100] },
+                              2
+                          ]
+                      },
+                    },
+                },
+            },
+        },
+      }
       
       ]);
       return ratings[0];

@@ -85,7 +85,7 @@ export class RatingsController {
         try {
             const ratings = await this.ratingService.getRatingMetricsByTutorId(tutorId)
             return response.status(HttpStatus.OK).json({
-                message: ratings.length > 0 ? 'Ratings found sucessfully': 'No Ratings found' ,
+                message: 'Ratings found sucessfully',
                 ratings
             });
         } catch (error) {
