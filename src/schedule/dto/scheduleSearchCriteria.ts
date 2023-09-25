@@ -36,5 +36,11 @@ export class ScheduleSearchCriteria extends CriteriaWithPaginationAndSorting {
         required: false
     })
     dateRange: DateRange;
+
+    @ApiProperty({
+        type: String,
+        required: false
+    })
+    searchTerm: string
 }
 

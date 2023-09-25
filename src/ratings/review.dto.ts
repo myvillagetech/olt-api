@@ -2,7 +2,8 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class Review {
     @ApiProperty({
-        type: String
+        type: String,
+        required: false
     })
     title: string;
     @ApiProperty({

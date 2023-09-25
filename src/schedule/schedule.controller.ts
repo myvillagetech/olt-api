@@ -448,6 +448,7 @@ export class ScheduleController {
         pageNumber: 0,
         pageSize: 5,
         dateRange: new DateRange(),
+        searchTerm: ''
       };
       const schedulesData =
         await this.scheduleService.getAllSchedulesBySearchByCriteria(

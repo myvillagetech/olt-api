@@ -280,6 +280,13 @@ export class ScheduleService {
         });
       }
 
+      if (criteria.searchTerm) {
+        search.$and.push({
+          "tutor.firstName": { $regex: new RegExp(criteria.searchTerm, "i") }
+        });
+      }
+
+
       let paginationProps: any = [
         { $match: search.$and.length > 0 ? search : {} },
       ];
