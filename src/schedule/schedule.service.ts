@@ -184,15 +184,36 @@ export class ScheduleService {
       query.tutor=new Types.ObjectId(user.tutor)
     }
     if(user.student || user.tutor){
-      const schedule :any = await this.scheduleModel.aggregate([
-        {$match:query},
-          { $group: { 
-              _id:"$status", 
-              count: {$sum : 1 }, 
-             }
-           }
-      ]); 
+      const schedule: any = await this.scheduleModel.aggregate([
+        { $match: query },
+        {
+          $group: {
+            _id: "$status",
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalDocuments: { $sum: "$count" },
+            statusMetrics: { $push: { status: "$_id", count: "$count" } },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            totalDocuments: 1,
+            statusMetrics: 1,
+          },
+        },
+      ]);
       return schedule;
+  }
+  else{
+    throw new HttpException(
+      `Schedule metrics were not found`,
+      HttpStatus.NOT_MODIFIED
+    );
   }
   }
   
