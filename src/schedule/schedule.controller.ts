@@ -42,15 +42,19 @@ export class ScheduleController {
       const schedule = await this.scheduleService.createSchedule(
         schedulePayload
       );
-      const tutorDetails = await this.usersService.getUser(
-        schedulePayload.tutor
-      );
-      const studentDetails = await this.usersService.getUser(
-        schedulePayload.student
-      );
-      if (!tutorDetails) {
-        throw new NotFoundException(`user #${schedulePayload.tutor} not found`);
-      }
+      return response.status(HttpStatus.OK).json({
+        message: "Schedule created successfully",
+        schedule,
+      });
+      // const tutorDetails = await this.usersService.getUser(
+      //   schedulePayload.tutor
+      // );
+      // const studentDetails = await this.usersService.getUser(
+      //   schedulePayload.student
+      // );
+      // if (!tutorDetails) {
+      //   throw new NotFoundException(`user #${schedulePayload.tutor} not found`);
+      // }
       // const templatePayloadForTutor = {
       //   ...schedulePayload,
       //   templateName: "bookingAlertForTutor",
@@ -131,7 +135,7 @@ export class ScheduleController {
     try {
       const schedule = await this.scheduleService.deleteSchedule(ScheduleId);
       return response.status(HttpStatus.OK).json({
-        message: "Course deleted successfully",
+        message: "Schedule deleted successfully",
         schedule,
       });
     } catch (err) {
