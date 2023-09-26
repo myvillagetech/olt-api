@@ -223,7 +223,21 @@ export class ScheduleService {
                 _id:"$status", 
                 count: {$sum : 1 }, 
                }
-             }
+             },
+             {
+              $group: {
+                _id: null,
+                totalDocuments: { $sum: "$count" },
+                statusMetrics: { $push: { status: "$_id", count: "$count" } },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                totalDocuments: 1,
+                statusMetrics: 1,
+              },
+            },
         ]); 
         return schedule;
   }
