@@ -80,9 +80,11 @@ export class UsersService {
     return requstedUserList;
   }
 
-  async getAllUsersCount(): Promise<UserDocument> {
-      const usersCount :any = await this.userModel.countDocuments(); 
-      return usersCount;
+  async getAllUsersCount(): Promise<any> {
+      const usersCount :any = await this.userModel.countDocuments();
+      const tutorsCount = await this.userModel.countDocuments({ roles: 'Tutor' });
+      const studentsCount = await this.userModel.countDocuments({ roles: 'Student' });
+      return { tutors: tutorsCount, students: studentsCount, usersCount}; 
   }
 
   async getUserByEmail(email: string): Promise<UserDocument> {
