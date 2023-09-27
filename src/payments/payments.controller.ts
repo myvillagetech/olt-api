@@ -182,7 +182,7 @@ export class PaymentsController {
     return await this.paymentService.getAllUnpaidSchdulesByTutorId(tutorId);
   }
 
-  @Get("getTotalPaidAmount")
+  @Get("getTotalAmount")
   async getTotalPaidAmount(@Res() response){
     try {
       const amount = await this.paymentService.getTotalPaidAmount();
