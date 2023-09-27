@@ -12,13 +12,8 @@ export class ContactUsService {
 ) {}
 
 async createContactUs(contactUsPayload : CreateContactUsDto) : Promise<CreateContactUsDto | UnprocessableEntityException>{
-    try{
-        const contactUs = new this.contacUsModel(contactUsPayload);
-        return contactUs.save();
-    }
-    catch (error) {
-        throw new HttpException( error.message ? error.message : `Something went wrong ... Please try again`, HttpStatus.UNPROCESSABLE_ENTITY);
-    }
+    const contactUs = new this.contacUsModel(contactUsPayload);
+    return await contactUs.save();
 }
 
 async getAllContactUs(): Promise<CreateContactUsDto[]> {    
