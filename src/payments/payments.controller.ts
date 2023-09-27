@@ -15,6 +15,7 @@ import { PaymentSearchCriteria } from "./paymentSearchCriteria";
 import { Payout } from "./payout";
 import axios from "axios";
 import { ScheduleService } from "src/schedule/schedule.service";
+import { response } from "express";
 
 @Controller("payments")
 @ApiTags("payments")
@@ -179,5 +180,18 @@ export class PaymentsController {
   @Get("getAllUnpaidSchedulesByTutorid/:tutorId")
   async getAllUnpaidSchedulesByTutorid(@Param("tutorId") tutorId: string) {
     return await this.paymentService.getAllUnpaidSchdulesByTutorId(tutorId);
+  }
+
+  @Get("getTotalPaidAmount")
+  async getTotalPaidAmount(@Res() response){
+    try {
+      const amount = await this.paymentService.getTotalPaidAmount();
+      return response.status(HttpStatus.OK).json({
+        message: "sucessfully Done",
+        amount,
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }

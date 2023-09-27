@@ -21,7 +21,7 @@ export class PaymentsService {
         try {
             const payment = new this.paymentModel(payload);
             const results = await payment.save();
-            await this.scheduleService.updatedPaymentDetails(payload.scheduleIds, results["_id"],payload.status)
+            await this.scheduleService.updatedPaymentDetails(payload.scheduleIds, results["_id"], payload.status)
             return results;
         } catch (error) {
             console.log(error);
@@ -48,7 +48,7 @@ export class PaymentsService {
             );
         }
     }
-    
+
 
     async getPaymentDetails(
         paymentId: string
@@ -156,7 +156,7 @@ export class PaymentsService {
                         foreignField: "_id",
                         as: "student",
                         "pipeline": [
-                            { "$project": { "password": 0, "userId": 0}}
+                            { "$project": { "password": 0, "userId": 0 } }
                         ]
                     }
                 },
@@ -167,7 +167,7 @@ export class PaymentsService {
                         foreignField: "_id",
                         as: "tutor",
                         "pipeline": [
-                            { "$project": { "password": 0, "userId": 0}}
+                            { "$project": { "password": 0, "userId": 0 } }
                         ]
                     }
                 },
@@ -190,7 +190,7 @@ export class PaymentsService {
                     $and: [
                         { paymentId: { $exists: true } },
                         { paymentId: { $ne: null } },
-                        { payoutId: {$exists: false } },
+                        { payoutId: { $exists: false } },
                         { tutor: new Types.ObjectId(tutorId) }
                     ],
                 }
@@ -205,7 +205,7 @@ export class PaymentsService {
             }
         ]);
 
-        return result.map( r => ({...r, student: r.student[0]}))
+        return result.map(r => ({ ...r, student: r.student[0] }))
     }
 
     async getAllUnpaidTutors() {
@@ -215,7 +215,7 @@ export class PaymentsService {
                     $and: [
                         { paymentId: { $exists: true } },
                         { paymentId: { $ne: null } },
-                        { payoutId: {$exists: false } }
+                        { payoutId: { $exists: false } }
                     ],
                 }
             },
@@ -237,5 +237,17 @@ export class PaymentsService {
         return result.map(r => {
             return r.tutorObj[0];
         })
+    }
+
+    async getTotalPaidAmount() {
+        const result = this.paymentModel.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalAmountReceived: { $sum: '$amount' },
+                },
+            },
+        ]);
+        return result;
     }
 }
