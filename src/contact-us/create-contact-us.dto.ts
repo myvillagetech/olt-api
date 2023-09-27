@@ -22,7 +22,7 @@ export class CreateContactUsDto {
     message:string
 
     @ApiProperty({
-        type: String
+        type: Boolean
     })
     isActive: Boolean
 }
