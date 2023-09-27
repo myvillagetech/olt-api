@@ -16,7 +16,6 @@ import { RatingsModule } from './ratings/ratings.module';
 import { MesseagesModule } from './messeages/messages.module';
 import { PaymentsModule } from './payments/payments.module';
 import { FaqModule } from './faq/faq.module';
-import { ContactUsModule } from './contact-us/contact-us.module';
 
 @Module({
   imports: [
@@ -40,7 +39,6 @@ import { ContactUsModule } from './contact-us/contact-us.module';
     MesseagesModule,
     PaymentsModule,
     FaqModule,
-    ContactUsModule,
   ],
   controllers: [AppController, CategoryController],
 })
