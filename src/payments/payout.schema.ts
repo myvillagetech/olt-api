@@ -10,7 +10,7 @@ import { ScheduleSchemaCreator } from "src/schedule/schedule.schema";
 export class PayoutSchemaCreator {
     @Prop({
         type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Schedule',
+        ref: 'schedule',
         required : true
     })
     scheduleIds: [ScheduleSchemaCreator];

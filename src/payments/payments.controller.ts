@@ -194,4 +194,18 @@ export class PaymentsController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
+
+  @Get("payout/totalAmount/:tutorId")
+  async getTutorAmount(@Res() response: any, @Param('tutorId')tutorId : string){
+    try{
+      const amount = await this.paymentService.getTotalAmountPaidToTutor(tutorId);
+
+      return response.status(HttpStatus.OK).json({
+        message: "sucessfully Done",
+        amount,
+      })
+    }catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
 }

@@ -250,4 +250,33 @@ export class PaymentsService {
         ]);
         return result;
     }
+
+    async getTotalAmountPaidToTutor(tutorId: string): Promise<any>{
+        const result = this.payoutModel.aggregate([
+            {
+                $lookup: {
+                    from: 'schedules', // The name of the Schedule collection in your database
+                    localField: 'scheduleIds',
+                    foreignField: '_id',
+                    as: 'scheduleIds',
+                },
+            },
+            
+            {
+                $match: {
+                    'scheduleIds.tutor': new Types.ObjectId(tutorId),
+                }
+            },
+
+            {
+                $group: {
+                    _id: null,
+                    totalAmount: {$sum: '$amount'}
+                }
+            }
+        ])
+        return result
+    }
+
+
 }
