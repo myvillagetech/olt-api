@@ -43,7 +43,7 @@ export class TutorProfileController {
         } catch (error) {
             return response.status(HttpStatus.BAD_REQUEST).json({
                 statusCode: 400,
-                message: 'Error: Course not created!',
+                message: 'Error: Slots not created!',
                 error: 'Bad Request',
             });
         }

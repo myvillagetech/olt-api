@@ -18,13 +18,14 @@ export class TutorProfileService {
     ) { }
 
     async createTutorProfile(profilePayload: TutorProfileDto): Promise<TutorProfileDto | UnprocessableEntityException> {
-        try {
-            const profile = new this.profileModel(profilePayload);
-            return profile.save();
+        if (profilePayload.newSubjects) {
+            for (const subject of profilePayload.newSubjects) {
+                let newSubject:any = await this.courseService.createCourse(subject)
+                profilePayload.subject.push(newSubject._doc)
+            }
         }
-        catch (error) {
-            throw new Error("error.message");
-        }
+        const profile = new this.profileModel(profilePayload);
+        return profile.save();
     }
 
     async getTutorProfileById(profileId: string): Promise<ITutorProfileDocument> {
