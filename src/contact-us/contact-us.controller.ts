@@ -43,8 +43,8 @@ async updateContactUs(
     }
 }
 
-@Get()
-async getAllcontactUss(@Res() response) {
+@Get('')
+async getAllcontactUs(@Res() response) {
     try {
         const contactUsData = await this.contactUsService.getAllContactUs();
         return response.status(HttpStatus.OK).json({
