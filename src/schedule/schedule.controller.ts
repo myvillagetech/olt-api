@@ -163,6 +163,23 @@ export class ScheduleController {
     }
   }
 
+  @Post("/requestSchedule/:id")
+  async requestSchedule(@Res() response, @Param('id') id: string){
+    try {
+      const schedule = await this.scheduleService.updateScheduleStatus(
+        id,
+        "REQUESTED",
+        {}
+      );
+      return response.status(HttpStatus.OK).json({
+        message : "Schedule requested successfully",
+        data: schedule,
+      });
+    } catch (error){
+      return response.status(error.status).json(error.response);
+    }
+  }
+
   @Post("/acceptSchdule")
   async acceptSchdule(@Res() response, @Body() payload: AcceptScheduleDto) {
     try {
