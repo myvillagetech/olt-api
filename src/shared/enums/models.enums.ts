@@ -9,7 +9,8 @@ export const MODEL_ENUMS = {
     MESSAGE : 'message',
     SELECTED_COURSE : 'selectedCourse',
     PAYMENT: 'payments',
-    PAYOUT: 'payouts'
+    PAYOUT: 'payouts',
+    CONTACT_US: 'contact_us'
 }
 
 export const COLLECTION_NAMES = {
