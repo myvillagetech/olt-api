@@ -18,9 +18,7 @@ async createContactUs(contactUsPayload : CreateContactUsDto) : Promise<CreateCon
 
 async getAllContactUs(): Promise<CreateContactUsDto[]> {    
     const contactUsDetails = await this.contacUsModel.find({});
-    if (!contactUsDetails || contactUsDetails.length == 0) {
-        throw new NotFoundException('Contactus data not found!');
-    }
+    
     return contactUsDetails;
 }
 
