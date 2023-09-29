@@ -171,7 +171,14 @@ export class PaymentsService {
                         ]
                     }
                 },
-                ...paginationProps
+                {
+                    $facet: {
+                        payments: paginationProps,
+                        metrics: [
+                            { $count: "totalCount" },
+                        ],
+                    },
+                },
             ]);
 
         } catch (error) {
