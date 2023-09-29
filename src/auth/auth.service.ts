@@ -1,4 +1,4 @@
-import { Injectable, Options } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Options } from "@nestjs/common";
 import { OAuth2Client } from "google-auth-library";
 import { sign, verify } from "jsonwebtoken";
 import { UsersService } from "src/users/users.service";
@@ -135,9 +135,12 @@ export class AuthService {
   }
 
   async signup(signUpDTO: SignUpDTO) {
-    await this.userService.createUser(signUpDTO);
-
-    return true;
+      let existingUser: any = await this.userService.getUserByEmail(signUpDTO.email);
+      if(existingUser){
+        throw  new HttpException(`User allredy exist with this email ${signUpDTO.email}`, HttpStatus.NOT_ACCEPTABLE);
+      }
+      let user = await this.userService.createUser(signUpDTO);
+      return user;
   }
 
   private async newRreshAndAccessToken(

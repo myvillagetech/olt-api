@@ -78,15 +78,14 @@ export class AuthController {
   @Post('signup')
   async signup(@Res() response, @Req() request, @Ip() ip: string, @Body() body: SignUpDTO) {
     try {
-      this.authService.signup(body);
+      let user: any = await this.authService.signup(body);
       return response.status(HttpStatus.CREATED).json({
         message: 'User  signedup successfully',
+        data: user
       });
     }
     catch (e) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: 'something went worng',
-      });
+      return response.status(HttpStatus.BAD_REQUEST).json({e});
     }
   }
 

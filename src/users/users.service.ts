@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException, HttpException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { GoogleLoginDto } from 'src/auth/dto/googleLogin.dto';
@@ -11,6 +11,12 @@ export class UsersService {
   constructor(@InjectModel('User') private userModel: Model<UserDocument>) {}
 
   async createUser(createUserDto: CreateUserDto | SignUpDTO): Promise<UserDocument> {
+    let user: any = this.userModel.find({
+      email : createUserDto.email
+    });
+    if(user){
+      throw  new HttpException(`User allredy exist with this email ${createUserDto.email}`, HttpStatus.NOT_ACCEPTABLE);
+    }
     const newUser = await new this.userModel(createUserDto);
     return newUser.save();
   }
@@ -89,7 +95,7 @@ export class UsersService {
   async getUserByEmail(email: string): Promise<UserDocument> {
     const existingUser = await this.userModel.findOne({ email: email }).exec();
     if (!existingUser) {
-       throw new NotFoundException(`user ${email} not found`);
+      throw new NotFoundException(`user ${email} not found`);
     }
     return existingUser;
   }
