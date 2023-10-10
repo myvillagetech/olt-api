@@ -71,6 +71,9 @@ export class ScheduleSchemaCreator {
     meetingLink: string;
 
     @Prop()
+    meetingStartUrl: string;
+
+    @Prop()
     recordingLink: string;
 
     @Prop({type: Object })
