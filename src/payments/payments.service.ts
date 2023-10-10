@@ -8,6 +8,12 @@ import { IPaymentDocument } from './payment.schema';
 import { PaymentSearchCriteria } from './paymentSearchCriteria';
 import { Payout } from './payout';
 import { IPayoutDocument } from './payout.schema';
+import axios from "axios";
+
+const data = {
+    grant_type: 'account_credentials', 
+    account_id: '0gEL7mW2SRekVMRVEk8-TA',
+  };
 
 @Injectable()
 export class PaymentsService {
@@ -49,6 +55,19 @@ export class PaymentsService {
         }
     }
 
+     async cerateAuthForZoom(){
+      return await  axios
+        .post(
+          "https://zoom.us/oauth/token", null, {
+            params: data,
+            auth: {
+              username: "s5VyFqZmTbmPfp3wRBrU7w", 
+              password: "uUxX4fonJrRboYsP0RjW8cfWsEIaqhr3", 
+            },
+          }
+        )
+        
+    }
 
     async getPaymentDetails(
         paymentId: string
