@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { IsDefined } from "class-validator";
 import { Type } from "class-transformer";
 import { Status } from "../schedule.status";
@@ -91,12 +91,16 @@ export class ScheduleDto {
     @Type(() => Slot)
     slots: Array<Slot>;
 
-
-
     @ApiProperty({
         type: String
     })
+
     meetingLink: string;
+    @ApiProperty({
+        type: String
+    })
+
+    meetingStartUrl: string;
     @ApiProperty({
         type: String
     })
@@ -122,5 +126,9 @@ export class RejectScheduleDto{
         type: String
     })
     reason: string;
+}
+
+export class updateScheduleDto extends PartialType(ScheduleDto){
+
 }
 

@@ -1,3 +1,4 @@
+import { PartialType } from '@nestjs/swagger';
 import {
     IsNotEmpty,
     IsNumber,
@@ -56,3 +57,4 @@ export class CreateUserDto {
     @IsString()
     photoUrl?: string
 }
+export class updateUser extends PartialType(CreateUserDto) {}

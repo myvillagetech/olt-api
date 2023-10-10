@@ -8,7 +8,7 @@ import {
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, ObjectId, Schema, Types } from "mongoose";
 import { MODEL_ENUMS } from "src/shared/enums/models.enums";
-import { ScheduleDto } from "./dto/schedule.dto";
+import { ScheduleDto, updateScheduleDto } from "./dto/schedule.dto";
 import { ScheduleSearchCriteria } from "./dto/scheduleSearchCriteria";
 import { IScheduleDocument } from "./schedule.schema";
 import { Status } from "./schedule.status";
@@ -27,8 +27,9 @@ export class ScheduleService {
     schedulePayload: ScheduleDto
   ): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
     try {
-      const schedule = new this.scheduleModel(schedulePayload);
-      return schedule.save();
+      // const schedule = new this.scheduleModel(schedulePayload);
+      // return schedule.save();
+      return schedulePayload;
     } catch (error) {
       throw new HttpException(
         `Something went wrong ... Please try again`,
@@ -52,7 +53,7 @@ export class ScheduleService {
   }
 
   async updateSchedule(
-    schedulePayload: ScheduleDto,
+    schedulePayload: updateScheduleDto,
     scheduleId: string
   ): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
     
@@ -217,7 +218,7 @@ export class ScheduleService {
   }
   }
   
-  async   getAdminScheduleByStatus() : Promise<IScheduleDocument> {
+  async getAdminScheduleByStatus() : Promise<IScheduleDocument> {
     const schedule :any = await this.scheduleModel.aggregate([
             { $group: { 
                 _id:"$status", 
