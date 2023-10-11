@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { GoogleLoginDto } from 'src/auth/dto/googleLogin.dto';
 import { SignUpDTO } from 'src/auth/dto/singup.dto';
-import { CreateUserDto, updateUser } from './dto/create-user.dto';
+import { CreateUserDto, UpdateUser} from './dto/create-user.dto';
 import { UserDocument } from './schema/user.schema'
 
 @Injectable()
@@ -28,7 +28,7 @@ export class UsersService {
 
   async updateUser(
     userId: number,
-    createUserDto: updateUser,
+    createUserDto: UpdateUser,
   ): Promise<UserDocument> {
     const existingUser = await this.userModel.findByIdAndUpdate(
       userId,

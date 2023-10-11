@@ -57,4 +57,4 @@ export class CreateUserDto {
     @IsString()
     photoUrl?: string
 }
-export class updateUser extends PartialType(CreateUserDto) {}
+export class UpdateUser extends PartialType(CreateUserDto) {}

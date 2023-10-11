@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guards';
-import {CreateUserDto, updateUser } from './dto/create-user.dto';
+import {CreateUserDto, UpdateUser } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { query, response } from 'express';
 
@@ -43,7 +43,7 @@ export class UsersController {
   async updateUser(
     @Res() response,
     @Param('id') userId: number,
-    @Body() userModel: updateUser,
+    @Body() userModel: UpdateUser,
   ) {
     try {
       const existingUser = await this.userService.updateUser(userId, userModel);
