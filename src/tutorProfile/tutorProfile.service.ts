@@ -200,6 +200,14 @@ export class TutorProfileService {
                 });
             }
 
+            if(criteria.rating ){
+                search.$and.push({
+                    $or: [
+                        { 'ratings.avg': { $gte: criteria.rating } }, // Filter profiles with an average rating of 3 or higher
+                        { 'ratings.count': { $eq: 0 } } // Include profiles with no ratings
+                    ]
+                })
+            }
 
             let paginationProps: any = [{ $match: search.$and.length > 0 ? search : {} }];
             if ((criteria.pageSize || criteria.pageSize > 0) && (criteria.pageNumber || criteria.pageNumber === 0)) {
@@ -221,6 +229,15 @@ export class TutorProfileService {
                                 count: { $count: {} }
                             }
                         }]
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "userId",
+                        foreignField: "_id",
+                        as: "userId",
+                        pipeline: [{ $project: { password: 0, userId: 0 } }],
                     },
                 },
                 {

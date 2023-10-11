@@ -28,5 +28,11 @@ export class TutorSearchCriteria extends CriteriaWithPaginationAndSorting{
         type: Array<number>
     })
     days: number[];
+    @ApiProperty({
+        type: Number,
+        maximum: 5,
+        minimum: 1
+    })
+    rating: number;
 
 }
