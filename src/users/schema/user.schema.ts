@@ -39,6 +39,12 @@ export class User {
 
     @Prop()
     photoUrl: string
+
+    @Prop({
+        default: true,
+        required: true
+    })
+    isActive: boolean
 }
 
 export type UserDocument = User & Document;

@@ -107,4 +107,13 @@ export class UsersService {
     }
     return deletedUser;
   }
+
+  async activatepOrDeactivateUser(userId: string, isActive: boolean): Promise<any> {
+    let user = await this.userModel.findById(userId).lean();
+    if(user.isActive === isActive){
+      throw new HttpException(`User allready ${isActive ? 'Activated' : 'Deactivated'}` , HttpStatus.BAD_REQUEST);
+    }
+
+    return await this.userModel.findByIdAndUpdate(userId, {isActive : isActive})
+  }
 }
