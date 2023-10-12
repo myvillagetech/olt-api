@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { GoogleLoginDto } from 'src/auth/dto/googleLogin.dto';
 import { SignUpDTO } from 'src/auth/dto/singup.dto';
-import { CreateUserDto, updateUser } from './dto/create-user.dto';
+import { CreateUserDto, UpdateUser} from './dto/create-user.dto';
 import { UserDocument } from './schema/user.schema'
 
 @Injectable()
@@ -28,7 +28,7 @@ export class UsersService {
 
   async updateUser(
     userId: number,
-    createUserDto: updateUser,
+    createUserDto: UpdateUser,
   ): Promise<UserDocument> {
     const existingUser = await this.userModel.findByIdAndUpdate(
       userId,
@@ -106,5 +106,14 @@ export class UsersService {
       throw new NotFoundException(`user #${userId} not found`);
     }
     return deletedUser;
+  }
+
+  async activateOrDeactivateUser(userId: string, isActive: boolean): Promise<any> {
+    let user = await this.userModel.findById(userId).lean();
+    if(user.isActive === isActive){
+      throw new HttpException(`User allready ${isActive ? 'Activated' : 'Deactivated'}` , HttpStatus.BAD_REQUEST);
+    }
+
+    return await this.userModel.findByIdAndUpdate(userId, {isActive : isActive},{new: true})
   }
 }

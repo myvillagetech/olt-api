@@ -25,7 +25,7 @@ export class FaqSchemaCreator {
         type: String,
         enum: FAQCategory
     })
-    category: number;
+    category: string;
 
 }
 

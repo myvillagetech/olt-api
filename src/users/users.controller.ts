@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guards';
-import { CreateUserDto, updateUser } from './dto/create-user.dto';
+import {CreateUserDto, UpdateUser } from './dto/create-user.dto';
 import { UsersService } from './users.service';
-import { query } from 'express';
+import { query, response } from 'express';
 
 @Controller('/user')
 @ApiTags('Users')
@@ -43,7 +43,7 @@ export class UsersController {
   async updateUser(
     @Res() response,
     @Param('id') userId: number,
-    @Body() userModel: updateUser,
+    @Body() userModel: UpdateUser,
   ) {
     try {
       const existingUser = await this.userService.updateUser(userId, userModel);
@@ -131,6 +131,32 @@ export class UsersController {
       return response.status(HttpStatus.OK).json({
         message: 'User deleted successfully',
         deletedUser,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
+  @Put('/activate/:id')
+  async activateUser(@Res() response, @Param('id') userId: string) {
+    try {
+      const user = await this.userService.activateOrDeactivateUser(userId,true);
+      return response.status(HttpStatus.OK).json({
+        message: 'User activated successfully',
+        user,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
+  @Put('/deactivate/:id')
+  async deactivateUser(@Res() response, @Param('id') userId: string) {
+    try {
+      const user = await this.userService.activateOrDeactivateUser(userId,false);
+      return response.status(HttpStatus.OK).json({
+        message: 'User deactivated successfully',
+        user,
       });
     } catch (err) {
       return response.status(err.status).json(err.response);
