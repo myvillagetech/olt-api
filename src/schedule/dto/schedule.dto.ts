@@ -33,6 +33,31 @@ export class Slot {
     @IsDefined()
     to: Number;
 }
+export class Attachments {
+    @ApiProperty({
+        type: String
+    })
+    @IsDefined()
+    name: String;
+
+    @ApiProperty({
+        type: Number
+    })
+    @IsDefined()
+    size: Number;
+
+    @ApiProperty({
+        type: String
+    })
+    @IsDefined()
+    type: String;
+
+    @ApiProperty({
+        type: String
+    })
+    @IsDefined()
+    url: String;
+}
 
 export class AcceptScheduleDto{
     @IsDefined()
@@ -92,15 +117,27 @@ export class ScheduleDto {
     slots: Array<Slot>;
 
     @ApiProperty({
-        type: String
+        type: [Attachments],
     })
+    // @IsDefined()
+    @Type(() => Attachments)
+    attachments: Array<Attachments>;
 
-    meetingLink: string;
     @ApiProperty({
         type: String
     })
+    notes: string;
 
+    @ApiProperty({
+        type: String
+    })
+    meetingLink: string;
+
+    @ApiProperty({
+        type: String
+    })
     meetingStartUrl: string;
+
     @ApiProperty({
         type: String
     })
