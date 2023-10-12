@@ -134,7 +134,7 @@ export class ScheduleSchemaCreator {
     @Prop({
         required : false,
         _id: true,
-        type: [attachmentSchema]
+        type: [attachmentSchema] 
     })
     attachments: AttachmentsSchemaCreator[];
 
