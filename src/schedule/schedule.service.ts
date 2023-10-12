@@ -122,6 +122,13 @@ export class ScheduleService {
    return newAttachments
   }
 
+  async addNotes(scheduleId: string, notes:any) {
+    
+    const newNotes = await this.scheduleModel.findByIdAndUpdate(scheduleId, notes, { new: true })
+   .exec();
+   return newNotes
+  }
+
   async updatedtutorPayoutDetails(schduleIDs: string[], paymentId: Types.ObjectId) {
     const options: any = schduleIDs.map(sId => {
       return {

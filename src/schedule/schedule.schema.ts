@@ -140,7 +140,7 @@ export class ScheduleSchemaCreator {
 
     @Prop({
         required : false,
-    })
+            })
     notes : string;
 }
 

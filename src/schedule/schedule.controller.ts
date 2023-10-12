@@ -562,5 +562,21 @@ export class ScheduleController {
     }
   }
 
+  @Post("notes/:id")
+  async addNotes(@Res() response, @Param('id') id: string,@Body() payload: string){
+    try {
+      const schedule = await this.scheduleService.addNotes(
+        id,
+        payload
+      );
+      return response.status(HttpStatus.OK).json({
+        message : "Schedule updated successfully",
+        data: schedule,
+      });
+    } catch (error){
+      return response.status(error.status).json(error.response);
+    }
+  }
+
 
 }
