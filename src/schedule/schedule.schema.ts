@@ -99,6 +99,16 @@ export class ScheduleSchemaCreator {
         ref: 'Payout',
     })
     payoutId;
+
+    @Prop({
+        type: String
+    })
+    notes: string
+
+    @Prop({
+        type: Array<String>
+    })
+    attachments: string[]
 }
 
 export type IScheduleDocument = ScheduleSchemaCreator & Document;

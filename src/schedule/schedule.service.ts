@@ -17,7 +17,7 @@ import { Status } from "./schedule.status";
 export class ScheduleService {
   constructor(
     @InjectModel(MODEL_ENUMS.SCHEDULE)
-    private scheduleModel: Model<IScheduleDocument>
+    private scheduleModel: Model<IScheduleDocument>,
   ) { }
 
   getScheduleModel(): Model<IScheduleDocument> {
@@ -27,9 +27,8 @@ export class ScheduleService {
     schedulePayload: ScheduleDto
   ): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
     try {
-      // const schedule = new this.scheduleModel(schedulePayload);
-      // return schedule.save();
-      return schedulePayload;
+      const schedule = new this.scheduleModel(schedulePayload);
+      return schedule.save();
     } catch (error) {
       throw new HttpException(
         `Something went wrong ... Please try again`,

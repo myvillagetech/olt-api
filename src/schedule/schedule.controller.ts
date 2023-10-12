@@ -25,6 +25,7 @@ import { query } from 'express';
 import { DateRange } from 'src/shared/DTOs/dateRange';
 import { Status } from './schedule.status';
 import { PayoutSchema } from 'src/payments/payout.schema';
+import { AlertsService } from "src/alerts/alerts.service";
 
 @Controller("schedule")
 @ApiTags("schedule")
@@ -33,16 +34,27 @@ import { PayoutSchema } from 'src/payments/payout.schema';
 export class ScheduleController {
   constructor(
     private readonly scheduleService: ScheduleService,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private alertService: AlertsService
   ) {}
 
   @Post("")
   async createSchedule(@Res() response, @Body() schedulePayload: ScheduleDto) {
     try {
-      const schedule = await this.scheduleService.createSchedule(
+      const schedule: any = await this.scheduleService.createSchedule(
         schedulePayload
       );
-     
+      
+      await this.alertService.createAlert({
+        user: schedulePayload.tutor,
+        message: "New schedule Created",
+        isRead: false,
+        type: "Schedule",
+        data: {
+          scheduleId : schedule._id
+        }
+      });
+      
       const tutorDetails = await this.usersService.getUser(
         schedulePayload.tutor
       );
