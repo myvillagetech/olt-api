@@ -21,9 +21,39 @@ export class SlotSchemaCreator {
     to : number;
 }
 
+
 export type ISlotDocument = SlotSchemaCreator & Document;
 export const SlotSchema = SchemaFactory.createForClass(
     SlotSchemaCreator
+).plugin(uniqueValidators)
+
+@Schema()
+export class AttachmentsSchemaCreator {
+   
+    @Prop({
+        required : true,
+        type : String
+    })
+    type : string;
+    @Prop({
+        required : true,
+        type : String
+    })
+    name : string;
+    @Prop({
+        required : true,
+        type : String
+    })
+    size : number;
+    @Prop({
+        required : true, 
+        type : String
+    })
+    url : string;
+}
+export type IAttachmentDocument = AttachmentsSchemaCreator & Document;
+export const attachmentSchema = SchemaFactory.createForClass(
+    AttachmentsSchemaCreator
 ).plugin(uniqueValidators)
 
 
@@ -53,6 +83,7 @@ export class ScheduleSchemaCreator {
         type: [SlotSchema]
     })
     slots: SlotSchemaCreator[];
+
     @Prop({
         required : false,
         default : 'SCHEDULED'
@@ -99,6 +130,18 @@ export class ScheduleSchemaCreator {
         ref: 'Payout',
     })
     payoutId;
+    
+    @Prop({
+        required : false,
+        _id: true,
+        type: [attachmentSchema]
+    })
+    attachments: AttachmentsSchemaCreator[];
+
+    @Prop({
+        required : false,
+    })
+    notes : string;
 }
 
 export type IScheduleDocument = ScheduleSchemaCreator & Document;

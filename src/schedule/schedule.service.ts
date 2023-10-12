@@ -112,6 +112,17 @@ export class ScheduleService {
     await this.scheduleModel.bulkWrite(options);
   }
 
+  
+  async addAttachments(scheduleId: string, attachments:any[]) {
+    const attachmentsData:any = await this.scheduleModel.findById(scheduleId).lean()
+    if(attachmentsData){
+      attachments.push(...attachmentsData.attachments)
+    }
+    const newAttachments = await this.scheduleModel.findByIdAndUpdate(scheduleId, {attachments}, { new: true })
+   .exec();
+   return newAttachments
+  }
+
   async updatedtutorPayoutDetails(schduleIDs: string[], paymentId: Types.ObjectId) {
     const options: any = schduleIDs.map(sId => {
       return {

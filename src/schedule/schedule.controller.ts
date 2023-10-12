@@ -355,6 +355,19 @@ export class ScheduleController {
     }
   }
 
+  // @Put('/add-attachments/:id')
+  // async completedSchdule(@Res() response,   @Param('id') ScheduleId: string,) {
+  //   try {
+  //     const schedule = await this.scheduleService.updateScheduleStatus(ScheduleId, Status.COMPLETED,{});
+  //     return response.status(HttpStatus.OK).json({
+  //       message: "Schedule completed successfully",
+  //       schedule,
+  //     });
+  //   } catch (err) {
+  //     return response.status(err.status).json(err.response);
+  //   }
+  // }
+
   // @Put('updatePayment/:id')
   // async updatePaymentInfoSchedule(@Res() response, @Param('id') ScheduleId: string, @Body() paymentInformation: PaymentInformation) {
   //   try {
@@ -520,5 +533,22 @@ export class ScheduleController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
+
+  @Post("attachments/:id")
+  async addAttachments(@Res() response, @Param('id') id: string,@Body() payload: any){
+    try {
+      const schedule = await this.scheduleService.addAttachments(
+        id,
+        payload
+      );
+      return response.status(HttpStatus.OK).json({
+        message : "Schedule updated successfully",
+        data: schedule,
+      });
+    } catch (error){
+      return response.status(error.status).json(error.response);
+    }
+  }
+
 
 }
