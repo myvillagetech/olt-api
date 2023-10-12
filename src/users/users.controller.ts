@@ -140,7 +140,7 @@ export class UsersController {
   @Put('/activate/:id')
   async activateUser(@Res() response, @Param('id') userId: string) {
     try {
-      const user = await this.userService.activatepOrDeactivateUser(userId,true);
+      const user = await this.userService.activateOrDeactivateUser(userId,true);
       return response.status(HttpStatus.OK).json({
         message: 'User activated successfully',
         user,
@@ -153,9 +153,9 @@ export class UsersController {
   @Put('/deactivate/:id')
   async deactivateUser(@Res() response, @Param('id') userId: string) {
     try {
-      const user = await this.userService.activatepOrDeactivateUser(userId,true);
+      const user = await this.userService.activateOrDeactivateUser(userId,false);
       return response.status(HttpStatus.OK).json({
-        message: 'User activated successfully',
+        message: 'User deactivated successfully',
         user,
       });
     } catch (err) {
