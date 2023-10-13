@@ -123,12 +123,15 @@ export class ScheduleController {
           })
           .join("; "),
       };
-        await axios
-        .post(
-          process.env.NOTIFICATION_URL,
-          templatePayloadForStudent
-        )
-       
+
+        axios
+          .post(
+            "http://localhost:6004/notification/emailNotification",
+            templatePayloadForStudent
+          )
+          .then(function (response) {
+            // console.log(response);
+          });
         return response.status(HttpStatus.OK).json({
           message: "Schedule created successfully",
           schedule,
