@@ -114,10 +114,10 @@ export class ScheduleService {
   
   async addAttachments(scheduleId: string, attachments:any[]) {
     const attachmentsData:any = await this.scheduleModel.findById(scheduleId).lean()
-    if(attachmentsData){
+    if(attachmentsData.attachments){
       attachments.push(...attachmentsData.attachments)
     }
-    const newAttachments = await this.scheduleModel.findByIdAndUpdate(scheduleId, {attachments}, { new: true })
+    const newAttachments = await this.scheduleModel.findByIdAndUpdate(scheduleId, {attachments:attachments}, { new: true })
    .exec();
    return newAttachments
   }
