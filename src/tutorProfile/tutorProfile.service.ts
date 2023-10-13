@@ -202,9 +202,11 @@ export class TutorProfileService {
 
             if(criteria.rating ){
                 search.$and.push({
+                    'ratings.avg': { $gt: 0 }, // Exclude profiles with an average rating of 0
+                });
+                search.$and.push({
                     $or: [
-                        { 'ratings.avg': { $gte: criteria.rating } }, // Filter profiles with an average rating of 3 or higher
-                        { 'ratings.count': { $eq: 0 } } // Include profiles with no ratings
+                        { 'ratings.avg': { $gte: criteria.rating,  } }, // Filter profiles with an average rating of 3 or higher
                     ]
                 })
             }
