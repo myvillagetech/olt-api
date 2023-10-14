@@ -23,6 +23,11 @@ export class CourseSchemaCreator {
     category : string;
 
     @Prop({
+        required : false
+    })
+    courseImageUrl : string;
+
+    @Prop({
         default: true
     })
     isActive: Boolean

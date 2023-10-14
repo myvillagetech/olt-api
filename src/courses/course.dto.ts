@@ -7,7 +7,10 @@ export class CreateCourseDto {
     @IsDefined()
     courseDiscription?:string;
 
-    category?:string
+    category?:string;
 
-    isActive?: Boolean
+    courseImageUrl? : string;
+ 
+
+    isActive?: Boolean;
 }
