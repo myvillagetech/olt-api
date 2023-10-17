@@ -132,8 +132,17 @@ export class TutorProfileService {
                         }
                     }]
                 }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: "userId",
+                    foreignField: "_id",
+                    as: "userId",
+                    pipeline: [{ $project: { password: 0, userId: 0 } }] 
+                }
             }
-        ])
+        ])   
         if (!profileDetails) {
             throw new NotFoundException('Profile Data not Found!');
         }
