@@ -29,7 +29,7 @@ export class TutorProfileService {
     }
 
     async getTutorProfileById(profileId: string): Promise<ITutorProfileDocument> {
-        const profileDetails = await this.profileModel.findById(profileId).exec();
+        const profileDetails = await this.profileModel.findById(profileId).populate('userId').exec();
         if (!profileDetails) {
             throw new NotFoundException('Profile data not found!');
         }
@@ -42,7 +42,6 @@ export class TutorProfileService {
                 let newSubject:any = await this.courseService.createCourse(subject)
                 profilePayload.subject.push(newSubject._doc)
             }
-          
         }
         const profile = await this.profileModel.findByIdAndUpdate(profileId, profilePayload, { new: true }).exec()
         if (!profile) {
