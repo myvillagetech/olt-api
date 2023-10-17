@@ -1706,6 +1706,7 @@ a.text-primary:hover {
   font-size: 15px;
   font-weight: 600;
   color: #26292c;
+  cursor: pointer;
 }
 .main-nav li.login-link {
   display: none;
