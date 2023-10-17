@@ -39,28 +39,28 @@ export class PaymentsController {
       let scheduledata:any = await this.scheduleService.getScheduleByScheduleId(
         payload.scheduleIds[0]
       );
-      const templatePayloadForTutor = {
-        templateName: "paymentAlertForTutor",
-        // to: scheduledata?.tutor[0]?.email,
-        to:"kanakaprasad.villagetech@gmail.com",
-        studentName: scheduledata?.student[0]?.firstName,
-        studentLastName: scheduledata?.student[0]?.lastName,
-        tutorName: scheduledata?.tutor[0]?.firstName,
-        tutorLastName: scheduledata?.tutor[0]?.lastName,
-        subjects: scheduledata.subjects
-          .map((subject: any) => subject.courseName.trim())
-          .join(", "),
-        paymentAmount: payload.amount,
-        paymentDate: new Date(
-          payload.paymentInfo.create_time
-        ).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }),
-        paymentMode: payload.paymentInfo.purchase_units[0].soft_descriptor || "UPI",
-        paymentId: payload.paymentId,
-      };
+      // const templatePayloadForTutor = {
+      //   templateName: "paymentAlertForTutor",
+      //   // to: scheduledata?.tutor[0]?.email,
+      //   to:"kanakaprasad.villagetech@gmail.com",
+      //   studentName: scheduledata?.student[0]?.firstName,
+      //   studentLastName: scheduledata?.student[0]?.lastName,
+      //   tutorName: scheduledata?.tutor[0]?.firstName,
+      //   tutorLastName: scheduledata?.tutor[0]?.lastName,
+      //   subjects: scheduledata.subjects
+      //     .map((subject: any) => subject.courseName.trim())
+      //     .join(", "),
+      //   paymentAmount: payload.amount,
+      //   paymentDate: new Date(
+      //     payload.paymentInfo.create_time
+      //   ).toLocaleDateString("en-US", {
+      //     year: "numeric",
+      //     month: "long",
+      //     day: "numeric",
+      //   }),
+      //   paymentMode: payload.paymentInfo.purchase_units[0].soft_descriptor || "UPI",
+      //   paymentId: payload.paymentId,
+      // };
        const  authToken= await this.paymentService.cerateAuthForZoom()
 
       const meetingDetails= await axios
