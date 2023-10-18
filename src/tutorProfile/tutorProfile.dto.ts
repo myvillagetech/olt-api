@@ -11,6 +11,9 @@ export class TutorProfileDto {
     state: string;
     city: string;
     address: string;
+    addressLine2?: string;
+    zip: string;
+    country: string;
     @IsEmail()
     email : string;
     title: string;  

@@ -130,6 +130,21 @@ export class TutorProfileSchemaCreator {
     address: string;
 
     @Prop({
+        required: false
+    })
+    addressLine2: string;
+
+    @Prop({
+        required: true
+    })
+    zip: string;
+
+    @Prop({
+        required: true
+    })
+    country: string;
+
+    @Prop({
         required: true,
         unique: true
     })
