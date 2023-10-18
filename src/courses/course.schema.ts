@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 import * as uniqueValidators from 'mongoose-unique-validator'
 
 @Schema({
@@ -18,7 +18,9 @@ export class CourseSchemaCreator {
     courseDiscription : string;
 
     @Prop({
-        required : false
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'category',
+        required : true
     })
     category : string;
 
