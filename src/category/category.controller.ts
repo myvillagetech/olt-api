@@ -9,8 +9,7 @@ import { CategoryService } from './category.service';
 @UseGuards(JwtAuthGuard)
 @ApiTags('Category')
 export class CategoryController {
-    constructor(private categoryService: CategoryService) {
-    }
+    constructor(private categoryService: CategoryService) {}
 
     @Post('')
     async createCategory(@Res() response, @Body() categoryPayload: CreateCategoryeDto) {

@@ -28,7 +28,6 @@ export class RatingsService {
   }
 
   async getTutorRatingByStudent(payload: TutorAndStudent) {
-    try {
       const rating = await this.ratingModel.findOne({
         student: new Types.ObjectId(payload.student),
         tutor: new Types.ObjectId(payload.tutor),
@@ -37,9 +36,6 @@ export class RatingsService {
         throw new Error("Rating Not found");
       }
       return rating;
-    } catch (error) {
-      throw new Error(error.message);
-    }
   }
 
   async getRatingByTutorId(tutorId: string) {

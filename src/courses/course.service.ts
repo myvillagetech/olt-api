@@ -37,7 +37,7 @@ export class CourseService {
         if(query.pageSize && query.pageNumber) {
             findOption.limit(query.pageSize).skip(+query.pageNumber * +query.pageSize)
         }
-        const courseDetails = await this.courseModel.find(search);
+        const courseDetails = await this.courseModel.find(search).populate('category');
         if (!courseDetails || courseDetails.length == 0) {
             throw new NotFoundException('courses data not found!');
         }
