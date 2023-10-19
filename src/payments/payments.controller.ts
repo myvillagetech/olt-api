@@ -16,6 +16,7 @@ import { Payout } from "./payout";
 import axios from "axios";
 import { ScheduleService } from "src/schedule/schedule.service";
 import { response } from "express";
+import { Query } from "mongoose";
 
 const clientId = '0gEL7mW2SRekVMRVEk8-TA';
 const clientSecret = 'uUxX4fonJrRboYsP0RjW8cfWsEIaqhr3';
@@ -320,4 +321,19 @@ export class PaymentsController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
+
+  @Get("monthlyStatistics/:year")
+  async monthlyStatistics(@Res() response: any, @Param('year')year: number){
+    try{
+      const amount = await this.paymentService.getMonthlyStatistics(year);
+
+      return response.status(HttpStatus.OK).json({
+        message: "sucessfully Done",
+        amount,
+      })
+    }catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
 }

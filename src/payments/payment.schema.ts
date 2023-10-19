@@ -27,7 +27,7 @@ export class PaymentSchemaCreator {
 
     @Prop({
         required : true
-    })
+    }) 
     amount: number;
 
     @Prop({

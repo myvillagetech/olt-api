@@ -304,5 +304,80 @@ export class PaymentsService {
         return result
     }
 
+    async getMonthlyStatistics(year: number): Promise<any> {
+        const startDate = new Date(year, 0, 1);
+        const endDate = new Date(year, 11, 31);
+
+        const payments = await this.paymentModel.find({
+            'createdAt': { $gte: startDate, $lte: endDate },
+        });
+
+        const payouts = await this.payoutModel.find({
+            'createdAt': { $gte: startDate, $lte: endDate },
+        });
+
+        const totalAmountByMonth: { [key: string]: number } = {
+            'January': 0,
+            'February': 0,
+            'March': 0,
+            'April': 0,
+            'May': 0,
+            'June': 0,
+            'July': 0,
+            'August': 0,
+            'September': 0,
+            'October': 0,
+            'November': 0,
+            'December': 0,
+        };
+
+        payments.forEach((payment: any) => {
+            const paymentDate = payment.createdAt; 
+            const monthName = this.getMonthName(paymentDate.getMonth());
+            totalAmountByMonth[monthName] += payment.amount;
+        });
+
+        const totalPayoutByMonth: { [key: string]: number } = {
+            'January': 0,
+            'February': 0,
+            'March': 0,
+            'April': 0,
+            'May': 0,
+            'June': 0,
+            'July': 0,
+            'August': 0,
+            'September': 0,
+            'October': 0,
+            'November': 0,
+            'December': 0,
+        };
+
+        payouts.forEach((payment: any) => {
+            const paymentDate = payment.createdAt; 
+            const monthName = this.getMonthName(paymentDate.getMonth());
+            totalPayoutByMonth[monthName] += payment.amount;
+        });
+
+        return {payments : totalAmountByMonth, payouts: totalPayoutByMonth};
+    }
+
+    getMonthName(month: number): string {
+        const months = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December',
+        ];
+        return months[month];
+    }
+
 
 }
