@@ -336,4 +336,34 @@ export class PaymentsController {
     }
   }
 
+  @Post("getPayoutsCriteria")
+  async getPayoutsCriteria(
+    @Res() response,
+    @Body() criteria: PaymentSearchCriteria
+  ) {
+    try {
+      const payment = await this.paymentService.getPayoutCriteria(criteria);
+      return response.status(HttpStatus.OK).json({
+        message: "Payment details retrieved sucessfully",
+        payment,
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Get("tutorPayoutStatistics/:year/:tutor")
+  async tutormonthlyStatistics(@Res() response: any, @Param('year')year: number, @Param('tutor')tutor: string){
+    try{
+      const amount = await this.paymentService.tutorReceviedPayoutsStatistics(year, tutor);
+
+      return response.status(HttpStatus.OK).json({
+        message: "sucessfully Done",
+        amount,
+      })
+    }catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
 }

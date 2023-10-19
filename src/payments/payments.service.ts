@@ -72,7 +72,6 @@ export class PaymentsService {
     async getPaymentDetails(
         paymentId: string
     ) {
-        console.log(paymentId)
         try {
             return this.paymentModel.aggregate([
                 {
@@ -334,6 +333,127 @@ export class PaymentsService {
 
         return {payments : totalAmountByMonth, payouts: totalPayoutByMonth};
     }
+
+    async tutorReceviedPayoutsStatistics(year: number, tutor: string){
+        const startDate = new Date(year, 0, 1);
+        const endDate = new Date(year, 11, 31);
+        const preJoinFilters = [{
+            'createdAt': { $gte: startDate, $lte: endDate },
+        }];
+        const postJoinFilters = [{ 'schedules.tutor': new Types.ObjectId(tutor) }];
+        let results: any = await this.payoutModel.aggregate([
+            {
+                $match: preJoinFilters.length > 0 ? { $and: preJoinFilters } : {}
+            },
+            {
+                $lookup: {
+                    from: "schedules",
+                    localField: "scheduleIds",
+                    foreignField: "_id",
+                    as: "schedules",
+                }
+            },
+            {
+                $match: postJoinFilters.length > 0 ? { $and: postJoinFilters } : {}
+            },
+        ]);
+
+        const tutorPayoutByMonth: any[] = [0,0,0,0,0,0,0,0,0,0,0,0];
+
+        results.forEach((payment: any) => {
+            const paymentDate = payment.createdAt; 
+            const monthName = paymentDate.getMonth();
+            tutorPayoutByMonth[monthName] += payment.amount;
+        });
+
+        return tutorPayoutByMonth;
+    }
+
+    async getPayoutCriteria(
+        criteria: PaymentSearchCriteria
+    ) {
+        try {
+            const preJoinFilters = [];
+            if (criteria.paymentId) {
+                preJoinFilters.push({ 'paymentId': criteria.paymentId })
+            }
+            const postJoinFilters = [];
+
+            if (criteria.studentId) {
+                postJoinFilters.push({ 'schedules.student': new Types.ObjectId(criteria.studentId) })
+            }
+
+            if (criteria.tutorId) {
+                postJoinFilters.push({ 'schedules.tutor': new Types.ObjectId(criteria.tutorId) })
+            }
+
+            const paginationProps = [];
+            if (
+                (criteria.pageSize || criteria.pageSize > 0) &&
+                (criteria.pageNumber || criteria.pageNumber === 0)
+            ) {
+                paginationProps.push({
+                    $skip: criteria.pageNumber * criteria.pageSize,
+                });
+                paginationProps.push({ $limit: criteria.pageSize });
+            }
+
+            return this.payoutModel.aggregate([
+                {
+                    $match: preJoinFilters.length > 0 ? { $and: preJoinFilters } : {}
+                },
+                {
+                    $lookup: {
+                        from: "schedules",
+                        localField: "scheduleIds",
+                        foreignField: "_id",
+                        as: "schedules",
+                    }
+                },
+                {
+                    $match: postJoinFilters.length > 0 ? { $and: postJoinFilters } : {}
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "schedules.student",
+                        foreignField: "_id",
+                        as: "student",
+                        "pipeline": [
+                            { "$project": { "password": 0, "userId": 0 } }
+                        ]
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "schedules.tutor",
+                        foreignField: "_id",
+                        as: "tutor",
+                        "pipeline": [
+                            { "$project": { "password": 0, "userId": 0 } }
+                        ]
+                    }
+                },
+                {
+                    $facet: {
+                        payments: paginationProps,
+                        metrics: [
+                            { $count: "totalCount" },
+                        ],
+                    },
+                },
+            ]);
+
+        } catch (error) {
+            console.log(error);
+            throw new HttpException(
+                `Something went wrong ... Please try again`,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
 
 
 }
