@@ -1,4 +1,5 @@
 import { IsDefined } from "class-validator";
+import { CriteriaWithPaginationAndSorting } from "src/shared/DTOs/criteriaWithPaginationAndSorting";
 
 export class CreateCourseDto {
 
@@ -13,4 +14,11 @@ export class CreateCourseDto {
  
 
     isActive?: Boolean;
+}
+
+export class GetCourseDto {
+    searchTerm?: string;
+    category?:string;
+    pageSize?: number;
+    pageNumber?: number;
 }

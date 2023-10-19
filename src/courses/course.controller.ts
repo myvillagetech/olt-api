@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res
 import { ApiBearerAuth, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { response } from "express";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guards";
-import { CreateCourseDto } from "./course.dto";
+import { CreateCourseDto, GetCourseDto } from "./course.dto";
 import { CourseService } from "./course.service";
 
 
@@ -65,7 +65,7 @@ export class CourseController {
 		required: false,
 		type: Number
 	})
-    async getAllCourses(@Res() response, @Query() query) {
+    async getAllCourses(@Res() response, @Query() query: GetCourseDto) {
         try {
             const courseData = await this.courseService.getAllCourses(query);
             return response.status(HttpStatus.OK).json({

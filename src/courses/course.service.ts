@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable, NotFoundException, Unpro
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { MODEL_ENUMS } from "src/shared/enums/models.enums";
-import { CreateCourseDto } from "./course.dto";
+import { CreateCourseDto, GetCourseDto } from "./course.dto";
 import { ICourseDocument } from "./course.schema";
 
 @Injectable()
@@ -27,10 +27,14 @@ export class CourseService {
         }
     }
 
-    async getAllCourses(query): Promise<CreateCourseDto[]> {
+    async getAllCourses(query: GetCourseDto): Promise<CreateCourseDto[]> {
         const search = {}
         if(query.searchTerm) {
             search['courseName'] =  { '$regex': query.searchTerm, '$options': 'i' };
+        }
+
+        if(query.category) {
+            search['category'] = query.category;
         }
 
         const findOption =this.courseModel.find(search);
