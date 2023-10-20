@@ -219,6 +219,13 @@ export class TutorProfileService {
                 })
             }
 
+            search.$and.push({
+                $or: [
+                    {'userId.isActive': true},
+                    {'userId.isActice': null}
+                ],
+            });
+
             let paginationProps: any = [{ $match: search.$and.length > 0 ? search : {} }];
             if ((criteria.pageSize || criteria.pageSize > 0) && (criteria.pageNumber || criteria.pageNumber === 0)) {
                 paginationProps.push({ $skip: criteria.pageNumber * criteria.pageSize });
