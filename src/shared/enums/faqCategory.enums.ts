@@ -1,5 +1,5 @@
 export enum FAQCategory {
-    Student = 'student',
-    Tutor = 'tutor',
-    Common = 'common',
+    Student = 'Student',
+    Tutor = 'Tutor',
+    Common = 'Common',
 }
