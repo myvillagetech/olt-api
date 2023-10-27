@@ -45,6 +45,12 @@ export class User {
         required: true
     })
     isActive: boolean
+
+    @Prop({
+        type: String,
+        required: false
+    })
+    timeZone:  String
 }
 
 export type UserDocument = User & Document;
