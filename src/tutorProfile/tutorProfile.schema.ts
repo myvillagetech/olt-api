@@ -145,6 +145,11 @@ export class TutorProfileSchemaCreator {
     country: string;
 
     @Prop({
+        required: true
+    })
+    countryCode: string;
+
+    @Prop({
         required: true,
         unique: true
     })

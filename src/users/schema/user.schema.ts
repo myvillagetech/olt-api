@@ -44,6 +44,9 @@ export class User {
     country: string
 
     @Prop()
+    countryCode: string
+
+    @Prop()
     city: string
 
     @Prop()
