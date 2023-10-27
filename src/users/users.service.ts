@@ -78,7 +78,7 @@ export class UsersService {
         $in:[userType]
       }
     }
-    const requstedUserList: any = await this.userModel.find(queryObject).exec();
+    const requstedUserList:any = await this.userModel.find(queryObject).exec();
     if (!requstedUserList) {
       throw new NotFoundException(`user #${userType} not found`);
     }
