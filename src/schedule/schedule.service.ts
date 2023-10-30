@@ -37,6 +37,39 @@ export class ScheduleService {
     }
   }
 
+  async calculateTotalCompletedHoursForAllTutors() {
+    try {
+      const completedSchedules = await this.scheduleModel.find({ status: 'COMPLETED' }).lean();
+      const tutorHoursMap = new Map();
+
+      for (const schedule of completedSchedules) {
+        const tutorId = schedule.tutor.toString();
+        let hoursSpent = 0;
+  
+        for (const slot of schedule.slots) {
+          hoursSpent += slot.to - slot.from;
+        }
+  
+        if (tutorHoursMap.has(tutorId)) {
+          tutorHoursMap.set(tutorId, tutorHoursMap.get(tutorId) + hoursSpent);
+        } else {
+          tutorHoursMap.set(tutorId, hoursSpent);
+        }
+      }
+  
+      const convertedResponse = Array.from(tutorHoursMap, ([tutorId, hoursSpent]) => ({
+        tutorId,
+        hoursSpent,
+      }));
+      return convertedResponse;
+    }
+    catch (error) {
+     
+      console.error(error);
+      throw error;
+    }
+  }
+  
   async deleteSchedule(
     scheduleId: string
   ): Promise<

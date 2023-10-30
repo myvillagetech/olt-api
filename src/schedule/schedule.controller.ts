@@ -370,7 +370,7 @@ export class ScheduleController {
     }
   }
 
-  // @Put('updatePayment/:id')
+    // @Put('updatePayment/:id')
   // async updatePaymentInfoSchedule(@Res() response, @Param('id') ScheduleId: string, @Body() paymentInformation: PaymentInformation) {
   //   try {
   //     const schedule = await this.scheduleService.updatePaymentInfoSchedule(paymentInformation, ScheduleId);
@@ -395,6 +395,17 @@ export class ScheduleController {
       return response.status(err.status).json(err.response);
     }
   }
+
+  @Get("/tutors-schedule-hours")
+  async  calculateTotalCompletedHoursForAllTutors(@Res() response) {
+    try {
+      const schedule = await this.scheduleService.calculateTotalCompletedHoursForAllTutors();
+      return response.status(HttpStatus.OK).json(schedule);
+    }catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
 
   @Get("/tutor-schedule-counts")
   async getTutorScheduleCounts(@Res() response, @Query() user: any) {
