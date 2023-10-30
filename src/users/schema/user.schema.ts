@@ -35,6 +35,24 @@ export class User {
     address: string
 
     @Prop()
+    addressLine2: string
+
+    @Prop()
+    zip: string
+
+    @Prop()
+    country: string
+
+    @Prop()
+    countryCode: string
+
+    @Prop()
+    city: string
+
+    @Prop()
+    state: string
+
+    @Prop()
     ssoProvider: string
 
     @Prop()
