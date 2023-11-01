@@ -19,6 +19,23 @@ export class SlotSchemaCreator {
         required : true
     })
     to : number;
+
+    @Prop({
+        required : true
+    })
+    formatedFrom : string;
+    @Prop({
+        required : true
+    })
+    formatedTo : string;
+    @Prop({
+        required : true
+    })
+    utcFromtime : string;
+    @Prop({
+        required : true
+    })
+    utcTotime : string;
 }
 
 

@@ -32,6 +32,30 @@ export class Slot {
     })
     @IsDefined()
     to: Number;
+
+    @ApiProperty({
+        type: String
+    })
+    @IsDefined()
+    formatedFrom: String
+
+    @ApiProperty({
+        type: String
+    })
+    @IsDefined()
+    formatedTo: String
+
+    @ApiProperty({
+        type: String
+    })
+    @IsDefined()
+    utcFromtime: String
+
+    @ApiProperty({
+        type: String
+    })
+    @IsDefined()
+    utcTotime: String
 }
 export class Attachments {
     @ApiProperty({
