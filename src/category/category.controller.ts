@@ -20,8 +20,6 @@ export class CategoryController {
                 category
             });
         } catch (error) {
-            console.log(error);
-
             return response.status(HttpStatus.BAD_REQUEST).json({
                 statusCode: 400,
                 message: 'Error: Category not created!',

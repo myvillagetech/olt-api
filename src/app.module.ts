@@ -18,6 +18,7 @@ import { PaymentsModule } from './payments/payments.module';
 import { FaqModule } from './faq/faq.module';
 import { ContactUsModule } from './contact-us/contact-us.module';
 import { AlertsModule } from './alerts/alerts.module';
+import { CompanyDetailsModule } from './company-details/company-details.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { AlertsModule } from './alerts/alerts.module';
     FaqModule,
     ContactUsModule,
     AlertsModule,
+    CompanyDetailsModule,
   ],
   controllers: [AppController, CategoryController],
 })

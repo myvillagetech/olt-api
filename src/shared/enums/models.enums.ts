@@ -11,7 +11,8 @@ export const MODEL_ENUMS = {
     PAYMENT: 'payments',
     PAYOUT: 'payouts',
     CONTACT_US: 'contact_us',
-    ALERT: 'alert'
+    ALERT: 'alert',
+    COMPANY_DETAILS: 'company_details'
 }
 
 export const COLLECTION_NAMES = {
