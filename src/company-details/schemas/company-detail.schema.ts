@@ -9,7 +9,7 @@ export class CompanyDetailsSchemaCreator {
     @Prop({
         required :true,
         type: String,
-        enum: ['PrivacyPolicy','TermsAndConditions']
+        enum: ['PrivacyPolicy','Aboutus']
     })
     name : string;
 

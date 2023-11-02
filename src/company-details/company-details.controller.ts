@@ -40,23 +40,23 @@ export class CompanyDetailsController {
     }
   }
 
-  @Post("save/termsAndConditions")
-  async saveTermsAndConditions(
+  @Post("save/aboutCompany")
+  async saveAboutCompany(
     @Res() response,
     @Body() companyDetailsPayload: CreateCompanyDetailDto
   ) {
     try {
-      const privacyPolicy = await this.companyDetailsService.saveTermsAndConditions(
+      const aboutCompany = await this.companyDetailsService.saveAboutCompany(
         companyDetailsPayload.content
       );
       return response.status(HttpStatus.CREATED).json({
-        message: "Terms and conditions saved sucessfully",
-        privacyPolicy,
+        message: "About Company saved sucessfully",
+        aboutCompany,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         statusCode: 400,
-        message: "Error: Terms and conditions not saved!",
+        message: "Error: About Company not saved!",
         error: error,
       });
     }
@@ -81,20 +81,20 @@ export class CompanyDetailsController {
     }
   }
 
-  @Get('/TermsAndConditions')
+  @Get('/AboutCompany')
   async getTermsAndConditions(
     @Res() response,
   ){
     try {
-      const termsAndConditions = await this.companyDetailsService.getTermsAndConditions();
+      const aboutCompany = await this.companyDetailsService.getAboutCompany();
       return response.status(HttpStatus.CREATED).json({
-        message: "Terms and conditions fetched sucessfully",
-        termsAndConditions,
+        message: "About Company fetched sucessfully",
+        aboutCompany,
       });
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         statusCode: 400,
-        message: "Error: Terms and conditions not fetched!",
+        message: "Error: About Company not fetched!",
         error: error,
       });
     }

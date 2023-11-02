@@ -19,12 +19,12 @@ export class CompanyDetailsService {
     return privacyPolicy[0].save();
   }
 
-  async saveTermsAndConditions(content: string): Promise<any> {
-    const newTermsAndConditions = await this.companyDetailsModel.find({
-      name: "TermsAndConditions",
+  async saveAboutCompany(content: string): Promise<any> {
+    const newAboutCompany = await this.companyDetailsModel.find({
+      name: "Aboutus",
     });
-    newTermsAndConditions[0].content = content;
-    return newTermsAndConditions[0].save();
+    newAboutCompany[0].content = content;
+    return newAboutCompany[0].save();
   }
 
   async getPrivacyPolicy(): Promise<any> {
@@ -34,10 +34,10 @@ export class CompanyDetailsService {
     return privacyPolicy;
   }
 
-  async getTermsAndConditions(): Promise<any> {
-    const termsAndConditions = await this.companyDetailsModel.find({
-      name: "TermsAndConditions",
+  async getAboutCompany(): Promise<any> {
+    const aboutUs = await this.companyDetailsModel.find({
+      name: "Aboutus",
     });
-    return termsAndConditions;
+    return aboutUs;
   }
 }
