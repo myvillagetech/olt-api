@@ -39,9 +39,11 @@ export class ScheduleService {
 
   async calculateTotalCompletedHoursForAllTutors(tutor?: string) {
     try {
-      const completedSchedules = await this.scheduleModel
-        .find({ status: "COMPLETED" })
-        .lean();
+      const scheduleFilters: any = { status: "COMPLETED" };
+      if (tutor) {
+        scheduleFilters.tutor = tutor;
+      }
+      const completedSchedules = await this.scheduleModel.find(scheduleFilters).lean();
       const tutorHoursMap = new Map();
 
       for (const schedule of completedSchedules) {
@@ -66,16 +68,8 @@ export class ScheduleService {
           hoursSpent,
         })
       );
-      let selectedTutorHours = null;
-      if (tutor) {
-        for (const obj of convertedResponse) {
-          if (obj.tutorId === tutor) {
-            selectedTutorHours = obj;
-            break;
-          }
-        }
-      }
-      return selectedTutorHours ? selectedTutorHours : convertedResponse;
+      
+      return convertedResponse;
     } catch (error) {
       console.error(error);
       throw error;
