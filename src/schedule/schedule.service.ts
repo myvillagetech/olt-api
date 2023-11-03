@@ -17,8 +17,8 @@ import { Status } from "./schedule.status";
 export class ScheduleService {
   constructor(
     @InjectModel(MODEL_ENUMS.SCHEDULE)
-    private scheduleModel: Model<IScheduleDocument>,
-  ) { }
+    private scheduleModel: Model<IScheduleDocument>
+  ) {}
 
   getScheduleModel(): Model<IScheduleDocument> {
     return this.scheduleModel;
@@ -37,39 +37,45 @@ export class ScheduleService {
     }
   }
 
-  async calculateTotalCompletedHoursForAllTutors() {
+  async calculateTotalCompletedHoursForAllTutors(tutor?: string) {
     try {
-      const completedSchedules = await this.scheduleModel.find({ status: 'COMPLETED' }).lean();
+      const scheduleFilters: any = { status: "COMPLETED" };
+      if (tutor) {
+        scheduleFilters.tutor = tutor;
+      }
+      const completedSchedules = await this.scheduleModel.find(scheduleFilters).lean();
       const tutorHoursMap = new Map();
 
       for (const schedule of completedSchedules) {
         const tutorId = schedule.tutor.toString();
         let hoursSpent = 0;
-  
+
         for (const slot of schedule.slots) {
           hoursSpent += slot.to - slot.from;
         }
-  
+
         if (tutorHoursMap.has(tutorId)) {
           tutorHoursMap.set(tutorId, tutorHoursMap.get(tutorId) + hoursSpent);
         } else {
           tutorHoursMap.set(tutorId, hoursSpent);
         }
       }
-  
-      const convertedResponse = Array.from(tutorHoursMap, ([tutorId, hoursSpent]) => ({
-        tutorId,
-        hoursSpent,
-      }));
+
+      const convertedResponse = Array.from(
+        tutorHoursMap,
+        ([tutorId, hoursSpent]) => ({
+          tutorId,
+          hoursSpent,
+        })
+      );
+      
       return convertedResponse;
-    }
-    catch (error) {
-     
+    } catch (error) {
       console.error(error);
       throw error;
     }
   }
-  
+
   async deleteSchedule(
     scheduleId: string
   ): Promise<
@@ -88,15 +94,17 @@ export class ScheduleService {
     schedulePayload: updateScheduleDto,
     scheduleId: string
   ): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
-    
-    if(schedulePayload.status==='REJECTED' && !schedulePayload.rejectedNote ){
+    if (
+      schedulePayload.status === "REJECTED" &&
+      !schedulePayload.rejectedNote
+    ) {
       throw new HttpException(
         `Reject Note Is Required`,
         HttpStatus.NOT_ACCEPTABLE
       );
     }
 
-    if(schedulePayload.status==='CANCELLED' && !schedulePayload.cancelNote ){
+    if (schedulePayload.status === "CANCELLED" && !schedulePayload.cancelNote) {
       throw new HttpException(
         `Cancel Note Is Required`,
         HttpStatus.NOT_ACCEPTABLE
@@ -121,7 +129,11 @@ export class ScheduleService {
     props: object
   ): Promise<ScheduleDto | IScheduleDocument | UnprocessableEntityException> {
     const schedule = await this.scheduleModel
-      .findByIdAndUpdate(scheduleId, {status: status, ...props}, { new: true })
+      .findByIdAndUpdate(
+        scheduleId,
+        { status: status, ...props },
+        { new: true }
+      )
       .exec();
     if (!schedule) {
       throw new HttpException(
@@ -132,45 +144,58 @@ export class ScheduleService {
     return schedule;
   }
 
-  async updatedPaymentDetails(schduleIDs: string[], paymentId: Types.ObjectId, status : string) {
-    const options: any = schduleIDs.map(sId => {
+  async updatedPaymentDetails(
+    schduleIDs: string[],
+    paymentId: Types.ObjectId,
+    status: string
+  ) {
+    const options: any = schduleIDs.map((sId) => {
       return {
         updateOne: {
           filter: { _id: sId },
-          update: { paymentId: paymentId , status : status }
-        }
-      }
-    })
+          update: { paymentId: paymentId, status: status },
+        },
+      };
+    });
     await this.scheduleModel.bulkWrite(options);
   }
 
-  
-  async addAttachments(scheduleId: string, attachments:any[]) {
-    const attachmentsData:any = await this.scheduleModel.findById(scheduleId).lean()
-    if(attachmentsData.attachments){
-      attachments.push(...attachmentsData.attachments)
+  async addAttachments(scheduleId: string, attachments: any[]) {
+    const attachmentsData: any = await this.scheduleModel
+      .findById(scheduleId)
+      .lean();
+    if (attachmentsData.attachments) {
+      attachments.push(...attachmentsData.attachments);
     }
-    const newAttachments = await this.scheduleModel.findByIdAndUpdate(scheduleId, {attachments:attachments}, { new: true })
-   .exec();
-   return newAttachments
+    const newAttachments = await this.scheduleModel
+      .findByIdAndUpdate(
+        scheduleId,
+        { attachments: attachments },
+        { new: true }
+      )
+      .exec();
+    return newAttachments;
   }
 
-  async addNotes(scheduleId: string, notes:any) {
-    
-    const newNotes = await this.scheduleModel.findByIdAndUpdate(scheduleId, notes, { new: true })
-   .exec();
-   return newNotes
+  async addNotes(scheduleId: string, notes: any) {
+    const newNotes = await this.scheduleModel
+      .findByIdAndUpdate(scheduleId, notes, { new: true })
+      .exec();
+    return newNotes;
   }
 
-  async updatedtutorPayoutDetails(schduleIDs: string[], paymentId: Types.ObjectId) {
-    const options: any = schduleIDs.map(sId => {
+  async updatedtutorPayoutDetails(
+    schduleIDs: string[],
+    paymentId: Types.ObjectId
+  ) {
+    const options: any = schduleIDs.map((sId) => {
       return {
         updateOne: {
           filter: { _id: sId },
-          update: { payoutId: paymentId }
-        }
-      }
-    })
+          update: { payoutId: paymentId },
+        },
+      };
+    });
 
     await this.scheduleModel.bulkWrite(options);
   }
@@ -227,14 +252,14 @@ export class ScheduleService {
   }
 
   async getScheduleByStatus(user): Promise<IScheduleDocument> {
-    const query :any={} 
-    if(user.student){
-      query.student=new Types.ObjectId(user.student)
+    const query: any = {};
+    if (user.student) {
+      query.student = new Types.ObjectId(user.student);
     }
-    if(user.tutor){
-      query.tutor=new Types.ObjectId(user.tutor)
+    if (user.tutor) {
+      query.tutor = new Types.ObjectId(user.tutor);
     }
-    if(user.student || user.tutor){
+    if (user.student || user.tutor) {
       const schedule: any = await this.scheduleModel.aggregate([
         { $match: query },
         {
@@ -259,38 +284,38 @@ export class ScheduleService {
         },
       ]);
       return schedule;
+    } else {
+      throw new HttpException(
+        `Schedule metrics were not found`,
+        HttpStatus.NOT_MODIFIED
+      );
+    }
   }
-  else{
-    throw new HttpException(
-      `Schedule metrics were not found`,
-      HttpStatus.NOT_MODIFIED
-    );
-  }
-  }
-  
-  async getAdminScheduleByStatus() : Promise<IScheduleDocument> {
-    const schedule :any = await this.scheduleModel.aggregate([
-            { $group: { 
-                _id:"$status", 
-                count: {$sum : 1 }, 
-               }
-             },
-             {
-              $group: {
-                _id: null,
-                totalDocuments: { $sum: "$count" },
-                statusMetrics: { $push: { status: "$_id", count: "$count" } },
-              },
-            },
-            {
-              $project: {
-                _id: 0,
-                totalDocuments: 1,
-                statusMetrics: 1,
-              },
-            },
-        ]); 
-        return schedule;
+
+  async getAdminScheduleByStatus(): Promise<IScheduleDocument> {
+    const schedule: any = await this.scheduleModel.aggregate([
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalDocuments: { $sum: "$count" },
+          statusMetrics: { $push: { status: "$_id", count: "$count" } },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalDocuments: 1,
+          statusMetrics: 1,
+        },
+      },
+    ]);
+    return schedule;
   }
 
   async cancelScheduleByScheduleId(
@@ -327,19 +352,22 @@ export class ScheduleService {
         });
       }
 
-      if (criteria.dateRange && (criteria.dateRange.from || criteria.dateRange.to)) {
+      if (
+        criteria.dateRange &&
+        (criteria.dateRange.from || criteria.dateRange.to)
+      ) {
         const searchOption: any = {};
-        if(criteria.dateRange.from) {
+        if (criteria.dateRange.from) {
           searchOption.$gte = new Date(criteria.dateRange.from);
         }
-        if(criteria.dateRange.to) {
+        if (criteria.dateRange.to) {
           searchOption.$lte = new Date(criteria.dateRange.to);
         }
         search.$and.push({
           slots: {
             $elemMatch: {
-                  date: searchOption
-              },
+              date: searchOption,
+            },
           },
         });
       }
@@ -368,10 +396,9 @@ export class ScheduleService {
 
       if (criteria.searchTerm) {
         search.$and.push({
-          "tutor.firstName": { $regex: new RegExp(criteria.searchTerm, "i") }
+          "tutor.firstName": { $regex: new RegExp(criteria.searchTerm, "i") },
         });
       }
-
 
       let paginationProps: any = [
         { $match: search.$and.length > 0 ? search : {} },
@@ -437,5 +464,4 @@ export class ScheduleService {
   //     { $match: { tutor: tutorId, paymentInformation: { $or: [{ $ne: null }, { $exists: false }] } } }
   //   ]);
   // }
-
 }

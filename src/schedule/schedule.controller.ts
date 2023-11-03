@@ -406,6 +406,16 @@ export class ScheduleController {
     }
   }
 
+  @Get("/tutors-schedule-hours/:tutorId")
+  async completedHoursForSelectedTutor(@Res() response, @Param("tutorId") tutorId: string) {
+    try {
+      const schedule = await this.scheduleService.calculateTotalCompletedHoursForAllTutors(tutorId);
+      return response.status(HttpStatus.OK).json(schedule);
+    }catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
 
   @Get("/tutor-schedule-counts")
   async getTutorScheduleCounts(@Res() response, @Query() user: any) {
